@@ -1,4 +1,3 @@
-import 'package:chartnalyze_apps/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/first_splash_controller.dart';
@@ -6,14 +5,13 @@ import '../controllers/first_splash_controller.dart';
 class FirstSplashView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Get.find<FirstSplashController>();
+    final ctrl = Get.find<FirstSplashController>();
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
         children: [
           SizedBox(height: 60),
-
           // Pagination dots
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -83,13 +81,10 @@ class FirstSplashView extends StatelessWidget {
             ),
           ),
           Spacer(),
-
           Padding(
             padding: EdgeInsets.all(16),
             child: TextButton(
-              onPressed: () {
-                Get.toNamed(Routes.SECOND_SPLASH);
-              },
+              onPressed: ctrl.nextPage,
               child: Text(
                 'Next Page',
                 style: TextStyle(
@@ -101,7 +96,7 @@ class FirstSplashView extends StatelessWidget {
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );

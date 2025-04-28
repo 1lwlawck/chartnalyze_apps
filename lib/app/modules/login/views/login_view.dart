@@ -31,7 +31,7 @@ class _LoginViewState extends State<LoginView> {
             crossAxisAlignment:
                 CrossAxisAlignment.start, // Align items to the left
             children: [
-              SizedBox(height: 40),
+              SizedBox(height: 10),
 
               // Sign in Text
               Text(
@@ -40,6 +40,17 @@ class _LoginViewState extends State<LoginView> {
                   fontSize: 40,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
+                  fontFamily: 'NextTrial', // Font "Next Trial"
+                ),
+              ),
+              SizedBox(height: 10),
+
+              Text(
+                'Welcome back! Please sign in to continue.',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF0B5E4F), // Green color for the text
                   fontFamily: 'NextTrial', // Font "Next Trial"
                 ),
               ),
@@ -165,10 +176,11 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   TextButton(
                     onPressed: () {
-                      // Handle registration or sign up
+                      Get.toNamed('/register'); // Navigate to register page
+                      print('Register button pressed');
                     },
                     child: Text(
-                      "Dont have an account yet?",
+                      "Register Here",
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,

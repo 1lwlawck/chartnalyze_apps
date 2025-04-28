@@ -1,4 +1,3 @@
-import 'package:chartnalyze_apps/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/third_splash_controller.dart';
@@ -6,7 +5,7 @@ import '../controllers/third_splash_controller.dart';
 class ThirdSplashView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Get.find<ThirdSplashController>();
+    final ctrl = Get.find<ThirdSplashController>();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -18,36 +17,16 @@ class ThirdSplashView extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                width: 20,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: Color(0xFFD9E6E1),
-                  borderRadius: BorderRadius.circular(3),
-                ),
-              ),
+              buildPaginationDot(isActive: false),
               SizedBox(width: 8),
-              Container(
-                width: 20,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: Color(0xFFD9E6E1),
-                  borderRadius: BorderRadius.circular(3),
-                ),
-              ),
+              buildPaginationDot(isActive: false),
               SizedBox(width: 8),
-              Container(
-                width: 20,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: Color(0xFF0B5E4F),
-                  borderRadius: BorderRadius.circular(3),
-                ),
-              ),
+              buildPaginationDot(isActive: true),
             ],
           ),
           SizedBox(height: 100),
 
+          // Image
           Stack(
             alignment: Alignment.center,
             children: [
@@ -60,7 +39,7 @@ class ThirdSplashView extends StatelessWidget {
           ),
           SizedBox(height: 40),
 
-          // Teks konten
+          // Content text
           Text(
             'AI-Powered Predictions',
             textAlign: TextAlign.center,
@@ -68,7 +47,7 @@ class ThirdSplashView extends StatelessWidget {
               color: Color(0xFF0B5E4F),
               fontSize: 20,
               fontWeight: FontWeight.w600,
-              fontFamily: 'NextTrial', // Menetapkan font Next-Trial
+              fontFamily: 'NextTrial',
             ),
           ),
           SizedBox(height: 10),
@@ -92,10 +71,7 @@ class ThirdSplashView extends StatelessWidget {
               children: [
                 // Register Button
                 ElevatedButton(
-                  onPressed: () {
-                    // Aksi ketika tombol Register ditekan
-                    print('Register button pressed');
-                  },
+                  onPressed: ctrl.navigateToRegister,
                   child: Text(
                     'Register',
                     style: TextStyle(
@@ -113,13 +89,10 @@ class ThirdSplashView extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 20), // Space between buttons
+
                 // Sign In Button
                 ElevatedButton(
-                  onPressed: () {
-                    Get.toNamed(Routes.LOGIN);
-                    // Aksi ketika tombol Sign In ditekan
-                    print('Sign In button pressed');
-                  },
+                  onPressed: ctrl.navigateToLogin,
                   child: Text(
                     'Sign in',
                     style: TextStyle(
@@ -141,6 +114,18 @@ class ThirdSplashView extends StatelessWidget {
           ),
           SizedBox(height: 20),
         ],
+      ),
+    );
+  }
+
+  // Pagination dot builder
+  Widget buildPaginationDot({required bool isActive}) {
+    return Container(
+      width: 20,
+      height: 5,
+      decoration: BoxDecoration(
+        color: isActive ? Color(0xFF0B5E4F) : Color(0xFFD9E6E1),
+        borderRadius: BorderRadius.circular(3),
       ),
     );
   }

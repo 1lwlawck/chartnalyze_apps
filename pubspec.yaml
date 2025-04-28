@@ -64,6 +64,7 @@ flutter:
     - assets/images/dollars_coin.png
     - assets/images/second_splash.png
     - assets/images/third_splash.png
+    - assets/images/verified_image.png
   fonts:
     - family: NextTrial
       fonts:

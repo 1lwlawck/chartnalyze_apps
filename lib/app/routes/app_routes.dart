@@ -1,5 +1,4 @@
 part of 'app_pages.dart';
-// DO NOT EDIT. This is code generated via package:get_cli/get_cli.dart
 
 abstract class Routes {
   Routes._();
@@ -8,6 +7,9 @@ abstract class Routes {
   static const SECOND_SPLASH = _Paths.SECOND_SPLASH;
   static const THIRD_SPLASH = _Paths.THIRD_SPLASH;
   static const LOGIN = _Paths.LOGIN;
+  static const REGISTER = _Paths.REGISTER;
+  static const EMAIL_VERIFICATION = _Paths.EMAIL_VERIFICATION;
+  static const SUCCESS_VERIFICATION = _Paths.SUCCESS_VERIFICATION;
 }
 
 abstract class _Paths {
@@ -17,4 +19,7 @@ abstract class _Paths {
   static const SECOND_SPLASH = '/second-splash';
   static const THIRD_SPLASH = '/third-splash';
   static const LOGIN = '/login';
+  static const REGISTER = '/register';
+  static const EMAIL_VERIFICATION = '/email-verification';
+  static const SUCCESS_VERIFICATION = '/success-verification';
 }
