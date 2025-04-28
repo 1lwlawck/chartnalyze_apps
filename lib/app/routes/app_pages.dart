@@ -1,20 +1,24 @@
-import 'package:chartnalyze_apps/app/modules/email_verification/views/success_verification_email.dart';
+import 'package:chartnalyze_apps/app/modules/Auth/email_verification/views/success_verification_email.dart';
+import 'package:chartnalyze_apps/app/modules/Auth/forgot_password/bindings/forgot_password_binding.dart';
+import 'package:chartnalyze_apps/app/modules/Auth/forgot_password/views/forgot_password_view.dart';
 import 'package:get/get.dart';
 
-import '../modules/email_verification/bindings/email_verification_binding.dart';
-import '../modules/email_verification/views/email_verification_view.dart';
-import '../modules/onboarding/first_splash/bindings/first_splash_binding.dart';
-import '../modules/onboarding/first_splash/views/first_splash_view.dart';
+import '../modules/Auth/email_verification/bindings/email_verification_binding.dart';
+import '../modules/Auth/email_verification/views/email_verification_view.dart';
+import '../modules/Onboarding/first_splash/bindings/first_splash_binding.dart';
+import '../modules/Onboarding/first_splash/views/first_splash_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
-import '../modules/login/bindings/login_binding.dart';
-import '../modules/login/views/login_view.dart';
-import '../modules/register/bindings/register_binding.dart';
-import '../modules/register/views/register_view.dart';
-import '../modules/onboarding/second_splash/bindings/second_splash_binding.dart';
-import '../modules/onboarding/second_splash/views/second_splash_view.dart';
-import '../modules/onboarding/third_splash/bindings/third_splash_binding.dart';
-import '../modules/onboarding/third_splash/views/third_splash_view.dart';
+import '../modules/Auth/login/bindings/login_binding.dart';
+import '../modules/Auth/login/views/login_view.dart';
+import '../modules/Auth/register/bindings/register_binding.dart';
+import '../modules/Auth/register/views/register_view.dart';
+import '../modules/Onboarding/second_splash/bindings/second_splash_binding.dart';
+import '../modules/Onboarding/second_splash/views/second_splash_view.dart';
+import '../modules/Onboarding/third_splash/bindings/third_splash_binding.dart';
+import '../modules/Onboarding/third_splash/views/third_splash_view.dart';
+import 'package:chartnalyze_apps/app/modules/Auth/forgot_password/bindings/reset_password_otp_binding.dart';
+import '../modules/Auth/forgot_password/views/reset_password_otp_view.dart';
 
 part 'app_routes.dart';
 
@@ -69,6 +73,16 @@ class AppPages {
       name: _Paths.SUCCESS_VERIFICATION,
       page: () => SuccessVerificationView(),
       binding: EmailVerificationBinding(),
-    )
+    ),
+    GetPage(
+      name: _Paths.FORGOT_PASSWORD,
+      page: () => ForgotPasswordView(),
+      binding: ForgotPasswordBinding(),
+    ),
+    GetPage(
+      name: Routes.OTP_RESET_PASSWORD,
+      page: () => ResetPasswordOtpView(),
+      binding: ResetPasswordOtpBinding(),
+    ),
   ];
 }

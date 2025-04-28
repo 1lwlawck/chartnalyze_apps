@@ -12,20 +12,17 @@ class SuccessVerificationView extends StatelessWidget {
       backgroundColor: Color(0xFF0B5E4F),
       body: SafeArea(
         child: Center(
-          // Pusatkan keseluruhan kolom
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Gambar kustom Anda
                 Image.asset(
                   'assets/images/verified_image.png',
                   width: 200,
                   height: 200,
                   fit: BoxFit.contain,
                 ),
-
                 SizedBox(height: 40),
                 Text(
                   'Email verified',

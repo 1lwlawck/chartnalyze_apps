@@ -57,7 +57,7 @@ class ThirdSplashView extends StatelessWidget {
             style: TextStyle(
               color: Colors.black,
               fontSize: 23,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w600,
               fontFamily: 'NextTrial',
             ),
           ),
