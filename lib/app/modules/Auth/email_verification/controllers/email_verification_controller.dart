@@ -3,11 +3,14 @@ import 'package:get/get.dart';
 import 'dart:async';
 
 class EmailVerificationController extends GetxController {
-  var otpCode = ''.obs; // To store the OTP code entered by the user
-  var email =
-      'denyfaishalardiuan@gmail.com'.obs; // Dynamically changeable email
-  var isResendEnabled = false.obs; // To enable/disable resend OTP button
-  var counter = 60.obs; // Countdown timer
+  EmailVerificationController({required this.email});
+
+  final String email;
+
+  var otpCode = ''.obs;
+  var isResendEnabled = false.obs;
+  var counter = 60.obs;
+
   late Timer _timer;
 
   @override
@@ -16,10 +19,9 @@ class EmailVerificationController extends GetxController {
     startTimer();
   }
 
-  // Function to start the countdown timer
   void startTimer() {
     counter.value = 60;
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (counter.value > 0) {
         counter.value--;
       } else {
@@ -29,15 +31,17 @@ class EmailVerificationController extends GetxController {
     });
   }
 
-  // Function to resend OTP and reset timer
   void resendOTP() {
     startTimer();
     isResendEnabled.value = false;
   }
 
   void submitOTP() {
-    Get.offNamed(Routes.SUCCESS_VERIFICATION);
     print("OTP submitted: ${otpCode.value}");
+    Get.offNamed(
+      Routes.SUCCESS_VERIFICATION,
+      arguments: {'email': email},
+    );
   }
 
   @override

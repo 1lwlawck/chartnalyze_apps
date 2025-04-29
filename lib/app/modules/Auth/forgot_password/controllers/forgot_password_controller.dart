@@ -1,15 +1,21 @@
-import 'package:get/get.dart';
+import 'package:chartnalyze_apps/app/constants/strings.dart';
+import 'package:chartnalyze_apps/app/services/AuthService.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
 import 'package:chartnalyze_apps/app/routes/app_pages.dart';
 
 class ForgotPasswordController extends GetxController {
   final emailController = TextEditingController();
+  final _authService = AuthService();
 
-  void sendCode() {
-    if (emailController.text.isEmpty) {
+  void sendCode() async {
+    final email = emailController.text.trim();
+
+    if (email.isEmpty) {
       Get.snackbar(
-        'Error',
-        'Please enter your email address.',
+        AppStrings.errorTitle,
+        AppStrings.emptyEmailMessage,
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -17,7 +23,11 @@ class ForgotPasswordController extends GetxController {
       return;
     }
 
-    Get.toNamed(Routes.OTP_RESET_PASSWORD, arguments: emailController.text);
+    final success = await _authService.sendPasswordResetEmail(email);
+
+    if (success) {
+      Get.toNamed(Routes.OTP_RESET_PASSWORD, arguments: email);
+    }
   }
 
   @override

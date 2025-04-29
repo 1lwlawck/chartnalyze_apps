@@ -1,31 +1,21 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:chartnalyze_apps/app/services/AuthService.dart';
+import 'package:chartnalyze_apps/app/utils/validator.dart';
 import 'package:chartnalyze_apps/app/routes/app_pages.dart';
 
 class RegisterController extends GetxController {
-  var isPasswordVisible = false.obs;
-  var isConfirmPasswordVisible = false.obs;
+  final AuthService authService = Get.find<AuthService>();
 
-  // TextEditingController for each field
   final usernameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
-  void resetFields() {
-    usernameController.clear();
-    emailController.clear();
-    passwordController.clear();
-    confirmPasswordController.clear();
-  }
+  final isPasswordVisible = false.obs;
+  final isConfirmPasswordVisible = false.obs;
+  final isLoading = false.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    resetFields();
-  }
-
-  // Handle password visibility toggle
   void togglePasswordVisibility() {
     isPasswordVisible.value = !isPasswordVisible.value;
   }
@@ -34,28 +24,58 @@ class RegisterController extends GetxController {
     isConfirmPasswordVisible.value = !isConfirmPasswordVisible.value;
   }
 
-  // Handle registration logic
-  void register() {
-    if (validateForm()) {
-      Get.toNamed(Routes.EMAIL_VERIFICATION);
-    } else {
-      // Handle validation error
-      Get.snackbar('Error', 'Please fill in all fields correctly');
-    }
-  }
+  void register() async {
+    final username = usernameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text;
+    final confirmPassword = confirmPasswordController.text;
 
-  // Form validation
-  bool validateForm() {
-    if (usernameController.text.isEmpty ||
-        emailController.text.isEmpty ||
-        passwordController.text.isEmpty ||
-        confirmPasswordController.text.isEmpty) {
-      return false;
+    final usernameError = Validator.validateUsername(username);
+    final emailError = Validator.validateEmail(email);
+    final passwordError = Validator.validatePassword(password);
+    final confirmPasswordError =
+        Validator.validateConfirmPassword(password, confirmPassword);
+
+    if (usernameError != null ||
+        emailError != null ||
+        passwordError != null ||
+        confirmPasswordError != null) {
+      Get.snackbar('Error',
+          usernameError ?? emailError ?? passwordError ?? confirmPasswordError!,
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white);
+      return;
     }
-    if (passwordController.text != confirmPasswordController.text) {
-      return false; // Passwords must match
+
+    isLoading.value = true;
+
+    try {
+      final success = await authService.register(
+        username: username,
+        email: email,
+        password: password,
+      );
+
+      if (success) {
+        Get.toNamed(
+          Routes.EMAIL_VERIFICATION,
+          arguments: {'email': emailController.text.trim()},
+        );
+      } else {
+        Get.snackbar('Error', 'Registration failed, username already taken.',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+            colorText: Colors.white);
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Something went wrong',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white);
+    } finally {
+      isLoading.value = false;
     }
-    return true;
   }
 
   @override

@@ -1,10 +1,17 @@
-import 'package:chartnalyze_apps/app/routes/app_pages.dart';
-import 'package:chartnalyze_apps/widget/CustomTextField.dart';
+import 'package:chartnalyze_apps/app/constants/images.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:chartnalyze_apps/widget/CustomTextField.dart';
+import 'package:chartnalyze_apps/widget/CustomButton.dart';
+import 'package:chartnalyze_apps/app/constants/colors.dart';
+import 'package:chartnalyze_apps/app/constants/fonts.dart';
+import 'package:chartnalyze_apps/app/constants/strings.dart';
 import '../controllers/login_controller.dart';
+import 'package:chartnalyze_apps/app/routes/app_pages.dart';
 
 class LoginView extends GetView<LoginController> {
+  const LoginView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,14 +20,12 @@ class LoginView extends GetView<LoginController> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.chevron_left,
-            color: Color(0xFF0B5E4F),
+            color: AppColors.primaryGreen,
             size: 40,
           ),
-          onPressed: () {
-            Get.offNamed(Routes.REGISTER);
-          },
+          onPressed: () => Get.back(),
         ),
       ),
       body: Padding(
@@ -29,36 +34,33 @@ class LoginView extends GetView<LoginController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 10),
-              // Sign in Text
-              Text(
-                'Sign in',
+              const SizedBox(height: 10),
+              const Text(
+                AppStrings.signIn,
                 style: TextStyle(
                   fontSize: 40,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
-                  fontFamily: 'NextTrial',
+                  fontFamily: AppFonts.nextTrial,
                 ),
               ),
-              SizedBox(height: 10),
-              Text(
-                'Welcome back! Please sign in to continue.',
+              const SizedBox(height: 10),
+              const Text(
+                AppStrings.welcomeBack,
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF0B5E4F),
-                  fontFamily: 'CircularStd',
+                  color: AppColors.primaryGreen,
+                  fontFamily: AppFonts.circularStd,
                 ),
               ),
-              SizedBox(height: 20),
-              // Email input field
+              const SizedBox(height: 20),
               CustomTextField(
                 controller: controller.emailController,
                 label: 'Your email address',
                 obscureText: false,
               ),
-              SizedBox(height: 20),
-              // Password input field
+              const SizedBox(height: 20),
               Obx(
                 () => CustomTextField(
                   controller: controller.passwordController,
@@ -67,8 +69,8 @@ class LoginView extends GetView<LoginController> {
                   suffixIcon: IconButton(
                     icon: Image.asset(
                       controller.isPasswordVisible.value
-                          ? 'assets/images/eye 1.png'
-                          : 'assets/images/eye-off 1.png',
+                          ? AppImages.eyeOpen
+                          : AppImages.eyeClosed,
                       width: 20,
                       height: 20,
                     ),
@@ -76,71 +78,48 @@ class LoginView extends GetView<LoginController> {
                   ),
                 ),
               ),
-              SizedBox(height: 10),
-              // Remember me checkbox
-
-              SizedBox(height: 20),
-              // Sign in button
-              ElevatedButton(
-                onPressed: controller.login,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF0B5E4F),
-                  padding: EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  minimumSize: Size(double.infinity, 48),
-                ),
-                child: Text(
-                  'Sign in',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'NextTrial',
-                  ),
+              const SizedBox(height: 20),
+              Obx(
+                () => CustomButton(
+                  text: AppStrings.signIn,
+                  isLoading: controller.isLoading.value,
+                  onPressed: controller.login,
                 ),
               ),
-              SizedBox(height: 10),
-              // Forgot Password and Register Row
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TextButton(
-                    onPressed: () {
-                      Get.toNamed(Routes.FORGOT_PASSWORD);
-                    },
-                    child: Text(
-                      'Forgot Password?',
+                    onPressed: () => Get.toNamed(Routes.FORGOT_PASSWORD),
+                    child: const Text(
+                      AppStrings.forgotPassword,
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
-                        fontFamily: 'NextTrial',
+                        fontFamily: AppFonts.nextTrial,
                       ),
                     ),
                   ),
-                  Text(
+                  const Text(
                     "or",
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
-                      fontFamily: 'NextTrial',
+                      fontFamily: AppFonts.nextTrial,
                     ),
                   ),
                   TextButton(
-                    onPressed: () {
-                      Get.toNamed(Routes.REGISTER);
-                      Get.delete<LoginController>();
-                    },
-                    child: Text(
-                      "Register Here",
+                    onPressed: () => Get.toNamed(Routes.REGISTER),
+                    child: const Text(
+                      AppStrings.registerHere,
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF0B5E4F),
-                        fontFamily: 'NextTrial',
+                        color: AppColors.primaryGreen,
+                        fontFamily: AppFonts.nextTrial,
                       ),
                     ),
                   ),

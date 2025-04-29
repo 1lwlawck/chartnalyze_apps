@@ -16,8 +16,15 @@ class ResetPasswordOtpController extends GetxController {
   Timer? _timer;
 
   @override
+  @override
   void onInit() {
     super.onInit();
+
+    final arg = Get.arguments;
+    if (arg is String) {
+      email.value = arg;
+    }
+
     startTimer();
   }
 
@@ -49,6 +56,23 @@ class ResetPasswordOtpController extends GetxController {
 
     Get.snackbar('Success', 'OTP verified successfully');
     Get.toNamed(Routes.CHANGE_PASSWORD);
+  }
+
+  void handleOtpInput(String value, int index) {
+    if (value.isNotEmpty && index < 5) {
+      // Pindah focus ke field berikutnya
+      Future.delayed(const Duration(milliseconds: 50), () {
+        focusNodes[index + 1].requestFocus();
+      });
+    } else if (value.isEmpty && index > 0) {
+      // Pindah focus ke field sebelumnya
+      Future.delayed(const Duration(milliseconds: 50), () {
+        focusNodes[index - 1].requestFocus();
+      });
+    }
+
+    // Gabungkan semua field menjadi satu kode OTP
+    otpCode.value = otpControllers.map((c) => c.text).join();
   }
 
   @override

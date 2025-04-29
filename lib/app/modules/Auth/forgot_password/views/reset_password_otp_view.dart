@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:chartnalyze_apps/app/constants/colors.dart';
+import 'package:chartnalyze_apps/app/constants/fonts.dart';
+import 'package:chartnalyze_apps/app/constants/strings.dart';
 import 'package:chartnalyze_apps/app/modules/Auth/forgot_password/controllers/reset_password_otp_controller.dart';
 
 class ResetPasswordOtpView extends GetView<ResetPasswordOtpController> {
@@ -8,15 +11,15 @@ class ResetPasswordOtpView extends GetView<ResetPasswordOtpController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(
             Icons.chevron_left,
-            color: Colors.black,
-            size: 32,
+            color: AppColors.primaryGreen,
+            size: 40,
           ),
           onPressed: () => Get.back(),
         ),
@@ -29,21 +32,21 @@ class ResetPasswordOtpView extends GetView<ResetPasswordOtpController> {
             children: [
               const SizedBox(height: 40),
               const Text(
-                'We just sent an Email',
+                AppStrings.otpTitle,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  fontFamily: 'NextTrial',
+                  color: AppColors.black,
+                  fontFamily: AppFonts.nextTrial,
                 ),
               ),
               const SizedBox(height: 10),
               Obx(() => Text(
                     'Enter the OTP code we sent to\n${controller.email.value}',
                     style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.black,
-                      fontFamily: 'NextTrial',
+                      fontSize: 15,
+                      color: AppColors.primaryGreen,
+                      fontFamily: AppFonts.circularStd,
                     ),
                     textAlign: TextAlign.center,
                   )),
@@ -57,7 +60,7 @@ class ResetPasswordOtpView extends GetView<ResetPasswordOtpController> {
                     height: 58,
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: Colors.green.shade700,
+                        color: AppColors.primaryGreen,
                         width: 1.5,
                       ),
                       borderRadius: BorderRadius.circular(12),
@@ -78,27 +81,7 @@ class ResetPasswordOtpView extends GetView<ResetPasswordOtpController> {
                           border: InputBorder.none,
                         ),
                         onChanged: (value) {
-                          if (value.isNotEmpty) {
-                            if (index < 5) {
-                              Future.delayed(const Duration(milliseconds: 50),
-                                  () {
-                                controller.focusNodes[index + 1].requestFocus();
-                              });
-                            }
-                          } else {
-                            if (index > 0) {
-                              Future.delayed(const Duration(milliseconds: 50),
-                                  () {
-                                controller.focusNodes[index - 1].requestFocus();
-                              });
-                            }
-                          }
-
-                          String code = '';
-                          for (var c in controller.otpControllers) {
-                            code += c.text;
-                          }
-                          controller.otpCode.value = code;
+                          controller.handleOtpInput(value, index);
                         },
                       ),
                     ),
@@ -106,28 +89,28 @@ class ResetPasswordOtpView extends GetView<ResetPasswordOtpController> {
                 }),
               ),
               const SizedBox(height: 30),
-              GestureDetector(
-                onTap: controller.isResendEnabled.value
-                    ? () => controller.resendOTP()
-                    : null,
-                child: Obx(() => Text(
-                      'Didn’t get the code? Resend it',
+              Obx(() => GestureDetector(
+                    onTap: controller.isResendEnabled.value
+                        ? controller.resendOTP
+                        : null,
+                    child: Text(
+                      AppStrings.resendOtp,
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                         color: controller.isResendEnabled.value
-                            ? Colors.green
-                            : Colors.grey,
-                        fontFamily: 'NextTrial',
+                            ? AppColors.primaryGreen
+                            : AppColors.grey,
+                        fontFamily: AppFonts.nextTrial,
                       ),
-                    )),
-              ),
+                    ),
+                  )),
               const SizedBox(height: 10),
               Obx(() => Text(
                     '${controller.counter.value} s',
                     style: const TextStyle(
                       fontSize: 14,
-                      color: Colors.grey,
+                      color: AppColors.grey,
                     ),
                   )),
               const SizedBox(height: 40),
@@ -137,8 +120,8 @@ class ResetPasswordOtpView extends GetView<ResetPasswordOtpController> {
                         : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: controller.otpCode.value.length == 6
-                          ? const Color(0xFF0B5E4F)
-                          : const Color(0xFFB0CEC8),
+                          ? AppColors.primaryGreen
+                          : AppColors.primaryGreen.withOpacity(0.4),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -146,12 +129,12 @@ class ResetPasswordOtpView extends GetView<ResetPasswordOtpController> {
                       minimumSize: const Size(double.infinity, 48),
                     ),
                     child: const Text(
-                      'Done',
+                      AppStrings.continueText,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: AppColors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        fontFamily: 'NextTrial',
+                        fontFamily: AppFonts.nextTrial,
                       ),
                     ),
                   )),

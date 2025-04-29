@@ -1,6 +1,9 @@
+import 'package:chartnalyze_apps/widget/CustomTextField.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chartnalyze_apps/widget/CustomTextField.dart';
+import 'package:chartnalyze_apps/app/constants/colors.dart';
+import 'package:chartnalyze_apps/app/constants/fonts.dart';
+import 'package:chartnalyze_apps/app/constants/strings.dart';
 import 'package:chartnalyze_apps/app/modules/Auth/forgot_password/controllers/change_password_controller.dart';
 
 class ChangePasswordView extends GetView<ChangePasswordController> {
@@ -9,17 +12,17 @@ class ChangePasswordView extends GetView<ChangePasswordController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leadingWidth: 50, // Mengatur lebar leading supaya chevron nempel
+        leadingWidth: 50,
         leading: IconButton(
-          padding: EdgeInsets.zero, // Hilangkan padding IconButton
+          padding: EdgeInsets.zero,
           icon: const Icon(
             Icons.chevron_left,
-            color: Colors.black,
-            size: 32, // Ukuran icon biar lebih pas
+            color: AppColors.primaryGreen,
+            size: 40,
           ),
           onPressed: () => Get.back(),
         ),
@@ -33,27 +36,28 @@ class ChangePasswordView extends GetView<ChangePasswordController> {
               children: [
                 const SizedBox(height: 16),
                 const Text(
-                  'Reset your password',
+                  AppStrings.resetPasswordTitle,
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    fontFamily: 'NextTrial',
+                    fontFamily: AppFonts.nextTrial,
+                    color: AppColors.black,
                   ),
                 ),
                 const SizedBox(height: 8),
                 const Text(
-                  'Enter the new password you want to use.',
+                  AppStrings.resetPasswordInstruction,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Color(0xFF0B5E4F),
-                    fontFamily: 'NextTrial',
+                    color: AppColors.primaryGreen,
+                    fontFamily: AppFonts.nextTrial,
                   ),
                 ),
                 const SizedBox(height: 32),
 
                 // New Password Field
                 Obx(() => CustomTextField(
-                      label: 'New Password',
+                      label: AppStrings.password,
                       controller: controller.newPasswordController,
                       obscureText: !controller.isNewPasswordVisible.value,
                       suffixIcon: IconButton(
@@ -71,7 +75,7 @@ class ChangePasswordView extends GetView<ChangePasswordController> {
 
                 // Confirm Password Field
                 Obx(() => CustomTextField(
-                      label: 'Confirm Password',
+                      label: AppStrings.confirmPassword,
                       controller: controller.confirmPasswordController,
                       obscureText: !controller.isConfirmPasswordVisible.value,
                       suffixIcon: IconButton(
@@ -93,7 +97,7 @@ class ChangePasswordView extends GetView<ChangePasswordController> {
                   child: ElevatedButton(
                     onPressed: controller.updatePassword,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF0B5E4F),
+                      backgroundColor: AppColors.primaryGreen,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -101,12 +105,12 @@ class ChangePasswordView extends GetView<ChangePasswordController> {
                       minimumSize: const Size(double.infinity, 48),
                     ),
                     child: const Text(
-                      'Update Password',
+                      AppStrings.updatePasswordButton,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: AppColors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        fontFamily: 'NextTrial',
+                        fontFamily: AppFonts.nextTrial,
                       ),
                     ),
                   ),

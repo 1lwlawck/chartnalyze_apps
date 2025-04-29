@@ -1,6 +1,7 @@
-import 'package:chartnalyze_apps/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:chartnalyze_apps/app/routes/app_pages.dart';
+import 'package:chartnalyze_apps/app/constants/strings.dart';
 
 class ChangePasswordController extends GetxController {
   final newPasswordController = TextEditingController();
@@ -10,28 +11,33 @@ class ChangePasswordController extends GetxController {
   final isConfirmPasswordVisible = false.obs;
 
   void toggleNewPasswordVisibility() {
-    isNewPasswordVisible.value = !isNewPasswordVisible.value;
+    isNewPasswordVisible.toggle();
   }
 
   void toggleConfirmPasswordVisibility() {
-    isConfirmPasswordVisible.value = !isConfirmPasswordVisible.value;
+    isConfirmPasswordVisible.toggle();
   }
 
   void updatePassword() {
     final newPassword = newPasswordController.text.trim();
     final confirmPassword = confirmPasswordController.text.trim();
 
-    if (newPassword != confirmPassword) {
-      Get.snackbar("Error", "Passwords do not match");
+    if (newPassword.isEmpty || confirmPassword.isEmpty) {
+      Get.snackbar(AppStrings.errorTitle, AppStrings.passwordEmpty);
       return;
     }
 
     if (newPassword.length < 6) {
-      Get.snackbar("Error", "Password must be at least 6 characters long");
+      Get.snackbar(AppStrings.errorTitle, AppStrings.passwordTooShort);
       return;
     }
 
-    // TODO: Integrasi ke API untuk update password
+    if (newPassword != confirmPassword) {
+      Get.snackbar(AppStrings.errorTitle, AppStrings.passwordsNotMatch);
+      return;
+    }
+
+    // TODO: API update password
 
     Get.snackbar("Success", "Password updated successfully");
     Get.offNamed(Routes.LOGIN);

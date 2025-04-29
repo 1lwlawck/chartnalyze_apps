@@ -7,6 +7,6 @@ class ThirdSplashController extends GetxController {
   }
 
   void navigateToLogin() {
-    Get.offNamed(Routes.LOGIN);
+    Get.toNamed(Routes.LOGIN);
   }
 }

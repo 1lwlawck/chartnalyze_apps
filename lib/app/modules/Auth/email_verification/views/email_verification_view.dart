@@ -1,151 +1,144 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/email_verification_controller.dart'; // Import the controller
+import 'package:chartnalyze_apps/app/constants/colors.dart';
+import 'package:chartnalyze_apps/app/constants/fonts.dart';
+import 'package:chartnalyze_apps/app/constants/strings.dart';
+import '../controllers/email_verification_controller.dart';
 
 class EmailVerificationView extends GetView<EmailVerificationController> {
-  final EmailVerificationController controller =
-      Get.put(EmailVerificationController()); // Initialize controller
+  const EmailVerificationView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final focusNodes = List.generate(6, (_) => FocusNode());
+    final textControllers = List.generate(6, (_) => TextEditingController());
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.white,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.chevron_left, color: Colors.black),
-          onPressed: () {
-            // Go back action
-          },
+          icon: const Icon(
+            Icons.chevron_left,
+            color: AppColors.primaryGreen,
+            size: 40,
+          ),
+          onPressed: () => Get.back(),
         ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center, // Center the items
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: 40),
-
-              // OTP Title
-              Text(
-                'We just sent an Email',
+              const SizedBox(height: 40),
+              const Text(
+                AppStrings.otpTitle,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  fontFamily: 'NextTrial', // Font "Next Trial"
+                  color: AppColors.black,
+                  fontFamily: AppFonts.nextTrial,
                 ),
               ),
-              SizedBox(height: 10),
-
-              // Instructions
-              Obx(() => Text(
-                    'Enter the OTP code we sent to ${controller.email.value}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                      fontFamily: 'NextTrial', // Font "Next Trial"
-                    ),
-                    textAlign: TextAlign.center,
-                  )),
-              SizedBox(height: 40),
-
-              // OTP Fields (6 TextFields)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(5, (index) {
-                  return Container(
-                    margin: EdgeInsets.symmetric(horizontal: 8),
-                    width: 50,
-                    height: 50,
-                    child: TextField(
-                      onChanged: (value) {
-                        if (value.length == 1) {
-                          controller.otpCode.value =
-                              controller.otpCode.value.substring(0, index) +
-                                  value +
-                                  controller.otpCode.value.substring(index + 1);
-                          if (index < 5) {
-                            FocusScope.of(context)
-                                .nextFocus(); // Move to the next field
-                          }
-                        }
-                      },
-                      keyboardType: TextInputType.number,
-                      maxLength: 1,
-                      textAlign: TextAlign.center,
-                      decoration: InputDecoration(
-                        counterText: "",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: Colors.grey.shade200,
+              const SizedBox(height: 10),
+              Text(
+                'Enter the OTP code sent to ${controller.email}',
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: AppColors.primaryGreen,
+                  fontFamily: AppFonts.circularStd,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 40),
+              SizedBox(
+                width: double.infinity,
+                child: Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 10,
+                  children: List.generate(6, (index) {
+                    return SizedBox(
+                      width: 48,
+                      height: 58,
+                      child: TextField(
+                        controller: textControllers[index],
+                        focusNode: focusNodes[index],
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.number,
+                        maxLength: 1,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        decoration: const InputDecoration(
+                          counterText: '',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                            borderSide: BorderSide(
+                                color: AppColors.primaryGreen, width: 1.5),
                           ),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.green.shade700),
-                        ),
+                        onChanged: (value) {
+                          if (value.isNotEmpty && index < 5) {
+                            focusNodes[index + 1].requestFocus();
+                          }
+                          _updateOtpCode(textControllers, controller);
+                        },
+                        onSubmitted: (_) =>
+                            _updateOtpCode(textControllers, controller),
+                        onEditingComplete: () =>
+                            _updateOtpCode(textControllers, controller),
                       ),
-                    ),
-                  );
-                }),
-              ),
-              SizedBox(height: 30),
-
-              // Resend OTP Text with Timer
-              GestureDetector(
-                onTap: controller.isResendEnabled.value
-                    ? () {
-                        // Handle OTP resend
-                        controller.resendOTP();
-                      }
-                    : null,
-                child: Text(
-                  'Didn’t get the code? Resend it',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: controller.isResendEnabled.value
-                        ? Colors.green
-                        : Colors.grey,
-                    fontFamily: 'NextTrial', // Font "Next Trial"
-                  ),
+                    );
+                  }),
                 ),
               ),
-              SizedBox(height: 10),
-
-              // Timer countdown
+              const SizedBox(height: 30),
+              GestureDetector(
+                onTap: controller.isResendEnabled.value
+                    ? controller.resendOTP
+                    : null,
+                child: Obx(() => Text(
+                      AppStrings.resendOtp,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: controller.isResendEnabled.value
+                            ? AppColors.primaryGreen
+                            : AppColors.grey,
+                        fontFamily: AppFonts.nextTrial,
+                      ),
+                    )),
+              ),
+              const SizedBox(height: 10),
               Obx(() => Text(
-                    '${controller.counter.value} s',
-                    style: TextStyle(
+                    '${controller.counter.value}s',
+                    style: const TextStyle(
                       fontSize: 14,
-                      color: Colors.grey,
+                      color: AppColors.grey,
                     ),
                   )),
-              SizedBox(height: 40),
-
-              // Done Button
+              const SizedBox(height: 40),
               ElevatedButton(
-                onPressed: () {
-                  controller.submitOTP();
-                },
+                onPressed: controller.submitOTP,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF0B5E4F), // Green background
-                  padding: EdgeInsets.symmetric(vertical: 12),
+                  backgroundColor: AppColors.primaryGreen,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  minimumSize: Size(double.infinity, 48), // Full width
+                  minimumSize: const Size(double.infinity, 48),
                 ),
-                child: Text(
+                child: const Text(
                   'Done',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    fontFamily: 'NextTrial', // Font "Next Trial"
+                    fontFamily: AppFonts.nextTrial,
                   ),
                 ),
               ),
@@ -154,5 +147,10 @@ class EmailVerificationView extends GetView<EmailVerificationController> {
         ),
       ),
     );
+  }
+
+  void _updateOtpCode(List<TextEditingController> controllers,
+      EmailVerificationController ctrl) {
+    ctrl.otpCode.value = controllers.map((c) => c.text).join();
   }
 }

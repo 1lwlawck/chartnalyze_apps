@@ -1,27 +1,31 @@
+import 'package:chartnalyze_apps/app/constants/images.dart';
+import 'package:chartnalyze_apps/widget/CustomButton.dart';
+import 'package:chartnalyze_apps/widget/CustomTextField.dart';
+import 'package:chartnalyze_apps/app/constants/colors.dart';
+import 'package:chartnalyze_apps/app/constants/fonts.dart';
+import 'package:chartnalyze_apps/app/constants/strings.dart';
+import '../controllers/register_controller.dart';
+import 'package:chartnalyze_apps/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chartnalyze_apps/widget/CustomTextField.dart';
-import 'package:chartnalyze_apps/app/routes/app_pages.dart';
-import '../controllers/register_controller.dart';
 
 class RegisterView extends GetView<RegisterController> {
+  const RegisterView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.chevron_left,
-            color: Color(0xFF0B5E4F),
+            color: AppColors.primaryGreen,
             size: 40,
           ),
-          onPressed: () {
-            Get.offNamed(Routes.THIRD_SPLASH);
-            Get.delete<RegisterController>();
-          },
+          onPressed: () => Get.back(),
         ),
       ),
       body: Padding(
@@ -30,113 +34,89 @@ class RegisterView extends GetView<RegisterController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 10),
-              Text(
-                'Register',
+              const SizedBox(height: 10),
+              const Text(
+                AppStrings.register,
                 style: TextStyle(
                   fontSize: 40,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  fontFamily: 'NextTrial',
+                  color: AppColors.black,
+                  fontFamily: AppFonts.nextTrial,
                 ),
               ),
-              Text(
-                'Create a new account to get started.',
+              const SizedBox(height: 10),
+              const Text(
+                AppStrings.createAccount,
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF0B5E4F),
-                  fontFamily: 'CircularStd',
+                  color: AppColors.primaryGreen,
+                  fontFamily: AppFonts.circularStd,
                 ),
               ),
-              SizedBox(height: 30),
-              // Username input field
+              const SizedBox(height: 30),
               CustomTextField(
                 controller: controller.usernameController,
-                label: 'Username',
+                label: AppStrings.username,
                 obscureText: false,
               ),
-              SizedBox(height: 20),
-              // Email input field
+              const SizedBox(height: 20),
               CustomTextField(
                 controller: controller.emailController,
-                label: 'Email',
+                label: AppStrings.email,
                 obscureText: false,
                 keyboardType: TextInputType.emailAddress,
               ),
-              SizedBox(height: 20),
-              // Password input field
-              Obx(
-                () => CustomTextField(
-                  controller: controller.passwordController,
-                  label: 'Password',
-                  obscureText: !controller.isPasswordVisible.value,
-                  suffixIcon: IconButton(
-                    icon: Image.asset(
-                      controller.isPasswordVisible.value
-                          ? 'assets/images/eye 1.png'
-                          : 'assets/images/eye-off 1.png',
-                      width: 24,
-                      height: 24,
+              const SizedBox(height: 20),
+              Obx(() => CustomTextField(
+                    controller: controller.passwordController,
+                    label: AppStrings.password,
+                    obscureText: !controller.isPasswordVisible.value,
+                    suffixIcon: IconButton(
+                      icon: Image.asset(
+                        controller.isPasswordVisible.value
+                            ? AppImages.eyeOpen
+                            : AppImages.eyeClosed,
+                        width: 24,
+                        height: 24,
+                      ),
+                      onPressed: controller.togglePasswordVisibility,
                     ),
-                    onPressed: controller.togglePasswordVisibility,
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              // Confirm Password input field
-              Obx(
-                () => CustomTextField(
-                  controller: controller.confirmPasswordController,
-                  label: 'Confirm Password',
-                  obscureText: !controller.isConfirmPasswordVisible.value,
-                  suffixIcon: IconButton(
-                    icon: Image.asset(
-                      controller.isConfirmPasswordVisible.value
-                          ? 'assets/images/eye 1.png'
-                          : 'assets/images/eye-off 1.png',
-                      width: 24,
-                      height: 24,
+                  )),
+              const SizedBox(height: 20),
+              Obx(() => CustomTextField(
+                    controller: controller.confirmPasswordController,
+                    label: AppStrings.confirmPassword,
+                    obscureText: !controller.isConfirmPasswordVisible.value,
+                    suffixIcon: IconButton(
+                      icon: Image.asset(
+                        controller.isConfirmPasswordVisible.value
+                            ? AppImages.eyeOpen
+                            : AppImages.eyeClosed,
+                        width: 24,
+                        height: 24,
+                      ),
+                      onPressed: controller.toggleConfirmPasswordVisibility,
                     ),
-                    onPressed: controller.toggleConfirmPasswordVisibility,
-                  ),
-                ),
-              ),
-              SizedBox(height: 40),
-              // Register button
-              ElevatedButton(
-                onPressed: controller.register,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF0B5E4F),
-                  padding: EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  minimumSize: Size(double.infinity, 48),
-                ),
-                child: Text(
-                  'Register',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'NextTrial',
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              // Already have an account text
-              TextButton(
-                onPressed: () {
-                  Get.toNamed(Routes.LOGIN);
-                },
-                child: Text(
-                  "Already have an account? Sign in here",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF0B5E4F),
-                    fontFamily: 'NextTrial',
+                  )),
+              const SizedBox(height: 40),
+              Obx(() => CustomButton(
+                    text: AppStrings.register,
+                    isLoading: controller.isLoading.value,
+                    onPressed: controller.register,
+                  )),
+              const SizedBox(height: 20),
+              Center(
+                child: TextButton(
+                  onPressed: () => Get.offNamed(Routes.LOGIN),
+                  child: const Text(
+                    AppStrings.alreadyHaveAccount,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primaryGreen,
+                      fontFamily: AppFonts.nextTrial,
+                    ),
                   ),
                 ),
               ),

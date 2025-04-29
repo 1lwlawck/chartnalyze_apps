@@ -1,19 +1,23 @@
-// lib/modules/success_verification/views/success_verification_view.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/email_verification_controller.dart';
+import 'package:chartnalyze_apps/app/constants/colors.dart';
+import 'package:chartnalyze_apps/app/constants/fonts.dart';
+import 'package:chartnalyze_apps/app/constants/strings.dart';
+import 'package:chartnalyze_apps/app/routes/app_pages.dart';
 
 class SuccessVerificationView extends StatelessWidget {
+  const SuccessVerificationView({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final ctrl = Get.find<EmailVerificationController>();
+    final email = (Get.arguments?['email'] ?? '') as String;
 
     return Scaffold(
-      backgroundColor: Color(0xFF0B5E4F),
+      backgroundColor: AppColors.primaryGreen,
       body: SafeArea(
         child: Center(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -23,45 +27,45 @@ class SuccessVerificationView extends StatelessWidget {
                   height: 200,
                   fit: BoxFit.contain,
                 ),
-                SizedBox(height: 40),
-                Text(
-                  'Email verified',
+                const SizedBox(height: 40),
+                const Text(
+                  AppStrings.emailVerifiedTitle,
                   style: TextStyle(
-                    fontFamily: 'NextTrial',
+                    fontFamily: AppFonts.nextTrial,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: AppColors.white,
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Text(
-                  'Your email address ${ctrl.email.value} has been verified\nand successfully registered',
+                  'Your email address $email has been verified and successfully registered',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: 'NextTrial',
+                  style: const TextStyle(
+                    fontFamily: AppFonts.circularStd,
                     fontSize: 16,
-                    color: Colors.white70,
+                    color: AppColors.white,
                   ),
                 ),
-                SizedBox(height: 40),
+                const SizedBox(height: 40),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      Get.offNamed('/login');
+                      Get.offAllNamed(Routes.LOGIN);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Color(0xFF0B5E4F),
-                      padding: EdgeInsets.symmetric(vertical: 16),
+                      backgroundColor: AppColors.white,
+                      foregroundColor: AppColors.primaryGreen,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: Text(
-                      'Continue',
+                    child: const Text(
+                      AppStrings.continueText,
                       style: TextStyle(
-                        fontFamily: 'NextTrial',
+                        fontFamily: AppFonts.nextTrial,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),

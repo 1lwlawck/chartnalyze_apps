@@ -1,29 +1,59 @@
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:chartnalyze_apps/app/services/AuthService.dart';
+import 'package:chartnalyze_apps/app/utils/validator.dart';
 import 'package:chartnalyze_apps/app/routes/app_pages.dart';
 
 class LoginController extends GetxController {
-  var isPasswordVisible = false.obs;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final isPasswordVisible = false.obs;
+  final isLoading = false.obs;
+
+  final AuthService authService = Get.find<AuthService>();
 
   void togglePasswordVisibility() {
     isPasswordVisible.value = !isPasswordVisible.value;
   }
 
-  void login() {
-    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
-      Get.snackbar(
-        "Error",
-        "Please enter both email and password.",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+  void login() async {
+    final emailError = Validator.validateEmail(emailController.text.trim());
+    final passwordError =
+        Validator.validatePassword(passwordController.text.trim());
+
+    if (emailError != null) {
+      Get.snackbar("Error", emailError,
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white);
       return;
     }
 
-    Get.toNamed(Routes.HOME);
+    if (passwordError != null) {
+      Get.snackbar("Error", passwordError,
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white);
+      return;
+    }
+
+    isLoading.value = true;
+
+    bool success = await authService.login(
+      email: emailController.text.trim(),
+      password: passwordController.text.trim(),
+    );
+
+    isLoading.value = false;
+
+    if (success) {
+      Get.offAllNamed(Routes.HOME);
+    } else {
+      Get.snackbar("Error", "Invalid email or password",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white);
+    }
   }
 
   @override
