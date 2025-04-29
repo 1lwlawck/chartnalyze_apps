@@ -17,7 +17,7 @@ class ForgotPasswordController extends GetxController {
       return;
     }
 
-    Get.toNamed(Routes.EMAIL_VERIFICATION);
+    Get.toNamed(Routes.OTP_RESET_PASSWORD, arguments: emailController.text);
   }
 
   @override

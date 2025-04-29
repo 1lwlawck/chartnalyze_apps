@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../controllers/reset_password_otp_controller.dart';
+import 'package:chartnalyze_apps/app/modules/Auth/forgot_password/controllers/reset_password_otp_controller.dart';
 
 class ResetPasswordOtpView extends GetView<ResetPasswordOtpController> {
-  final ResetPasswordOtpController controller =
-      Get.put(ResetPasswordOtpController());
+  const ResetPasswordOtpView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final ctrl = controller;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.chevron_left, color: Colors.black),
+          icon: const Icon(
+            Icons.chevron_left,
+            color: Colors.black,
+            size: 32,
+          ),
           onPressed: () => Get.back(),
         ),
       ),
@@ -24,10 +25,9 @@ class ResetPasswordOtpView extends GetView<ResetPasswordOtpController> {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 40),
-
-              // Judul
               const Text(
                 'We just sent an Email',
                 style: TextStyle(
@@ -38,105 +38,123 @@ class ResetPasswordOtpView extends GetView<ResetPasswordOtpController> {
                 ),
               ),
               const SizedBox(height: 10),
-
-              // Instruksi dengan email
               Obx(() => Text(
-                    'Enter the OTP code we sent to ${ctrl.email.value}',
-                    textAlign: TextAlign.center,
+                    'Enter the OTP code we sent to\n${controller.email.value}',
                     style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 14,
                       color: Colors.black,
                       fontFamily: 'NextTrial',
                     ),
+                    textAlign: TextAlign.center,
                   )),
               const SizedBox(height: 40),
-
-              // Row OTP (6 kotak)
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(6, (i) {
+                children: List.generate(6, (index) {
                   return Container(
                     margin: const EdgeInsets.symmetric(horizontal: 6),
-                    width: 50,
-                    height: 50,
-                    child: TextField(
-                      controller: ctrl.fields[i],
-                      focusNode: ctrl.focusNodes[i],
-                      keyboardType: TextInputType.number,
-                      textAlign: TextAlign.center,
-                      maxLength: 1,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                    width: 48,
+                    height: 58,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.green.shade700,
+                        width: 1.5,
                       ),
-                      decoration: InputDecoration(
-                        counterText: '',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.grey.shade200),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Center(
+                      child: TextField(
+                        controller: controller.otpControllers[index],
+                        focusNode: controller.focusNodes[index],
+                        keyboardType: TextInputType.number,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.green.shade700),
+                        maxLength: 1,
+                        decoration: const InputDecoration(
+                          counterText: "",
+                          border: InputBorder.none,
                         ),
+                        onChanged: (value) {
+                          if (value.isNotEmpty) {
+                            if (index < 5) {
+                              Future.delayed(const Duration(milliseconds: 50),
+                                  () {
+                                controller.focusNodes[index + 1].requestFocus();
+                              });
+                            }
+                          } else {
+                            if (index > 0) {
+                              Future.delayed(const Duration(milliseconds: 50),
+                                  () {
+                                controller.focusNodes[index - 1].requestFocus();
+                              });
+                            }
+                          }
+
+                          String code = '';
+                          for (var c in controller.otpControllers) {
+                            code += c.text;
+                          }
+                          controller.otpCode.value = code;
+                        },
                       ),
-                      onChanged: (val) {
-                        if (val.length == 1 && i < 5) {
-                          ctrl.focusNodes[i + 1].requestFocus();
-                        }
-                      },
                     ),
                   );
                 }),
               ),
               const SizedBox(height: 30),
-
-              // Resend OTP + timer
-              Obx(() => GestureDetector(
-                    onTap: ctrl.isResendEnabled.value ? ctrl.resendCode : null,
-                    child: Text(
-                      "Didn't get the code? Resend it",
+              GestureDetector(
+                onTap: controller.isResendEnabled.value
+                    ? () => controller.resendOTP()
+                    : null,
+                child: Obx(() => Text(
+                      'Didn’t get the code? Resend it',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: ctrl.isResendEnabled.value
-                            ? Colors.green.shade700
+                        color: controller.isResendEnabled.value
+                            ? Colors.green
                             : Colors.grey,
+                        fontFamily: 'NextTrial',
+                      ),
+                    )),
+              ),
+              const SizedBox(height: 10),
+              Obx(() => Text(
+                    '${controller.counter.value} s',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey,
+                    ),
+                  )),
+              const SizedBox(height: 40),
+              Obx(() => ElevatedButton(
+                    onPressed: controller.otpCode.value.length == 6
+                        ? controller.submitOTP
+                        : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: controller.otpCode.value.length == 6
+                          ? const Color(0xFF0B5E4F)
+                          : const Color(0xFFB0CEC8),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      minimumSize: const Size(double.infinity, 48),
+                    ),
+                    child: const Text(
+                      'Done',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                         fontFamily: 'NextTrial',
                       ),
                     ),
                   )),
-              const SizedBox(height: 8),
-              Obx(() => Text(
-                    '${ctrl.counter.value}s',
-                    style: const TextStyle(fontSize: 14, color: Colors.grey),
-                  )),
-              const SizedBox(height: 40),
-
-              // Tombol Done
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: ctrl.submit,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF0B5E4F),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text(
-                    'Done',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'NextTrial',
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
             ],
           ),
         ),

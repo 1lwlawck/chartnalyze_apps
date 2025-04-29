@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/email_verification_controller.dart'; // Import the controller
 
-class EmailVerificationView extends StatelessWidget {
+class EmailVerificationView extends GetView<EmailVerificationController> {
   final EmailVerificationController controller =
       Get.put(EmailVerificationController()); // Initialize controller
 

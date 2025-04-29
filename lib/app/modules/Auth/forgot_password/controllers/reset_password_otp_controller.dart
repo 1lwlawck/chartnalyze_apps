@@ -1,81 +1,65 @@
 import 'dart:async';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chartnalyze_apps/app/routes/app_pages.dart';
+import 'package:chartnalyze_apps/app/routes/app_pages.dart'; // Pastikan path ini benar
 
 class ResetPasswordOtpController extends GetxController {
-  /// Email yang akan ditampilkan (dinamis)
-  final email = 'denyfaishalardiuan@gmail.com'.obs;
-
-  final fields = List.generate(5, (_) => TextEditingController());
-
-  final focusNodes = List.generate(5, (_) => FocusNode());
-
-  var otp = RxList<String>.filled(5, '');
-
-  /// Timer resend
-  var counter = 45.obs;
+  var email = ''.obs;
+  var otpCode = ''.obs;
   var isResendEnabled = false.obs;
+  var counter = 60.obs;
+
+  final List<TextEditingController> otpControllers =
+      List.generate(6, (_) => TextEditingController());
+  final List<FocusNode> focusNodes = List.generate(6, (_) => FocusNode());
+
   Timer? _timer;
 
   @override
   void onInit() {
     super.onInit();
-    _startTimer();
-    for (var i = 0; i < 6; i++) {
-      fields[i].addListener(() => _onFieldChanged(i));
-    }
+    startTimer();
   }
 
-  void _onFieldChanged(int index) {
-    final text = fields[index].text;
-    if (text.length > 1) {
-      fields[index].text = text.substring(text.length - 1);
-    }
-    otp[index] = fields[index].text;
-    if (fields[index].text.isNotEmpty && index < 5) {
-      focusNodes[index + 1].requestFocus();
-    }
-    if (fields[index].text.isEmpty && index > 0) {
-      focusNodes[index - 1].requestFocus();
-    }
-  }
-
-  void _startTimer() {
-    counter.value = 45;
+  void startTimer() {
+    counter.value = 60;
     isResendEnabled.value = false;
+
     _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 1), (t) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (counter.value > 0) {
         counter.value--;
       } else {
         isResendEnabled.value = true;
-        t.cancel();
+        _timer?.cancel();
       }
     });
   }
 
-  void resendCode() {
-    if (!isResendEnabled.value) return;
-    // panggil API resend
-    _startTimer();
+  void resendOTP() {
+    startTimer();
+    Get.snackbar('Success', 'OTP has been resent');
   }
 
-  void submit() {
-    final code = otp.join();
-    if (code.length == 6) {
-      // panggil API untuk verifikasi OTP
-      Get.offNamed(Routes.SUCCESS_VERIFICATION);
-    } else {
-      Get.snackbar('Error', 'Invalid OTP code');
+  void submitOTP() {
+    if (otpCode.value.length != 6) {
+      Get.snackbar('Error', 'Please enter all 6 digits');
+      return;
     }
 
-    @override
-    void onClose() {
-      _timer?.cancel();
-      for (var c in fields) c.dispose();
-      for (var f in focusNodes) f.dispose();
-      super.onClose();
+    Get.snackbar('Success', 'OTP verified successfully');
+    Get.toNamed(Routes.CHANGE_PASSWORD);
+  }
+
+  @override
+  void onClose() {
+    _timer?.cancel();
+    for (var controller in otpControllers) {
+      controller.dispose();
     }
+    for (var node in focusNodes) {
+      node.dispose();
+    }
+    super.onClose();
   }
 }

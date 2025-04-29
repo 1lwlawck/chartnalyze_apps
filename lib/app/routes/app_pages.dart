@@ -1,5 +1,7 @@
 import 'package:chartnalyze_apps/app/modules/Auth/email_verification/views/success_verification_email.dart';
+import 'package:chartnalyze_apps/app/modules/Auth/forgot_password/bindings/change_password_binding.dart';
 import 'package:chartnalyze_apps/app/modules/Auth/forgot_password/bindings/forgot_password_binding.dart';
+import 'package:chartnalyze_apps/app/modules/Auth/forgot_password/views/change_password_view.dart';
 import 'package:chartnalyze_apps/app/modules/Auth/forgot_password/views/forgot_password_view.dart';
 import 'package:get/get.dart';
 
@@ -83,6 +85,11 @@ class AppPages {
       name: Routes.OTP_RESET_PASSWORD,
       page: () => ResetPasswordOtpView(),
       binding: ResetPasswordOtpBinding(),
+    ),
+    GetPage(
+      name: Routes.CHANGE_PASSWORD,
+      page: () => ChangePasswordView(),
+      binding: ChangePasswordBinding(),
     ),
   ];
 }
