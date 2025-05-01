@@ -7,4 +7,5 @@ class AppColors {
   static const Color errorRed = Colors.red;
   static const Color backgroundColor = Color(0xFFF5F5F5);
   static const Color grey = Colors.grey;
+  static const Color inactiveDot = Color(0xFFD9E6E1);
 }

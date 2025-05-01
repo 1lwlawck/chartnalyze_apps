@@ -53,7 +53,7 @@ flutter:
   assets:
     #   - images/a_dot_burr.jpeg
     #   - images/a_dot_ham.jpeg
-    - assets/images/dollars_coin.png
+    - assets/images/first_splash.png
     - assets/images/second_splash.png
     - assets/images/third_splash.png
     - assets/images/verified_image.png

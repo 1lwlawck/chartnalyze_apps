@@ -29,7 +29,7 @@ class SecondSplashView extends StatelessWidget {
               Image.asset(
                 'assets/images/second_splash.png',
                 width: 400,
-                height: 350,
+                height: 400,
               ),
             ],
           ),
@@ -39,7 +39,7 @@ class SecondSplashView extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Color(0xFF0B5E4F),
-              fontSize: 20,
+              fontSize: 25,
               fontWeight: FontWeight.w600,
               fontFamily: 'NextTrial',
             ),
@@ -50,7 +50,7 @@ class SecondSplashView extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.black,
-              fontSize: 23,
+              fontSize: 20,
               fontWeight: FontWeight.w800,
               fontFamily: 'NextTrial',
             ),

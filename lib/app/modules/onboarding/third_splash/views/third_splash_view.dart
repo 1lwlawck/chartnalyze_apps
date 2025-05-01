@@ -32,8 +32,8 @@ class ThirdSplashView extends StatelessWidget {
             children: [
               Image.asset(
                 'assets/images/third_splash.png',
-                width: 300,
-                height: 350,
+                width: 400,
+                height: 400,
               ),
             ],
           ),
@@ -45,7 +45,7 @@ class ThirdSplashView extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Color(0xFF0B5E4F),
-              fontSize: 20,
+              fontSize: 25,
               fontWeight: FontWeight.w600,
               fontFamily: 'NextTrial',
             ),
@@ -56,7 +56,7 @@ class ThirdSplashView extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.black,
-              fontSize: 23,
+              fontSize: 20,
               fontWeight: FontWeight.w600,
               fontFamily: 'NextTrial',
             ),

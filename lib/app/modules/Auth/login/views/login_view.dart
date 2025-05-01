@@ -64,7 +64,7 @@ class LoginView extends GetView<LoginController> {
               Obx(
                 () => CustomTextField(
                   controller: controller.passwordController,
-                  label: 'Password',
+                  label: AppStrings.password,
                   obscureText: !controller.isPasswordVisible.value,
                   suffixIcon: IconButton(
                     icon: Image.asset(
@@ -78,7 +78,23 @@ class LoginView extends GetView<LoginController> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () => Get.toNamed(Routes.FORGOT_PASSWORD),
+                  child: const Text(
+                    AppStrings.forgotPassword,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primaryGreen,
+                      fontFamily: AppFonts.nextTrial,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
               Obx(
                 () => CustomButton(
                   text: AppStrings.signIn,
@@ -86,29 +102,17 @@ class LoginView extends GetView<LoginController> {
                   onPressed: controller.login,
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextButton(
-                    onPressed: () => Get.toNamed(Routes.FORGOT_PASSWORD),
-                    child: const Text(
-                      AppStrings.forgotPassword,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                        fontFamily: AppFonts.nextTrial,
-                      ),
-                    ),
-                  ),
                   const Text(
-                    "or",
+                    AppStrings.dontHaveAccount,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
-                      fontFamily: AppFonts.nextTrial,
+                      fontFamily: AppFonts.circularStd,
                     ),
                   ),
                   TextButton(
@@ -125,6 +129,7 @@ class LoginView extends GetView<LoginController> {
                   ),
                 ],
               ),
+              const SizedBox(height: 20),
             ],
           ),
         ),

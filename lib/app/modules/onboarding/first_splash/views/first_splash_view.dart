@@ -1,98 +1,46 @@
+import 'package:chartnalyze_apps/app/constants/fonts.dart';
+import 'package:chartnalyze_apps/app/constants/images.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../constants/colors.dart';
 import '../controllers/first_splash_controller.dart';
+import '../widgets/splash_pagination_dots.dart';
+import '../widgets/splash_text_section.dart';
 
-class FirstSplashView extends StatelessWidget {
+class FirstSplashView extends GetView<FirstSplashController> {
+  const FirstSplashView({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final ctrl = Get.find<FirstSplashController>();
-
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.white,
       body: Column(
         children: [
-          SizedBox(height: 60),
-          // Pagination dots
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 20,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: Color(0xFF0B5E4F),
-                  borderRadius: BorderRadius.circular(3),
-                ),
-              ),
-              SizedBox(width: 8),
-              Container(
-                width: 20,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: Color(0xFFD9E6E1),
-                  borderRadius: BorderRadius.circular(3),
-                ),
-              ),
-              SizedBox(width: 8),
-              Container(
-                width: 20,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: Color(0xFFD9E6E1),
-                  borderRadius: BorderRadius.circular(3),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 100),
-
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              Image.asset(
-                'assets/images/dollars_coin.png',
-                width: 400,
-                height: 350,
-              ),
-            ],
-          ),
-          SizedBox(height: 70),
-
-          // Teks konten
-          Text(
-            'Smart insights, better decisions',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Color(0xFF0B5E4F),
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              fontFamily: 'NextTrial',
+          const SizedBox(height: 60),
+          const SplashPaginationDots(),
+          const SizedBox(height: 100),
+          Center(
+            child: Image.asset(
+              AppImages.firstSplash,
+              width: 400,
+              height: 400,
             ),
           ),
-          SizedBox(height: 10),
-          Text(
-            'Get real-time analysis and trends\nto stay ahead in the market.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 23,
-              fontWeight: FontWeight.w800,
-              fontFamily: 'NextTrial',
-            ),
-          ),
-          Spacer(),
+          const SizedBox(height: 70),
+          const SplashTextSection(),
+          const Spacer(),
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: TextButton(
-              onPressed: ctrl.nextPage,
-              child: Text(
+              onPressed: controller.nextPage,
+              child: const Text(
                 'Next Page',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF0B5E4F),
+                  color: AppColors.primaryGreen,
                   decoration: TextDecoration.underline,
-                  fontFamily: 'NextTrial',
+                  fontFamily: AppFonts.nextTrial,
                 ),
               ),
             ),

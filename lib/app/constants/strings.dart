@@ -2,14 +2,15 @@ class AppStrings {
   // Login
   static const String signIn = 'Sign in';
   static const String welcomeBack = 'Welcome back! Please sign in to continue.';
-  static const String forgotPassword = 'Forgot Password?';
+  static const String forgotPassword = 'Reset Password';
+  static const String dontHaveAccount = 'Don’t have an account? ';
   static const String registerHere = 'Register Here';
 
   // Register
   static const String register = 'Register';
   static const String createAccount = 'Create a new account to get started.';
-  static const String alreadyHaveAccount =
-      'Already have an account? Sign in here';
+  static const String alreadyHaveAccount = 'Already have an account ? ';
+  static const String signInHere = 'Sign in here';
 
   // General
   static const String username = 'Username';

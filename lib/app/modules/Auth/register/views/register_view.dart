@@ -109,13 +109,24 @@ class RegisterView extends GetView<RegisterController> {
               Center(
                 child: TextButton(
                   onPressed: () => Get.offNamed(Routes.LOGIN),
-                  child: const Text(
-                    AppStrings.alreadyHaveAccount,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primaryGreen,
-                      fontFamily: AppFonts.nextTrial,
+                  child: RichText(
+                    text: const TextSpan(
+                      text: AppStrings.alreadyHaveAccount,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontFamily: AppFonts.nextTrial,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.black,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: AppStrings.signInHere,
+                          style: TextStyle(
+                            color: AppColors.primaryGreen,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

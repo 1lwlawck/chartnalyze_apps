@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:chartnalyze_apps/app/routes/app_pages.dart';
-import 'package:chartnalyze_apps/app/services/AuthService.dart'; // Import AuthService
+import 'package:chartnalyze_apps/app/services/AuthService.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
