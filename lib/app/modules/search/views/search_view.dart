@@ -1,0 +1,23 @@
+import 'package:chartnalyze_apps/app/modules/search/controllers/search_controller.dart';
+import 'package:flutter/material.dart';
+
+import 'package:get/get.dart';
+
+class SearchView extends GetView<SearchControllers> {
+  const SearchView({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('SearchView'),
+        centerTitle: true,
+      ),
+      body: const Center(
+        child: Text(
+          'SearchView is working',
+          style: TextStyle(fontSize: 20),
+        ),
+      ),
+    );
+  }
+}

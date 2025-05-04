@@ -1,26 +1,36 @@
-import 'package:chartnalyze_apps/app/modules/Auth/email_verification/views/success_verification_email.dart';
-import 'package:chartnalyze_apps/app/modules/Auth/forgot_password/bindings/change_password_binding.dart';
-import 'package:chartnalyze_apps/app/modules/Auth/forgot_password/bindings/forgot_password_binding.dart';
-import 'package:chartnalyze_apps/app/modules/Auth/forgot_password/views/change_password_view.dart';
-import 'package:chartnalyze_apps/app/modules/Auth/forgot_password/views/forgot_password_view.dart';
 import 'package:get/get.dart';
 
 import '../modules/Auth/email_verification/bindings/email_verification_binding.dart';
 import '../modules/Auth/email_verification/views/email_verification_view.dart';
-import '../modules/Onboarding/first_splash/bindings/first_splash_binding.dart';
-import '../modules/Onboarding/first_splash/views/first_splash_view.dart';
-import '../modules/home/bindings/home_binding.dart';
-import '../modules/home/views/home_view.dart';
+import '../modules/Auth/email_verification/views/success_verification_email.dart';
+import '../modules/Auth/forgot_password/bindings/change_password_binding.dart';
+import '../modules/Auth/forgot_password/bindings/forgot_password_binding.dart';
+import '../modules/Auth/forgot_password/bindings/reset_password_otp_binding.dart';
+import '../modules/Auth/forgot_password/views/change_password_view.dart';
+import '../modules/Auth/forgot_password/views/forgot_password_view.dart';
+import '../modules/Auth/forgot_password/views/reset_password_otp_view.dart';
 import '../modules/Auth/login/bindings/login_binding.dart';
 import '../modules/Auth/login/views/login_view.dart';
 import '../modules/Auth/register/bindings/register_binding.dart';
 import '../modules/Auth/register/views/register_view.dart';
-import '../modules/Onboarding/second_splash/bindings/second_splash_binding.dart';
-import '../modules/Onboarding/second_splash/views/second_splash_view.dart';
-import '../modules/Onboarding/third_splash/bindings/third_splash_binding.dart';
-import '../modules/Onboarding/third_splash/views/third_splash_view.dart';
-import 'package:chartnalyze_apps/app/modules/Auth/forgot_password/bindings/reset_password_otp_binding.dart';
-import '../modules/Auth/forgot_password/views/reset_password_otp_view.dart';
+import '../modules/onboarding/first_splash/bindings/first_splash_binding.dart';
+import '../modules/onboarding/first_splash/views/first_splash_view.dart';
+import '../modules/onboarding/second_splash/bindings/second_splash_binding.dart';
+import '../modules/onboarding/second_splash/views/second_splash_view.dart';
+import '../modules/onboarding/third_splash/bindings/third_splash_binding.dart';
+import '../modules/onboarding/third_splash/views/third_splash_view.dart';
+import '../modules/community/bindings/community_binding.dart';
+import '../modules/community/views/community_view.dart';
+import '../modules/main_wrapper/bindings/main_wrapper_binding.dart';
+import '../modules/main_wrapper/views/main_wrapper_view.dart';
+import '../modules/markets/bindings/markets_binding.dart';
+import '../modules/markets/views/markets_view.dart';
+import '../modules/news/bindings/news_binding.dart';
+import '../modules/news/views/news_view.dart';
+import '../modules/profile/bindings/profile_binding.dart';
+import '../modules/profile/views/profile_view.dart';
+import '../modules/search/bindings/search_binding.dart';
+import '../modules/search/views/search_view.dart';
 
 part 'app_routes.dart';
 
@@ -30,11 +40,6 @@ class AppPages {
   static const INITIAL = Routes.FIRST_SPLASH;
 
   static final routes = [
-    GetPage(
-      name: _Paths.HOME,
-      page: () => const HomeView(),
-      binding: HomeBinding(),
-    ),
     GetPage(
       name: _Paths.FIRST_SPLASH,
       page: () => FirstSplashView(),
@@ -90,6 +95,36 @@ class AppPages {
       name: Routes.CHANGE_PASSWORD,
       page: () => ChangePasswordView(),
       binding: ChangePasswordBinding(),
+    ),
+    GetPage(
+      name: _Paths.MARKETS,
+      page: () => MarketsView(),
+      binding: MarketsBinding(),
+    ),
+    GetPage(
+      name: _Paths.NEWS,
+      page: () => NewsView(),
+      binding: NewsBinding(),
+    ),
+    GetPage(
+      name: _Paths.SEARCH,
+      page: () => SearchView(),
+      binding: SearchBinding(),
+    ),
+    GetPage(
+      name: _Paths.COMMUNITY,
+      page: () => CommunityView(),
+      binding: CommunityBinding(),
+    ),
+    GetPage(
+      name: _Paths.PROFILE,
+      page: () => ProfileView(),
+      binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: _Paths.MAIN_WRAPPER,
+      page: () => MainWrapperView(),
+      binding: MainWrapperBinding(),
     ),
   ];
 }

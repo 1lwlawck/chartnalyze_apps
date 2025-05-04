@@ -13,6 +13,12 @@ abstract class Routes {
   static const FORGOT_PASSWORD = _Paths.FORGOT_PASSWORD;
   static const OTP_RESET_PASSWORD = _Paths.OTP_RESET_PASSWORD;
   static const CHANGE_PASSWORD = _Paths.CHANGE_PASSWORD;
+  static const MARKETS = _Paths.MARKETS;
+  static const NEWS = _Paths.NEWS;
+  static const SEARCH = _Paths.SEARCH;
+  static const COMMUNITY = _Paths.COMMUNITY;
+  static const PROFILE = _Paths.PROFILE;
+  static const MAIN_WRAPPER = _Paths.MAIN_WRAPPER;
 }
 
 abstract class _Paths {
@@ -28,4 +34,10 @@ abstract class _Paths {
   static const FORGOT_PASSWORD = '/forgot-password';
   static const OTP_RESET_PASSWORD = '/otp-reset-password';
   static const CHANGE_PASSWORD = '/change-password';
+  static const MARKETS = '/markets';
+  static const NEWS = '/news';
+  static const SEARCH = '/search';
+  static const COMMUNITY = '/community';
+  static const PROFILE = '/profile';
+  static const MAIN_WRAPPER = '/main-wrapper';
 }

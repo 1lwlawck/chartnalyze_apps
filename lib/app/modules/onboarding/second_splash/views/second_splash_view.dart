@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import '../controllers/second_splash_controller.dart';
 
 class SecondSplashView extends StatelessWidget {
+  const SecondSplashView({super.key});
+
   @override
   Widget build(BuildContext context) {
     final ctrl = Get.find<SecondSplashController>();

@@ -47,7 +47,7 @@ class LoginController extends GetxController {
     isLoading.value = false;
 
     if (success) {
-      Get.offAllNamed(Routes.HOME);
+      Get.offAllNamed(Routes.MAIN_WRAPPER);
     } else {
       Get.snackbar("Error", "Invalid email or password",
           snackPosition: SnackPosition.BOTTOM,

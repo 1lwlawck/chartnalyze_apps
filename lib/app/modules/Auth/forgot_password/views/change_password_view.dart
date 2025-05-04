@@ -1,4 +1,4 @@
-import 'package:chartnalyze_apps/widget/CustomTextField.dart';
+import 'package:chartnalyze_apps/widget/text_field/CustomTextField.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:chartnalyze_apps/app/constants/colors.dart';

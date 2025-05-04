@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import '../controllers/third_splash_controller.dart';
 
 class ThirdSplashView extends StatelessWidget {
+  const ThirdSplashView({super.key});
+
   @override
   Widget build(BuildContext context) {
     final ctrl = Get.find<ThirdSplashController>();
@@ -72,6 +74,13 @@ class ThirdSplashView extends StatelessWidget {
                 // Register Button
                 ElevatedButton(
                   onPressed: ctrl.navigateToRegister,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF0B5E4F),
+                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
                   child: Text(
                     'Register',
                     style: TextStyle(
@@ -80,32 +89,25 @@ class ThirdSplashView extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF0B5E4F),
-                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
                 ),
                 SizedBox(width: 20), // Space between buttons
 
                 // Sign In Button
                 ElevatedButton(
                   onPressed: ctrl.navigateToLogin,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF0B5E4F),
+                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
                   child: Text(
                     'Sign in',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF0B5E4F),
-                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                 ),

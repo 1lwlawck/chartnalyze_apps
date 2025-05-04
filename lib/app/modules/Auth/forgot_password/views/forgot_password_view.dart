@@ -1,14 +1,14 @@
 import 'package:chartnalyze_apps/app/constants/strings.dart';
 import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/constants/fonts.dart';
-import 'package:chartnalyze_apps/widget/CustomTextField.dart';
+import 'package:chartnalyze_apps/widget/text_field/CustomTextField.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:chartnalyze_apps/app/modules/Auth/forgot_password/controllers/forgot_password_controller.dart';
 
 class ForgotPasswordView extends GetView<ForgotPasswordController> {
-  const ForgotPasswordView({Key? key}) : super(key: key);
+  const ForgotPasswordView({super.key});
 
   @override
   Widget build(BuildContext context) {

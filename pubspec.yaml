@@ -28,12 +28,17 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  chart_sparkline: ^1.1.1
   cupertino_icons: ^1.0.8
   flutter:
     sdk: flutter
   flutter_screenutil: ^5.9.3
   font_awesome_flutter: ^10.8.0
   get: ^4.7.2
+  http: ^1.3.0
+  intl: ^0.20.2
+  metadata_fetch: ^0.4.2
+  sparkline: ^1.0.0
 
 dev_dependencies:
   flutter_lints: ^5.0.0

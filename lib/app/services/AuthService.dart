@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 class AuthService extends GetxService {
   Future<bool> login({required String email, required String password}) async {
     try {
-      // Simulasi API call
       await Future.delayed(const Duration(seconds: 2));
 
       if (email == "admin@test.com" && password == "123456") {
