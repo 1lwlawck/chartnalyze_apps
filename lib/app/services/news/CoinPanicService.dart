@@ -1,13 +1,14 @@
-// lib/app/services/coin_panic_service.dart
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:chartnalyze_apps/app/constants/api_constants.dart';
 
 class CoinPanicService {
-  final String _apiKey = '740d524ea774623286008b92dc14679ff253c3a9';
-
   Future<List<dynamic>> fetchTrendingNews() async {
     final url = Uri.parse(
-        'https://cryptopanic.com/api/v1/posts/?auth_token=$_apiKey&filter=trending');
+      '${CryptoPanicConstants.cryptopanicAPI}${CryptoPanicConstants.trendingEndpoint}'
+      '?auth_token=${CryptoPanicConstants.apiKey}&filter=trending',
+    );
+
     final response = await http.get(url);
 
     if (response.statusCode == 200) {

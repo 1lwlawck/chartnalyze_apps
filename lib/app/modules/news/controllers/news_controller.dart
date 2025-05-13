@@ -1,5 +1,5 @@
-import 'package:chartnalyze_apps/app/services/NewsMetaService.dart';
-import 'package:chartnalyze_apps/app/services/CoinPanicService.dart';
+import 'package:chartnalyze_apps/app/services/news/NewsMetaService.dart';
+import 'package:chartnalyze_apps/app/services/news/CoinPanicService.dart';
 import 'package:get/get.dart';
 
 class NewsController extends GetxController {
@@ -24,14 +24,13 @@ class NewsController extends GetxController {
       final fetched = await _newsService.fetchTrendingNews();
 
       // Tambahkan thumbnail dari metadata
-      final enriched = await Future.wait(fetched.map((item) async {
-        final url = item['url'];
-        final thumb = await _metaService.getThumbnail(url);
-        return {
-          ...item,
-          'thumbnail': thumb,
-        };
-      }));
+      final enriched = await Future.wait(
+        fetched.map((item) async {
+          final url = item['url'];
+          final thumb = await _metaService.getThumbnail(url);
+          return {...item, 'thumbnail': thumb};
+        }),
+      );
 
       newsList.assignAll(enriched);
     } catch (e) {

@@ -1,5 +1,5 @@
 import 'package:chartnalyze_apps/app/constants/strings.dart';
-import 'package:chartnalyze_apps/app/services/AuthService.dart';
+import 'package:chartnalyze_apps/app/services/auth/AuthService.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

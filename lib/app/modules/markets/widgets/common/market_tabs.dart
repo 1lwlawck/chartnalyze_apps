@@ -1,7 +1,7 @@
 import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/markets_controller.dart';
+import '../../controllers/markets_controller.dart';
 
 class MarketTabs extends StatelessWidget {
   const MarketTabs({super.key});

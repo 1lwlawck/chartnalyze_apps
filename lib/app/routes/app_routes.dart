@@ -14,6 +14,7 @@ abstract class Routes {
   static const OTP_RESET_PASSWORD = _Paths.OTP_RESET_PASSWORD;
   static const CHANGE_PASSWORD = _Paths.CHANGE_PASSWORD;
   static const MARKETS = _Paths.MARKETS;
+  static const MARKETS_DETAIL = _Paths.MARKETS_DETAIL;
   static const NEWS = _Paths.NEWS;
   static const SEARCH = _Paths.SEARCH;
   static const COMMUNITY = _Paths.COMMUNITY;
@@ -35,6 +36,7 @@ abstract class _Paths {
   static const OTP_RESET_PASSWORD = '/otp-reset-password';
   static const CHANGE_PASSWORD = '/change-password';
   static const MARKETS = '/markets';
+  static const MARKETS_DETAIL = '/markets-detail';
   static const NEWS = '/news';
   static const SEARCH = '/search';
   static const COMMUNITY = '/community';

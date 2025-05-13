@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chartnalyze_apps/app/services/AuthService.dart';
+import 'package:chartnalyze_apps/app/services/auth/AuthService.dart';
 import 'package:chartnalyze_apps/app/utils/validator.dart';
 import 'package:chartnalyze_apps/app/routes/app_pages.dart';
 
@@ -18,22 +18,29 @@ class LoginController extends GetxController {
 
   void login() async {
     final emailError = Validator.validateEmail(emailController.text.trim());
-    final passwordError =
-        Validator.validatePassword(passwordController.text.trim());
+    final passwordError = Validator.validatePassword(
+      passwordController.text.trim(),
+    );
 
     if (emailError != null) {
-      Get.snackbar("Error", emailError,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white);
+      Get.snackbar(
+        "Error",
+        emailError,
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
       return;
     }
 
     if (passwordError != null) {
-      Get.snackbar("Error", passwordError,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white);
+      Get.snackbar(
+        "Error",
+        passwordError,
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
       return;
     }
 
@@ -49,10 +56,13 @@ class LoginController extends GetxController {
     if (success) {
       Get.offAllNamed(Routes.MAIN_WRAPPER);
     } else {
-      Get.snackbar("Error", "Invalid email or password",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white);
+      Get.snackbar(
+        "Error",
+        "Invalid email or password",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
 

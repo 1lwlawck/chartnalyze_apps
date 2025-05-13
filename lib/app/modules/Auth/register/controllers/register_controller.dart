@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:chartnalyze_apps/app/services/AuthService.dart';
+import 'package:chartnalyze_apps/app/services/auth/AuthService.dart';
 import 'package:chartnalyze_apps/app/utils/validator.dart';
 import 'package:chartnalyze_apps/app/routes/app_pages.dart';
 
@@ -33,18 +33,22 @@ class RegisterController extends GetxController {
     final usernameError = Validator.validateUsername(username);
     final emailError = Validator.validateEmail(email);
     final passwordError = Validator.validatePassword(password);
-    final confirmPasswordError =
-        Validator.validateConfirmPassword(password, confirmPassword);
+    final confirmPasswordError = Validator.validateConfirmPassword(
+      password,
+      confirmPassword,
+    );
 
     if (usernameError != null ||
         emailError != null ||
         passwordError != null ||
         confirmPasswordError != null) {
-      Get.snackbar('Error',
-          usernameError ?? emailError ?? passwordError ?? confirmPasswordError!,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white);
+      Get.snackbar(
+        'Error',
+        usernameError ?? emailError ?? passwordError ?? confirmPasswordError!,
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
       return;
     }
 
@@ -63,16 +67,22 @@ class RegisterController extends GetxController {
           arguments: {'email': emailController.text.trim()},
         );
       } else {
-        Get.snackbar('Error', 'Registration failed, username already taken.',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.red,
-            colorText: Colors.white);
-      }
-    } catch (e) {
-      Get.snackbar('Error', 'Something went wrong',
+        Get.snackbar(
+          'Error',
+          'Registration failed, username already taken.',
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
-          colorText: Colors.white);
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Something went wrong',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     } finally {
       isLoading.value = false;
     }

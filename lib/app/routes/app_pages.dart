@@ -101,11 +101,7 @@ class AppPages {
       page: () => MarketsView(),
       binding: MarketsBinding(),
     ),
-    GetPage(
-      name: _Paths.NEWS,
-      page: () => NewsView(),
-      binding: NewsBinding(),
-    ),
+    GetPage(name: _Paths.NEWS, page: () => NewsView(), binding: NewsBinding()),
     GetPage(
       name: _Paths.SEARCH,
       page: () => SearchView(),

@@ -1,3 +1,4 @@
+import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatelessWidget {
@@ -33,7 +34,7 @@ class CustomTextField extends StatelessWidget {
           fontFamily: 'CircularStd',
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.green.shade700),
+          borderSide: BorderSide(color: AppColors.primaryGreen),
           borderRadius: BorderRadius.circular(8),
         ),
         enabledBorder: OutlineInputBorder(

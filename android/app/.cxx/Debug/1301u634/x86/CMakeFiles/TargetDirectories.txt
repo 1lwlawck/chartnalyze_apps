@@ -1,0 +1,2 @@
+D:/FLUTTER/chartnalyze-apps/android/app/.cxx/Debug/1301u634/x86/CMakeFiles/edit_cache.dir
+D:/FLUTTER/chartnalyze-apps/android/app/.cxx/Debug/1301u634/x86/CMakeFiles/rebuild_cache.dir
