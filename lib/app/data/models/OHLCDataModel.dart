@@ -1,36 +1,28 @@
-class CandleData {
-  /// Waktu candlestick (biasanya timestamp dari API)
+class OHLCDataModel {
   final DateTime time;
-
-  /// Harga buka
   final double open;
-
-  /// Harga tertinggi
   final double high;
-
-  /// Harga terendah
   final double low;
-
-  /// Harga tutup
   final double close;
+  final double volume;
 
-  CandleData({
+  OHLCDataModel({
     required this.time,
     required this.open,
     required this.high,
     required this.low,
     required this.close,
+    required this.volume,
   });
 
-  /// Factory constructor untuk membuat dari list API OHLC:
-  /// [0] = timestamp (ms), [1] = open, [2] = high, [3] = low, [4] = close
-  factory CandleData.fromList(List<dynamic> entry) {
-    return CandleData(
+  factory OHLCDataModel.fromList(List<dynamic> entry) {
+    return OHLCDataModel(
       time: DateTime.fromMillisecondsSinceEpoch(entry[0] as int),
       open: (entry[1] as num).toDouble(),
       high: (entry[2] as num).toDouble(),
       low: (entry[3] as num).toDouble(),
       close: (entry[4] as num).toDouble(),
+      volume: entry.length > 5 ? (entry[5] as num).toDouble() : 0.0,
     );
   }
 }

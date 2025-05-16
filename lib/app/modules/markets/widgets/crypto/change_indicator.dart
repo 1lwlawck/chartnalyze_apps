@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class ChangeIndicator extends StatelessWidget {
   final double value;
-  const ChangeIndicator({Key? key, required this.value}) : super(key: key);
+  const ChangeIndicator({super.key, required this.value});
 
   @override
   Widget build(BuildContext context) {

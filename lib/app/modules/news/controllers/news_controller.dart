@@ -1,5 +1,5 @@
-import 'package:chartnalyze_apps/app/services/news/NewsMetaService.dart';
-import 'package:chartnalyze_apps/app/services/news/CoinPanicService.dart';
+import 'package:chartnalyze_apps/app/data/services/news/NewsMetaService.dart';
+import 'package:chartnalyze_apps/app/data/services/news/CoinPanicService.dart';
 import 'package:get/get.dart';
 
 class NewsController extends GetxController {

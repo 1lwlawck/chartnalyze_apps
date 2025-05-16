@@ -1,15 +1,33 @@
-// lib/app/modules/markets/controllers/markets_controller.dart
-
-import 'dart:convert';
-import 'package:chartnalyze_apps/app/data/models/CoinModel.dart';
+import 'package:chartnalyze_apps/app/data/models/CoinDetailModel.dart';
+import 'package:chartnalyze_apps/app/data/models/CoinListModel.dart';
+import 'package:chartnalyze_apps/app/data/models/OHLCDataModel.dart';
+import 'package:chartnalyze_apps/app/data/services/crypto/CoinService.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-import 'package:chartnalyze_apps/app/services/crypto/CoinService.dart';
-import 'package:chartnalyze_apps/app/data/models/CandleDataModel.dart';
 
 class MarketsController extends GetxController {
-  int selectedTabIndex = 0;
+  final CoinService _coinService = CoinService();
+
   var isLoading = true.obs;
+  var coins = <CoinListModel>[].obs;
+
+  var page = 1;
+  final perPage = 25;
+
+  var isFetchingMore = false.obs;
+  var hasMoreData = true.obs;
+
+  int selectedTabIndex = 0;
+
+  var coinDetail = Rxn<CoinDetailModel>();
+  var isLoadingDetail = false.obs;
+
+  var ohlcData = <OHLCDataModel>[].obs;
+  var isLoadingOhlc = false.obs;
+
+  final RxBool isChartLoading = false.obs;
+  final RxDouble usdToIdrRate = 16500.0.obs; // Default, replaced via API
+
+  final RxString selectedInterval = '1 day'.obs;
 
   final List<String> tabLabels = [
     'Coins',
@@ -19,59 +37,101 @@ class MarketsController extends GetxController {
     'Exchanges',
   ];
 
+  final Map<String, int> intervalDaysMap = {
+    '1 day': 1,
+    '1 week': 7,
+    '1 month': 30,
+  };
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchUsdToIdrRate();
+    fetchCoinListData(isInitial: true);
+
+    debounce<String>(selectedInterval, (val) async {
+      isChartLoading.value = true;
+      final id = coinDetail.value?.id;
+      if (id != null) await loadOhlcData(id);
+      isChartLoading.value = false;
+    }, time: const Duration(milliseconds: 300));
+  }
+
   void changeTab(int index) {
     selectedTabIndex = index;
     update();
   }
 
-  final CoinService _coinService = CoinService();
-  List<CoinModel> coins = [];
-
-  @override
-  void onInit() {
-    super.onInit();
-    fetchCoinData();
-  }
-
-  Future<void> fetchCoinData() async {
+  Future<void> fetchUsdToIdrRate() async {
     try {
-      isLoading.value = true;
-      final fetched = await _coinService.fetchCoins();
-      coins = fetched;
+      final rate = await _coinService.fetchUsdToIdrRate();
+      usdToIdrRate.value = rate;
     } catch (e) {
-      print('Error fetching coins: $e');
-    } finally {
-      isLoading.value = false;
-      update();
+      print('❌ Failed to fetch USD to IDR rate: $e');
     }
   }
 
-  /// Fetch OHLC data from CoinGecko for the given asset id (e.g. 'bitcoin').
-  /// Returns a list of CandleData for the past [days] days.
-  Future<List<CandleData>> fetchOHLC({
-    required String id,
-    int days = 7,
-    String vsCurrency = 'usd',
-  }) async {
-    final uri = Uri.https('api.coingecko.com', '/api/v3/coins/$id/ohlc', {
-      'vs_currency': vsCurrency,
-      'days': days.toString(),
-    });
-
-    final res = await http.get(uri);
-    if (res.statusCode != 200) {
-      throw Exception('Failed to load OHLC data (${res.statusCode})');
+  Future<void> fetchCoinListData({bool isInitial = false}) async {
+    if (isInitial) {
+      isLoading.value = true;
+      coins.clear();
+      page = 1;
+      hasMoreData.value = true;
     }
 
-    final List<dynamic> raw = json.decode(res.body);
-    return raw.map((entry) {
-      return CandleData(
-        time: DateTime.fromMillisecondsSinceEpoch(entry[0] as int),
-        open: (entry[1] as num).toDouble(),
-        high: (entry[2] as num).toDouble(),
-        low: (entry[3] as num).toDouble(),
-        close: (entry[4] as num).toDouble(),
+    if (!hasMoreData.value || isFetchingMore.value) return;
+
+    try {
+      isFetchingMore.value = true;
+      final result = await _coinService.fetchCoinListData(
+        vsCurrency: 'usd',
+        page: page,
+        perPage: perPage,
       );
-    }).toList();
+      if (result.isEmpty) {
+        hasMoreData.value = false;
+      } else {
+        coins.addAll(result);
+        coins.sort((a, b) => a.rank.compareTo(b.rank));
+        page++;
+      }
+    } catch (e) {
+      print('❌ Error fetching coins: $e');
+    } finally {
+      isFetchingMore.value = false;
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> fetchCoinDetail(String id) async {
+    try {
+      isLoadingDetail.value = true;
+      ohlcData.clear();
+      final result = await _coinService.fetchCoinDetail(id);
+      coinDetail.value = result;
+      await loadOhlcData(result.id);
+    } catch (e) {
+      print('❌ Failed to fetch coin detail: $e');
+    } finally {
+      isLoadingDetail.value = false;
+    }
+  }
+
+  Future<void> loadOhlcData(String coinId) async {
+    isLoadingOhlc.value = true;
+    try {
+      final days = intervalDaysMap[selectedInterval.value] ?? 1;
+      final result = await _coinService.fetchOhlcData(
+        coinId: coinId,
+        vsCurrency: 'usd',
+        days: days,
+      );
+      ohlcData.value = result;
+    } catch (e) {
+      print('❌ Failed to fetch OHLC data: $e');
+      ohlcData.clear();
+    } finally {
+      isLoadingOhlc.value = false;
+    }
   }
 }

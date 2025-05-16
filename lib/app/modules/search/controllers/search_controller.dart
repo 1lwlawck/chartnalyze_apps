@@ -1,6 +1,6 @@
-import 'package:chartnalyze_apps/app/data/models/CoinModel.dart';
+import 'package:chartnalyze_apps/app/data/models/CoinListModel.dart';
 import 'package:get/get.dart';
-import 'package:chartnalyze_apps/app/services/crypto/CoinService.dart';
+import 'package:chartnalyze_apps/app/data/services/crypto/CoinService.dart';
 
 import 'package:flutter/material.dart';
 
@@ -8,8 +8,9 @@ class SearchControllers extends GetxController {
   final CoinService _coinService = CoinService();
 
   var isLoading = true.obs;
-  var assets = <CoinModel>[].obs;
-  var filteredAssets = <CoinModel>[].obs;
+  var assets = <CoinListModel>[].obs;
+  var filteredAssets = <CoinListModel>[].obs;
+  var recentAssets = <CoinListModel>[].obs;
   var recentSearches = <String>[].obs;
 
   final searchController = TextEditingController();
@@ -26,7 +27,7 @@ class SearchControllers extends GetxController {
   void fetchAssets() async {
     try {
       isLoading.value = true;
-      final result = await _coinService.fetchCoins();
+      final result = await _coinService.fetchCoinListData(); // pakai list model
       print("Fetched: ${result.length} assets");
       assets.assignAll(result);
       filteredAssets.assignAll(result);
@@ -46,9 +47,17 @@ class SearchControllers extends GetxController {
         assets.where(
           (item) =>
               item.symbol.toLowerCase().contains(lower) ||
-              item.id.toLowerCase().contains(lower),
+              item.name.toLowerCase().contains(lower),
         ),
       );
+    }
+  }
+
+  void addToRecentAsset(CoinListModel asset) {
+    recentAssets.removeWhere((c) => c.id == asset.id);
+    recentAssets.insert(0, asset);
+    if (recentAssets.length > 10) {
+      recentAssets.removeLast();
     }
   }
 

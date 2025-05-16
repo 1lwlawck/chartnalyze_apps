@@ -38,14 +38,14 @@ class MarketsView extends GetView<MarketsController> {
                     case 3:
                       return const Center(child: Text('Exchanges'));
                     case 4:
-                      return const MarketStocksList(); // Tambahkan ini
+                      return const MarketStocksList();
                     default:
                       return const SizedBox.shrink();
                   }
                 },
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 0),
           ],
         ),
       ),

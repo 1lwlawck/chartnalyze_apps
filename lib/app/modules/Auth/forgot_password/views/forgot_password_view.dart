@@ -1,7 +1,7 @@
 import 'package:chartnalyze_apps/app/constants/strings.dart';
 import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/constants/fonts.dart';
-import 'package:chartnalyze_apps/widget/text_field/CustomTextField.dart';
+import 'package:chartnalyze_apps/widgets/text_field/CustomTextField.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,8 +18,11 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.chevron_left,
-              color: AppColors.primaryGreen, size: 40),
+          icon: const Icon(
+            Icons.chevron_left,
+            color: AppColors.primaryGreen,
+            size: 40,
+          ),
           onPressed: () => Get.back(),
         ),
       ),

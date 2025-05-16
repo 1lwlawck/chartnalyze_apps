@@ -1,3 +1,4 @@
+import 'package:chartnalyze_apps/app/modules/markets/views/markets_detail_view.dart';
 import 'package:get/get.dart';
 
 import '../modules/Auth/email_verification/bindings/email_verification_binding.dart';
@@ -37,7 +38,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.FIRST_SPLASH;
+  static const INITIAL = Routes.LOGIN;
 
   static final routes = [
     GetPage(
@@ -99,6 +100,11 @@ class AppPages {
     GetPage(
       name: _Paths.MARKETS,
       page: () => MarketsView(),
+      binding: MarketsBinding(),
+    ),
+    GetPage(
+      name: _Paths.MARKETS_DETAIL,
+      page: () => MarketDetailView(),
       binding: MarketsBinding(),
     ),
     GetPage(name: _Paths.NEWS, page: () => NewsView(), binding: NewsBinding()),

@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:chartnalyze_apps/app/services/auth/AuthService.dart';
+import 'package:chartnalyze_apps/app/data/services/auth/AuthService.dart';
 import 'package:chartnalyze_apps/app/utils/validator.dart';
 import 'package:chartnalyze_apps/app/routes/app_pages.dart';
 

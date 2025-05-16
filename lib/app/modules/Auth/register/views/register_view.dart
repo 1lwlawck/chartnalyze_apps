@@ -1,6 +1,6 @@
 import 'package:chartnalyze_apps/app/constants/images.dart';
-import 'package:chartnalyze_apps/widget/button/CustomButton.dart';
-import 'package:chartnalyze_apps/widget/text_field/CustomTextField.dart';
+import 'package:chartnalyze_apps/widgets/button/CustomButton.dart';
+import 'package:chartnalyze_apps/widgets/text_field/CustomTextField.dart';
 import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/constants/fonts.dart';
 import 'package:chartnalyze_apps/app/constants/strings.dart';
@@ -68,43 +68,49 @@ class RegisterView extends GetView<RegisterController> {
                 keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 20),
-              Obx(() => CustomTextField(
-                    controller: controller.passwordController,
-                    label: AppStrings.password,
-                    obscureText: !controller.isPasswordVisible.value,
-                    suffixIcon: IconButton(
-                      icon: Image.asset(
-                        controller.isPasswordVisible.value
-                            ? AppImages.eyeOpen
-                            : AppImages.eyeClosed,
-                        width: 24,
-                        height: 24,
-                      ),
-                      onPressed: controller.togglePasswordVisibility,
+              Obx(
+                () => CustomTextField(
+                  controller: controller.passwordController,
+                  label: AppStrings.password,
+                  obscureText: !controller.isPasswordVisible.value,
+                  suffixIcon: IconButton(
+                    icon: Image.asset(
+                      controller.isPasswordVisible.value
+                          ? AppImages.eyeOpen
+                          : AppImages.eyeClosed,
+                      width: 24,
+                      height: 24,
                     ),
-                  )),
+                    onPressed: controller.togglePasswordVisibility,
+                  ),
+                ),
+              ),
               const SizedBox(height: 20),
-              Obx(() => CustomTextField(
-                    controller: controller.confirmPasswordController,
-                    label: AppStrings.confirmPassword,
-                    obscureText: !controller.isConfirmPasswordVisible.value,
-                    suffixIcon: IconButton(
-                      icon: Image.asset(
-                        controller.isConfirmPasswordVisible.value
-                            ? AppImages.eyeOpen
-                            : AppImages.eyeClosed,
-                        width: 24,
-                        height: 24,
-                      ),
-                      onPressed: controller.toggleConfirmPasswordVisibility,
+              Obx(
+                () => CustomTextField(
+                  controller: controller.confirmPasswordController,
+                  label: AppStrings.confirmPassword,
+                  obscureText: !controller.isConfirmPasswordVisible.value,
+                  suffixIcon: IconButton(
+                    icon: Image.asset(
+                      controller.isConfirmPasswordVisible.value
+                          ? AppImages.eyeOpen
+                          : AppImages.eyeClosed,
+                      width: 24,
+                      height: 24,
                     ),
-                  )),
+                    onPressed: controller.toggleConfirmPasswordVisibility,
+                  ),
+                ),
+              ),
               const SizedBox(height: 40),
-              Obx(() => CustomButton(
-                    text: AppStrings.register,
-                    isLoading: controller.isLoading.value,
-                    onPressed: controller.register,
-                  )),
+              Obx(
+                () => CustomButton(
+                  text: AppStrings.register,
+                  isLoading: controller.isLoading.value,
+                  onPressed: controller.register,
+                ),
+              ),
               const SizedBox(height: 20),
               Center(
                 child: TextButton(

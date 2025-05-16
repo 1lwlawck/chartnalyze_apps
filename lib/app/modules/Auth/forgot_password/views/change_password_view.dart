@@ -1,4 +1,4 @@
-import 'package:chartnalyze_apps/widget/text_field/CustomTextField.dart';
+import 'package:chartnalyze_apps/widgets/text_field/CustomTextField.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:chartnalyze_apps/app/constants/colors.dart';
@@ -56,39 +56,43 @@ class ChangePasswordView extends GetView<ChangePasswordController> {
                 const SizedBox(height: 32),
 
                 // New Password Field
-                Obx(() => CustomTextField(
-                      label: AppStrings.password,
-                      controller: controller.newPasswordController,
-                      obscureText: !controller.isNewPasswordVisible.value,
-                      suffixIcon: IconButton(
-                        icon: Image.asset(
-                          controller.isNewPasswordVisible.value
-                              ? 'assets/images/eye 1.png'
-                              : 'assets/images/eye-off 1.png',
-                          width: 20,
-                          height: 20,
-                        ),
-                        onPressed: controller.toggleNewPasswordVisibility,
+                Obx(
+                  () => CustomTextField(
+                    label: AppStrings.password,
+                    controller: controller.newPasswordController,
+                    obscureText: !controller.isNewPasswordVisible.value,
+                    suffixIcon: IconButton(
+                      icon: Image.asset(
+                        controller.isNewPasswordVisible.value
+                            ? 'assets/images/eye 1.png'
+                            : 'assets/images/eye-off 1.png',
+                        width: 20,
+                        height: 20,
                       ),
-                    )),
+                      onPressed: controller.toggleNewPasswordVisibility,
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 16),
 
                 // Confirm Password Field
-                Obx(() => CustomTextField(
-                      label: AppStrings.confirmPassword,
-                      controller: controller.confirmPasswordController,
-                      obscureText: !controller.isConfirmPasswordVisible.value,
-                      suffixIcon: IconButton(
-                        icon: Image.asset(
-                          controller.isConfirmPasswordVisible.value
-                              ? 'assets/images/eye 1.png'
-                              : 'assets/images/eye-off 1.png',
-                          width: 20,
-                          height: 20,
-                        ),
-                        onPressed: controller.toggleConfirmPasswordVisibility,
+                Obx(
+                  () => CustomTextField(
+                    label: AppStrings.confirmPassword,
+                    controller: controller.confirmPasswordController,
+                    obscureText: !controller.isConfirmPasswordVisible.value,
+                    suffixIcon: IconButton(
+                      icon: Image.asset(
+                        controller.isConfirmPasswordVisible.value
+                            ? 'assets/images/eye 1.png'
+                            : 'assets/images/eye-off 1.png',
+                        width: 20,
+                        height: 20,
                       ),
-                    )),
+                      onPressed: controller.toggleConfirmPasswordVisibility,
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 24),
 
                 // Update Button

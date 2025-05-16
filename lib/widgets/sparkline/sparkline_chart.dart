@@ -13,12 +13,12 @@ class SparklineWidget extends StatelessWidget {
   final double width;
 
   const SparklineWidget({
-    Key? key,
+    super.key,
     required this.data,
     required this.positive,
     this.height = 18,
     this.width = 60,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,4 @@
-import 'package:chartnalyze_apps/widget/navigation_bar/custom_bottom_nav_bar.dart';
+import 'package:chartnalyze_apps/widgets/navigation_bar/custom_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../community/views/community_view.dart';
@@ -22,13 +22,14 @@ class MainWrapperView extends GetView<MainWrapperController> {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<MainWrapperController>(
-      builder: (_) => Scaffold(
-        body: pages[controller.currentIndex],
-        bottomNavigationBar: CustomBottomNavBar(
-          currentIndex: controller.currentIndex,
-          onTap: controller.changeTab,
-        ),
-      ),
+      builder:
+          (_) => Scaffold(
+            body: pages[controller.currentIndex],
+            bottomNavigationBar: CustomBottomNavBar(
+              currentIndex: controller.currentIndex,
+              onTap: controller.changeTab,
+            ),
+          ),
     );
   }
 }

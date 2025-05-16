@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:chartnalyze_apps/app/constants/colors.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -23,21 +24,20 @@ class CustomButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primaryGreen,
           padding: const EdgeInsets.symmetric(vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
-        child: isLoading
-            ? const CircularProgressIndicator(color: Colors.white)
-            : Text(
-                text,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'NextTrial',
+        child:
+            isLoading
+                ? const SpinKitWave(color: Colors.white, size: 20)
+                : Text(
+                  text,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'NextTrial',
+                  ),
                 ),
-              ),
       ),
     );
   }

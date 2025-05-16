@@ -1,8 +1,8 @@
 import 'package:chartnalyze_apps/app/constants/images.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chartnalyze_apps/widget/text_field/CustomTextField.dart';
-import 'package:chartnalyze_apps/widget/button/CustomButton.dart';
+import 'package:chartnalyze_apps/widgets/text_field/CustomTextField.dart';
+import 'package:chartnalyze_apps/widgets/button/CustomButton.dart';
 import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/constants/fonts.dart';
 import 'package:chartnalyze_apps/app/constants/strings.dart';
