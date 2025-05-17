@@ -20,6 +20,7 @@ abstract class Routes {
   static const COMMUNITY = _Paths.COMMUNITY;
   static const PROFILE = _Paths.PROFILE;
   static const MAIN_WRAPPER = _Paths.MAIN_WRAPPER;
+  static const ONBOARDING = _Paths.ONBOARDING;
 }
 
 abstract class _Paths {
@@ -42,4 +43,5 @@ abstract class _Paths {
   static const COMMUNITY = '/community';
   static const PROFILE = '/profile';
   static const MAIN_WRAPPER = '/main-wrapper';
+  static const ONBOARDING = '/onboarding';
 }

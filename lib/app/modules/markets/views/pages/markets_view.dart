@@ -1,14 +1,14 @@
 import 'package:chartnalyze_apps/app/constants/colors.dart';
-import 'package:chartnalyze_apps/app/modules/markets/widgets/stocks/market_stocks_list.dart';
-import 'package:chartnalyze_apps/app/modules/markets/widgets/common/market_table_header.dart';
+import 'package:chartnalyze_apps/app/modules/markets/views/widgets/stocks/stocks_list.dart';
+import 'package:chartnalyze_apps/app/modules/markets/views/widgets/common/table_header.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/markets_controller.dart';
-import '../widgets/crypto/list/market_coin_list.dart';
-import '../widgets/common/market_filter_bar.dart';
-import '../widgets/common/market_header.dart';
-import '../widgets/statistics/market_stats.dart';
-import '../widgets/common/market_tabs.dart';
+import '../../controllers/markets_controller.dart';
+import '../widgets/crypto/list/coin_list.dart';
+import '../widgets/common/filter_bar.dart';
+import '../widgets/common/header.dart';
+import '../widgets/statistics/stats.dart';
+import '../widgets/common/tabs.dart';
 
 class MarketsView extends GetView<MarketsController> {
   const MarketsView({super.key});

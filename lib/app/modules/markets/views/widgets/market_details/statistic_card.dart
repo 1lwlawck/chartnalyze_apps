@@ -70,7 +70,7 @@ class MarketStatisticCard extends StatelessWidget {
                     _Stat('24h Volume', usdFormat.format(coin.totalVolume)),
                     _Stat(
                       'Max Supply',
-                      _short(coin.totalSupply ?? 0, '${coin.symbol}'),
+                      _short(coin.totalSupply ?? 0, coin.symbol),
                     ),
                     _Stat('All-time High', usdFormat.format(coin.high24h)),
                     _Stat('All-time Low', usdFormat.format(coin.low24h)),
@@ -88,11 +88,11 @@ class MarketStatisticCard extends StatelessWidget {
                   items: [
                     _Stat(
                       'Circulating Supply',
-                      _short(coin.circulatingSupply ?? 0, '${coin.symbol}'),
+                      _short(coin.circulatingSupply ?? 0, coin.symbol),
                     ),
                     _Stat(
                       'Total Supply',
-                      _short(coin.totalSupply ?? 0, '${coin.symbol}'),
+                      _short(coin.totalSupply ?? 0, coin.symbol),
                     ),
                     _Stat('Rank', '#${coin.rank}'),
                     _Stat('Market Dominance', '61.37%'),

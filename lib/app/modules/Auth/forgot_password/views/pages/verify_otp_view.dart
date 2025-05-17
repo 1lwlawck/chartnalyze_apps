@@ -1,11 +1,11 @@
+import 'package:chartnalyze_apps/app/modules/Auth/forgot_password/controllers/forgot_password_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/constants/fonts.dart';
 import 'package:chartnalyze_apps/app/constants/strings.dart';
-import 'package:chartnalyze_apps/app/modules/Auth/forgot_password/controllers/reset_password_otp_controller.dart';
 
-class ResetPasswordOtpView extends GetView<ResetPasswordOtpController> {
+class ResetPasswordOtpView extends GetView<ForgotPasswordController> {
   const ResetPasswordOtpView({super.key});
 
   @override
@@ -41,15 +41,17 @@ class ResetPasswordOtpView extends GetView<ResetPasswordOtpController> {
                 ),
               ),
               const SizedBox(height: 10),
-              Obx(() => Text(
-                    'Enter the OTP code we sent to\n${controller.email.value}',
-                    style: const TextStyle(
-                      fontSize: 15,
-                      color: AppColors.primaryGreen,
-                      fontFamily: AppFonts.circularStd,
-                    ),
-                    textAlign: TextAlign.center,
-                  )),
+              Obx(
+                () => Text(
+                  'Enter the OTP code we sent to\n${controller.email.value}',
+                  style: const TextStyle(
+                    fontSize: 15,
+                    color: AppColors.primaryGreen,
+                    fontFamily: AppFonts.circularStd,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
               const SizedBox(height: 40),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -89,55 +91,62 @@ class ResetPasswordOtpView extends GetView<ResetPasswordOtpController> {
                 }),
               ),
               const SizedBox(height: 30),
-              Obx(() => GestureDetector(
-                    onTap: controller.isResendEnabled.value
-                        ? controller.resendOTP
-                        : null,
-                    child: Text(
-                      AppStrings.resendOtp,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: controller.isResendEnabled.value
-                            ? AppColors.primaryGreen
-                            : AppColors.grey,
-                        fontFamily: AppFonts.nextTrial,
-                      ),
-                    ),
-                  )),
-              const SizedBox(height: 10),
-              Obx(() => Text(
-                    '${controller.counter.value} s',
-                    style: const TextStyle(
+              Obx(
+                () => GestureDetector(
+                  onTap:
+                      controller.isResendEnabled.value
+                          ? controller.resendOTP
+                          : null,
+                  child: Text(
+                    AppStrings.resendOtp,
+                    style: TextStyle(
                       fontSize: 14,
-                      color: AppColors.grey,
+                      fontWeight: FontWeight.bold,
+                      color:
+                          controller.isResendEnabled.value
+                              ? AppColors.primaryGreen
+                              : AppColors.grey,
+                      fontFamily: AppFonts.nextTrial,
                     ),
-                  )),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Obx(
+                () => Text(
+                  '${controller.counter.value} s',
+                  style: const TextStyle(fontSize: 14, color: AppColors.grey),
+                ),
+              ),
               const SizedBox(height: 40),
-              Obx(() => ElevatedButton(
-                    onPressed: controller.otpCode.value.length == 6
-                        ? controller.submitOTP
-                        : null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: controller.otpCode.value.length == 6
-                          ? AppColors.primaryGreen
-                          : AppColors.primaryGreen.withOpacity(0.4),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      minimumSize: const Size(double.infinity, 48),
+              Obx(
+                () => ElevatedButton(
+                  onPressed:
+                      controller.otpCode.value.length == 6
+                          ? controller.submitOTP
+                          : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        controller.otpCode.value.length == 6
+                            ? AppColors.primaryGreen
+                            : AppColors.primaryGreen.withOpacity(0.4),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Text(
-                      AppStrings.continueText,
-                      style: TextStyle(
-                        color: AppColors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: AppFonts.nextTrial,
-                      ),
+                    minimumSize: const Size(double.infinity, 48),
+                  ),
+                  child: const Text(
+                    AppStrings.continueText,
+                    style: TextStyle(
+                      color: AppColors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: AppFonts.nextTrial,
                     ),
-                  )),
+                  ),
+                ),
+              ),
             ],
           ),
         ),

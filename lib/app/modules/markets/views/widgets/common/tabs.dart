@@ -1,7 +1,7 @@
 import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/markets_controller.dart';
+import '../../../controllers/markets_controller.dart';
 
 class MarketTabs extends StatelessWidget {
   const MarketTabs({super.key});
@@ -39,9 +39,10 @@ class MarketTabs extends StatelessWidget {
                       Container(
                         height: 2,
                         width: 20,
-                        color: isSelected
-                            ? AppColors.primaryGreen
-                            : Colors.transparent,
+                        color:
+                            isSelected
+                                ? AppColors.primaryGreen
+                                : Colors.transparent,
                       ),
                     ],
                   ),

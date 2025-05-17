@@ -4,4 +4,5 @@ class AppImages {
 
   static const String firstSplash = 'assets/images/first_splash.png';
   static const String secondSplash = 'assets/images/second_splash.png';
+  static const String thirdSplash = 'assets/images/third_splash.png';
 }

@@ -33,7 +33,11 @@ class MarketPriceHeader extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    coin.name,
+                    coin.name.length > 20
+                        ? '${coin.name.substring(0, 20)}…'
+                        : coin.name,
+                    overflow: TextOverflow.ellipsis, // ⬅️ Tambahkan ini
+                    maxLines: 1,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 15,

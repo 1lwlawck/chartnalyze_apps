@@ -29,6 +29,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   cached_network_image: ^3.4.1
+  characters: ^1.4.0
   chart_sparkline: ^1.1.1
   cupertino_icons: ^1.0.8
   flutter:
@@ -40,6 +41,7 @@ dependencies:
   get: ^4.7.2
   http: ^1.3.0
   intl: ^0.20.2
+  introduction_screen: ^3.1.17
   metadata_fetch: ^0.4.2
   shimmer: ^3.0.0
   sparkline: ^1.0.0

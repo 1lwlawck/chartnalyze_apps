@@ -2,7 +2,7 @@ import 'package:chartnalyze_apps/widgets/navigation_bar/custom_bottom_nav_bar.da
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../community/views/community_view.dart';
-import '../../markets/views/markets_view.dart';
+import '../../markets/views/pages/markets_view.dart';
 import '../../news/views/news_view.dart';
 import '../../profile/views/profile_view.dart';
 import '../../search/views/search_view.dart';

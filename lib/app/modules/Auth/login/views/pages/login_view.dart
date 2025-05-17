@@ -6,7 +6,7 @@ import 'package:chartnalyze_apps/widgets/button/CustomButton.dart';
 import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/constants/fonts.dart';
 import 'package:chartnalyze_apps/app/constants/strings.dart';
-import '../controllers/login_controller.dart';
+import '../../controllers/login_controller.dart';
 import 'package:chartnalyze_apps/app/routes/app_pages.dart';
 
 class LoginView extends GetView<LoginController> {
