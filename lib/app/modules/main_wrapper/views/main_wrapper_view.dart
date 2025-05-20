@@ -11,7 +11,7 @@ import '../../search/views/search_view.dart';
 import '../controllers/main_wrapper_controller.dart';
 
 class MainWrapperView extends StatefulWidget {
-  MainWrapperView({super.key});
+  const MainWrapperView({super.key});
 
   static final List<Widget> pages = [
     MarketsView(),

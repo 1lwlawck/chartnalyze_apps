@@ -1,6 +1,8 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class CoinGeckoConstants {
   static const String baseUrl = 'https://api.coingecko.com/api/v3';
-  static const String apiKey = 'CG-AejYWkdQoDFRRQouj2xuZQ1S';
+  static final String? apiKey = dotenv.env['COINGECKO_API_KEY'];
 
   static const String marketEndpoint = '/coins/markets';
   static const String detailEndpoint = '/coins';
@@ -81,7 +83,7 @@ class CoinGeckoConstants {
 // for CryptoPanic news
 class CryptoPanicConstants {
   static const String baseUrl = 'https://cryptopanic.com/api/v1';
-  static const String apiKey = '740d524ea774623286008b92dc14679ff253c3a9';
+  static final String? apiKey = dotenv.env['CRYPTOPANIC_API_KEY'];
 
   static const String postsEndpoint = '/posts/';
   static const String portfolioEndpoint = '/portfolio/';
@@ -99,7 +101,7 @@ class CryptoPanicConstants {
     int page = 1,
   }) {
     final params = <String, String>{
-      'auth_token': apiKey,
+      'auth_token': apiKey ?? '',
       'public': public.toString(),
       'approved': approved.toString(),
       'page': page.toString(),
@@ -122,7 +124,10 @@ class CryptoPanicConstants {
 
   /// RSS Format URL (optional)
   static Uri rssFeedUrl({String? currencies, String? filter}) {
-    final params = <String, String>{'auth_token': apiKey, 'format': 'rss'};
+    final params = <String, String>{
+      'auth_token': apiKey ?? '',
+      'format': 'rss',
+    };
 
     if (currencies != null) params['currencies'] = currencies;
     if (filter != null) params['filter'] = filter;

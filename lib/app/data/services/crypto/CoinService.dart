@@ -17,7 +17,7 @@ Future<http.Response> safeGet(Uri url, {int retries = 3}) async {
         headers: {
           'accept': 'application/json',
           'User-Agent': 'ChartnalyzeApp/1.0 (Flutter)',
-          'x-cg-demo-api-key': CoinGeckoConstants.apiKey,
+          'x-cg-demo-api-key': CoinGeckoConstants.apiKey ?? '',
         },
       );
       return response;
