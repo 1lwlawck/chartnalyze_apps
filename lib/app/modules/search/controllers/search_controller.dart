@@ -1,59 +1,53 @@
-import 'package:chartnalyze_apps/app/data/models/CoinListModel.dart';
+import 'dart:async';
+import 'package:chartnalyze_apps/app/data/models/SearchCoinModel.dart';
 import 'package:get/get.dart';
 import 'package:chartnalyze_apps/app/data/services/crypto/CoinService.dart';
-
 import 'package:flutter/material.dart';
 
 class SearchControllers extends GetxController {
   final CoinService _coinService = CoinService();
 
-  var isLoading = true.obs;
-  var assets = <CoinListModel>[].obs;
-  var filteredAssets = <CoinListModel>[].obs;
-  var recentAssets = <CoinListModel>[].obs;
+  var isLoading = false.obs;
+  var searchResults = <SearchCoinModel>[].obs;
+  var recentAssets = <SearchCoinModel>[].obs;
   var recentSearches = <String>[].obs;
 
   final searchController = TextEditingController();
+  Timer? _debounce;
 
   @override
   void onInit() {
     super.onInit();
-    fetchAssets();
-    searchController.addListener(() {
-      filterAssets(searchController.text);
+    searchController.addListener(_onSearchChanged);
+  }
+
+  void _onSearchChanged() {
+    final query = searchController.text.trim();
+
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 400), () {
+      if (query.isEmpty) {
+        searchResults.clear();
+      } else {
+        searchCoins(query);
+      }
     });
   }
 
-  void fetchAssets() async {
+  Future<void> searchCoins(String query) async {
     try {
-      isLoading.value = true;
-      final result = await _coinService.fetchCoinListData(); // pakai list model
-      print("Fetched: ${result.length} assets");
-      assets.assignAll(result);
-      filteredAssets.assignAll(result);
+      isLoading(true);
+      final results = await _coinService.searchCoins(query);
+      searchResults.assignAll(results);
     } catch (e) {
-      print("Fetch error: $e");
+      print("❌ Search error: $e");
+      searchResults.clear();
     } finally {
-      isLoading.value = false;
+      isLoading(false);
     }
   }
 
-  void filterAssets(String query) {
-    if (query.isEmpty) {
-      filteredAssets.assignAll(assets);
-    } else {
-      final lower = query.toLowerCase();
-      filteredAssets.assignAll(
-        assets.where(
-          (item) =>
-              item.symbol.toLowerCase().contains(lower) ||
-              item.name.toLowerCase().contains(lower),
-        ),
-      );
-    }
-  }
-
-  void addToRecentAsset(CoinListModel asset) {
+  void addToRecentAsset(SearchCoinModel asset) {
     recentAssets.removeWhere((c) => c.id == asset.id);
     recentAssets.insert(0, asset);
     if (recentAssets.length > 10) {
@@ -71,6 +65,7 @@ class SearchControllers extends GetxController {
   @override
   void onClose() {
     searchController.dispose();
+    _debounce?.cancel();
     super.onClose();
   }
 }

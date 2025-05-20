@@ -57,6 +57,10 @@ class LoginView extends GetView<LoginController> {
               const SizedBox(height: 20),
               CustomTextField(
                 controller: controller.emailController,
+                suffixIcon: const Icon(
+                  Icons.email_outlined,
+                  color: Colors.black,
+                ),
                 label: 'Your email address',
                 obscureText: false,
               ),
@@ -69,8 +73,8 @@ class LoginView extends GetView<LoginController> {
                   suffixIcon: IconButton(
                     icon: Image.asset(
                       controller.isPasswordVisible.value
-                          ? AppImages.eyeOpen
-                          : AppImages.eyeClosed,
+                          ? PasswordIcons.eye
+                          : PasswordIcons.eyeOff,
                       width: 20,
                       height: 20,
                     ),

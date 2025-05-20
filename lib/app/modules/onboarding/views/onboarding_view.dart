@@ -32,7 +32,7 @@ class OnboardingView extends GetView<OnboardingController> {
         controller.buildDots(0),
         const SizedBox(height: 100),
         Center(
-          child: Image.asset(AppImages.firstSplash, width: 400, height: 400),
+          child: Image.asset(SplashImages.firstSplash, width: 400, height: 400),
         ),
         const SizedBox(height: 70),
         const Text(
@@ -83,7 +83,7 @@ class OnboardingView extends GetView<OnboardingController> {
         const SizedBox(height: 60),
         controller.buildDots(1),
         const SizedBox(height: 100),
-        Image.asset(AppImages.secondSplash, width: 400, height: 400),
+        Image.asset(SplashImages.secondSplash, width: 400, height: 400),
         const SizedBox(height: 50),
         const Text(
           'Multi-Assets Coverage',
@@ -133,7 +133,7 @@ class OnboardingView extends GetView<OnboardingController> {
         const SizedBox(height: 60),
         controller.buildDots(0),
         const SizedBox(height: 100),
-        Image.asset(AppImages.thirdSplash, width: 400, height: 400),
+        Image.asset(SplashImages.thirdSplash, width: 400, height: 400),
         const SizedBox(height: 40),
         const Text(
           'AI-Powered Predictions',

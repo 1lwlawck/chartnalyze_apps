@@ -21,7 +21,7 @@ class FirstSplashView extends GetView<FirstSplashController> {
           const SizedBox(height: 100),
           Center(
             child: Image.asset(
-              AppImages.firstSplash,
+              SplashImages.firstSplash,
               width: 400,
               height: 400,
             ),

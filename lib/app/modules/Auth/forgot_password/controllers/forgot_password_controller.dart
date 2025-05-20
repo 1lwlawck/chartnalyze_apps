@@ -127,8 +127,12 @@ class ForgotPasswordController extends GetxController {
     emailController.dispose();
     newPasswordController.dispose();
     confirmPasswordController.dispose();
-    for (var c in otpControllers) c.dispose();
-    for (var f in focusNodes) f.dispose();
+    for (var c in otpControllers) {
+      c.dispose();
+    }
+    for (var f in focusNodes) {
+      f.dispose();
+    }
     super.onClose();
   }
 }

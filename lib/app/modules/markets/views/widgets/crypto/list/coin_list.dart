@@ -1,5 +1,6 @@
 import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/constants/fonts.dart';
+import 'package:chartnalyze_apps/app/constants/images.dart';
 import 'package:chartnalyze_apps/app/modules/markets/controllers/markets_controller.dart';
 import 'package:chartnalyze_apps/app/routes/app_pages.dart';
 import 'package:chartnalyze_apps/widgets/shimmer/shimmer_list_tile.dart';
@@ -72,11 +73,7 @@ class _MarketCoinListState extends State<MarketCoinList> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Image.asset(
-                          'assets/images/first_splash.png',
-                          width: 150,
-                          height: 150,
-                        ),
+                        Image.asset(NoData.noData, width: 150, height: 150),
                         const SizedBox(height: 16),
                         Text(
                           'Data not available',

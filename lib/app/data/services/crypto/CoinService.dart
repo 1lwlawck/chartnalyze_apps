@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'package:chartnalyze_apps/app/data/models/GlobalMarketModel.dart';
+import 'package:chartnalyze_apps/app/data/models/SearchCoinModel.dart';
 import 'package:http/http.dart' as http;
-import 'package:chartnalyze_apps/app/constants/api_constants.dart';
+import 'package:chartnalyze_apps/app/constants/api.dart';
 import 'package:chartnalyze_apps/app/data/models/CoinListModel.dart';
 import 'package:chartnalyze_apps/app/data/models/CoinDetailModel.dart';
 import 'package:chartnalyze_apps/app/data/models/OHLCDataModel.dart';
@@ -146,9 +148,40 @@ class CoinService {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      return (data['usd']['idr'] as num).toDouble(); // Misal: 16200.0
+      return (data['usd']['idr'] as num).toDouble();
     } else {
       throw Exception('Failed to fetch USD to IDR rate');
+    }
+  }
+
+  Future<GlobalMarketModel> fetchGlobalMarketModel({
+    double? previousMarketCap,
+    double? previousVolume,
+  }) async {
+    final url = CoinGeckoConstants.globalUrl();
+    final response = await safeGet(url);
+
+    if (response.statusCode == 200) {
+      final jsonMap = json.decode(response.body);
+      return GlobalMarketModel.fromJson(
+        jsonMap,
+      ); // nanti previous disisipkan dari controller
+    } else {
+      throw Exception('Failed to fetch global market data');
+    }
+  }
+
+  /// CoinGecko Search API
+  Future<List<SearchCoinModel>> searchCoins(String query) async {
+    final url = CoinGeckoConstants.searchCoinUrl(query);
+    final response = await safeGet(url);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final List coins = data['coins'];
+      return coins.map((e) => SearchCoinModel.fromJson(e)).toList();
+    } else {
+      throw Exception('Failed to search coins from CoinGecko');
     }
   }
 }

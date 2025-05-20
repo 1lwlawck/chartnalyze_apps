@@ -1,5 +1,6 @@
 import 'package:chartnalyze_apps/app/data/models/CoinDetailModel.dart';
 import 'package:chartnalyze_apps/app/data/models/CoinListModel.dart';
+import 'package:chartnalyze_apps/app/data/models/GlobalMarketModel.dart';
 import 'package:chartnalyze_apps/app/data/models/OHLCDataModel.dart';
 import 'package:chartnalyze_apps/app/data/services/crypto/CoinService.dart';
 import 'package:get/get.dart';
@@ -29,6 +30,9 @@ class MarketsController extends GetxController {
 
   final RxString selectedInterval = '1 day'.obs;
 
+  final Rxn<GlobalMarketModel> marketData = Rxn<GlobalMarketModel>();
+  final RxBool isGlobalMarketLoading = false.obs;
+
   final List<String> tabLabels = [
     'Coins',
     'Stocks',
@@ -47,6 +51,7 @@ class MarketsController extends GetxController {
   void onInit() {
     super.onInit();
     fetchUsdToIdrRate();
+    fetchGlobalMarketModel();
     fetchCoinListData(isInitial: true);
 
     debounce<String>(selectedInterval, (val) async {
@@ -132,6 +137,25 @@ class MarketsController extends GetxController {
       ohlcData.clear();
     } finally {
       isLoadingOhlc.value = false;
+    }
+  }
+
+  Future<void> fetchGlobalMarketModel() async {
+    try {
+      isGlobalMarketLoading.value = true;
+
+      final previousData = marketData.value;
+
+      final result = await _coinService.fetchGlobalMarketModel(
+        previousMarketCap: previousData?.totalMarketCap,
+        previousVolume: previousData?.totalVolume,
+      );
+
+      marketData.value = result;
+    } catch (e) {
+      print('❌ Failed to fetch global market data: $e');
+    } finally {
+      isGlobalMarketLoading.value = false;
     }
   }
 }
