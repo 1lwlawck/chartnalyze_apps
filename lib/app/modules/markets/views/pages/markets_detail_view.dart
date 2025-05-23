@@ -2,14 +2,17 @@ import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/constants/fonts.dart';
 import 'package:chartnalyze_apps/app/helpers/text_helper.dart';
 import 'package:chartnalyze_apps/app/modules/markets/controllers/markets_controller.dart';
-import 'package:chartnalyze_apps/app/modules/markets/views/widgets/market_details/chart_interval.dart';
-import 'package:chartnalyze_apps/app/modules/markets/views/widgets/market_details/charts.dart';
-import 'package:chartnalyze_apps/app/modules/markets/views/widgets/market_details/performance_tabs.dart';
-import 'package:chartnalyze_apps/app/modules/markets/views/widgets/market_details/price_header.dart';
-import 'package:chartnalyze_apps/app/modules/markets/views/widgets/market_details/statistic_card.dart';
+import 'package:chartnalyze_apps/app/modules/markets/views/widgets/market_details/summary/chart_interval.dart';
+import 'package:chartnalyze_apps/app/modules/markets/views/widgets/market_details/summary/charts.dart';
+import 'package:chartnalyze_apps/app/modules/markets/views/widgets/market_details/info/coin_info.dart';
+import 'package:chartnalyze_apps/app/modules/markets/views/widgets/market_details/summary/performance_tabs.dart';
+import 'package:chartnalyze_apps/app/modules/markets/views/widgets/market_details/summary/price_header.dart';
+import 'package:chartnalyze_apps/app/modules/markets/views/widgets/market_details/summary/statistic_card.dart';
+import 'package:chartnalyze_apps/app/modules/news/views/widgets/news_card.dart';
 
 import 'package:chartnalyze_apps/widgets/shimmer/ShimmerContainer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
 class MarketDetailView extends GetView<MarketsController> {
@@ -20,11 +23,19 @@ class MarketDetailView extends GetView<MarketsController> {
     final args = Get.arguments as Map<String, dynamic>;
     final String coinId = args['coinId'];
 
-    controller.fetchCoinDetail(coinId);
+    // Panggil detail dulu, lalu baru ambil berita setelah symbol tersedia
+    controller.fetchCoinDetail(coinId).then((_) {
+      final coin = controller.coinDetail.value;
+      if (coin != null) {
+        controller.fetchNewsForCoin(coin.symbol.toUpperCase());
+        controller.fetchMarketTickers(coin.id);
+      }
+    });
+
     controller.loadOhlcData(coinId);
 
     return DefaultTabController(
-      length: 5,
+      length: 4,
       child: Scaffold(
         backgroundColor: Colors.white,
         body: NestedScrollView(
@@ -138,11 +149,10 @@ class MarketDetailView extends GetView<MarketsController> {
                       fontFamily: AppFonts.nextTrial,
                     ),
                     tabs: const [
-                      Tab(text: 'Ringkasan'),
+                      Tab(text: 'Summary'),
                       Tab(text: 'Info'),
-                      Tab(text: 'Pasar'),
-                      Tab(text: 'Portofolio'),
-                      Tab(text: 'Berita'),
+                      Tab(text: 'Market'),
+                      Tab(text: 'News'),
                     ],
                   ),
                 ),
@@ -208,16 +218,88 @@ class MarketDetailView extends GetView<MarketsController> {
                 }),
 
                 /// Info
-                const Center(child: Text('Info')),
+                Obx(() {
+                  final coin = controller.coinDetail.value;
+                  final loading = controller.isLoadingDetail.value;
 
-                /// Pasar
-                const Center(child: Text('Pasar')),
+                  if (loading || coin == null) {
+                    return const Center(
+                      child: SpinKitWave(
+                        color: AppColors.primaryGreen,
+                        size: 24.0,
+                      ),
+                    );
+                  }
 
-                /// Portofolio
-                const Center(child: Text('Portofolio')),
+                  return CoinInfoSection(coin: coin);
+                }),
+
+                // Obx(() {
+                //   if (controller.isLoadingTickers.value) {
+                //     return const Center(
+                //       child: SpinKitWave(
+                //         color: AppColors.primaryGreen,
+                //         size: 24.0,
+                //       ),
+                //     );
+                //   }
+
+                //   if (controller.tickers.isEmpty) {
+                //     return const Center(
+                //       child: Text('No market data available.'),
+                //     );
+                //   }
+
+                //   return Column(
+                //     children: [
+                //       const MarketTableHeader(), // Ini header tabel baru
+                //       const SizedBox(height: 4),
+                //       Expanded(
+                //         child: ListView.separated(
+                //           itemCount: controller.tickers.length,
+                //           separatorBuilder: (_, __) => const Divider(height: 1),
+                //           itemBuilder: (context, index) {
+                //             final ticker = controller.tickers[index];
+                //             return MarketRow(
+                //               index: index + 1,
+                //               ticker: ticker,
+                //               pair: '${ticker.base}/${ticker.target}',
+                //               price: ticker.price,
+                //             );
+                //           },
+                //         ),
+                //       ),
+                //     ],
+                //   );
+                // }),
+                const Center(child: Text('Market')),
 
                 /// Berita
-                const Center(child: Text('Berita')),
+                Obx(() {
+                  if (controller.isLoadingNews.value) {
+                    return const Center(
+                      child: SpinKitWave(
+                        color: AppColors.primaryGreen,
+                        size: 24,
+                      ),
+                    );
+                  }
+
+                  if (controller.newsList.isEmpty) {
+                    return const Center(
+                      child: Text('No news available for this coin.'),
+                    );
+                  }
+
+                  return ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+                    itemCount: controller.newsList.length,
+                    itemBuilder: (context, index) {
+                      final news = controller.newsList[index];
+                      return NewsCard(news: news);
+                    },
+                  );
+                }),
               ],
             ),
           ),

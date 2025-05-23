@@ -1,3 +1,4 @@
+import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:chartnalyze_apps/app/routes/app_pages.dart';
@@ -8,7 +9,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await dotenv.load(fileName: ".env");
-
   Get.put<AuthService>(AuthService(), permanent: true);
 
   runApp(
@@ -17,6 +17,12 @@ Future<void> main() async {
       debugShowCheckedModeBanner: false,
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSwatch().copyWith(
+          primary: AppColors.primaryGreen,
+          secondary: Colors.white,
+        ),
+      ),
     ),
   );
 }

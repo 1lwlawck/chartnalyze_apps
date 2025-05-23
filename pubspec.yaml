@@ -71,6 +71,7 @@ flutter:
   assets:
     #   - images/a_dot_burr.jpeg
     #   - images/a_dot_ham.jpeg
+    - .env
     - assets/images/splash-icons/first_splash.png
     - assets/images/splash-icons/second_splash.png
     - assets/images/splash-icons/third_splash.png

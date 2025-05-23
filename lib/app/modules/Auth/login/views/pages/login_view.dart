@@ -59,7 +59,8 @@ class LoginView extends GetView<LoginController> {
                 controller: controller.emailController,
                 suffixIcon: const Icon(
                   Icons.email_outlined,
-                  color: Colors.black,
+
+                  color: AppColors.primaryGreen,
                 ),
                 label: 'Your email address',
                 obscureText: false,
@@ -77,6 +78,7 @@ class LoginView extends GetView<LoginController> {
                           : PasswordIcons.eyeOff,
                       width: 20,
                       height: 20,
+                      color: AppColors.primaryGreen,
                     ),
                     onPressed: controller.togglePasswordVisibility,
                   ),

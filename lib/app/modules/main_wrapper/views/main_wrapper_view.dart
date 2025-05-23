@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import '../../community/views/community_view.dart';
 import '../../markets/views/pages/markets_view.dart';
 import '../../news/views/pages/news_view.dart';
-import '../../profile/views/profile_view.dart';
+import '../../profile/views/pages/profile_view.dart';
 import '../../search/views/search_view.dart';
 import '../controllers/main_wrapper_controller.dart';
 

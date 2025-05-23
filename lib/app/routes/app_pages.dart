@@ -29,7 +29,7 @@ import '../modules/markets/views/pages/markets_view.dart';
 import '../modules/news/bindings/news_binding.dart';
 import '../modules/news/views/pages/news_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
-import '../modules/profile/views/profile_view.dart';
+import '../modules/profile/views/pages/profile_view.dart';
 import '../modules/search/bindings/search_binding.dart';
 import '../modules/search/views/search_view.dart';
 
@@ -38,7 +38,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.LOGIN;
+  static const INITIAL = Routes.ONBOARDING;
 
   static final routes = [
     GetPage(

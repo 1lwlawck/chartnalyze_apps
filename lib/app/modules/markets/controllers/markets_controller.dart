@@ -1,12 +1,16 @@
 import 'package:chartnalyze_apps/app/data/models/CoinDetailModel.dart';
 import 'package:chartnalyze_apps/app/data/models/CoinListModel.dart';
 import 'package:chartnalyze_apps/app/data/models/GlobalMarketModel.dart';
+import 'package:chartnalyze_apps/app/data/models/NewsItemModel.dart';
 import 'package:chartnalyze_apps/app/data/models/OHLCDataModel.dart';
+import 'package:chartnalyze_apps/app/data/models/TickerModel.dart';
 import 'package:chartnalyze_apps/app/data/services/crypto/CoinService.dart';
+import 'package:chartnalyze_apps/app/data/services/news/CoinPanicService.dart';
 import 'package:get/get.dart';
 
 class MarketsController extends GetxController {
   final CoinService _coinService = CoinService();
+  final CoinPanicService _newsService = CoinPanicService();
 
   var isLoading = true.obs;
   var coins = <CoinListModel>[].obs;
@@ -22,6 +26,9 @@ class MarketsController extends GetxController {
   var coinDetail = Rxn<CoinDetailModel>();
   var isLoadingDetail = false.obs;
 
+  final tickers = <TickerModel>[].obs;
+  final isLoadingTickers = false.obs;
+
   var ohlcData = <OHLCDataModel>[].obs;
   var isLoadingOhlc = false.obs;
 
@@ -32,6 +39,10 @@ class MarketsController extends GetxController {
 
   final Rxn<GlobalMarketModel> marketData = Rxn<GlobalMarketModel>();
   final RxBool isGlobalMarketLoading = false.obs;
+
+  final RxList<NewsItem> newsList = <NewsItem>[].obs;
+  final RxBool isLoadingNews = false.obs;
+  final RxBool hasFetchedNews = false.obs;
 
   final List<String> tabLabels = [
     'Coins',
@@ -122,6 +133,19 @@ class MarketsController extends GetxController {
     }
   }
 
+  Future<void> fetchMarketTickers(String coinId) async {
+    isLoadingTickers.value = true;
+    try {
+      final result = await _coinService.fetchTickers(coinId);
+      tickers.assignAll(result);
+    } catch (e) {
+      tickers.clear();
+      print('❌ Error fetching tickers: $e');
+    } finally {
+      isLoadingTickers.value = false;
+    }
+  }
+
   Future<void> loadOhlcData(String coinId) async {
     isLoadingOhlc.value = true;
     try {
@@ -156,6 +180,19 @@ class MarketsController extends GetxController {
       print('❌ Failed to fetch global market data: $e');
     } finally {
       isGlobalMarketLoading.value = false;
+    }
+  }
+
+  Future<void> fetchNewsForCoin(String symbol) async {
+    isLoadingNews.value = true;
+    try {
+      final news = await _newsService.fetchNews(currencies: symbol);
+      newsList.assignAll(news);
+    } catch (e) {
+      newsList.clear();
+      print('Error fetching news for $symbol: $e');
+    } finally {
+      isLoadingNews.value = false;
     }
   }
 }

@@ -23,16 +23,10 @@ class CustomTextField extends StatelessWidget {
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType ?? TextInputType.text,
-      style: TextStyle(
-        fontFamily: 'CircularStd',
-        color: Colors.black,
-      ),
+      style: TextStyle(fontFamily: 'CircularStd', color: Colors.black),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(
-          color: Colors.grey,
-          fontFamily: 'CircularStd',
-        ),
+        labelStyle: TextStyle(color: Colors.grey, fontFamily: 'CircularStd'),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: AppColors.primaryGreen),
           borderRadius: BorderRadius.circular(8),

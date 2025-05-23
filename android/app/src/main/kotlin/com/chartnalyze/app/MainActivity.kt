@@ -1,4 +1,4 @@
-package com.chartnalyze.id.chartnalyze_apps
+package com.chartnalyze.app
 
 import io.flutter.embedding.android.FlutterActivity
 

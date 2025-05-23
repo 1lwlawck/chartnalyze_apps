@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:chartnalyze_apps/app/data/models/GlobalMarketModel.dart';
 import 'package:chartnalyze_apps/app/data/models/SearchCoinModel.dart';
+import 'package:chartnalyze_apps/app/data/models/TickerModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:chartnalyze_apps/app/constants/api.dart';
 import 'package:chartnalyze_apps/app/data/models/CoinListModel.dart';
@@ -182,6 +183,21 @@ class CoinService {
       return coins.map((e) => SearchCoinModel.fromJson(e)).toList();
     } else {
       throw Exception('Failed to search coins from CoinGecko');
+    }
+  }
+
+  Future<List<TickerModel>> fetchTickers(String coinId) async {
+    final url = Uri.parse(
+      "https://api.coingecko.com/api/v3/coins/$coinId/tickers",
+    );
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final List<dynamic> tickers = data['tickers'] ?? [];
+      return tickers.map((e) => TickerModel.fromJson(e)).toList();
+    } else {
+      throw Exception('Failed to load tickers');
     }
   }
 }
