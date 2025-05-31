@@ -123,7 +123,7 @@ class ResetPasswordOtpView extends GetView<ForgotPasswordController> {
                 () => ElevatedButton(
                   onPressed:
                       controller.otpCode.value.length == 6
-                          ? controller.submitOTP
+                          ? controller.verifyOTPAndProceed
                           : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor:

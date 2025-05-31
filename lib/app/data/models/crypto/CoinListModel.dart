@@ -1,15 +1,21 @@
 class CoinListModel {
+  // Informasi dasar dan ranking koin
   final String id;
   final int rank;
   final String symbol;
   final String name;
+
+  // Data pasar utama
   final double price;
   final double marketCap;
   final double change24h;
   final double change7d;
-  final String icon;
+
+  // Gambar/icon dan data tren harga 7 hari
+  String icon;
   final List<double> sparkline;
 
+  // Konstruktor
   CoinListModel({
     required this.id,
     required this.rank,
@@ -23,14 +29,14 @@ class CoinListModel {
     required this.sparkline,
   });
 
+  // Parsing data dari JSON ke model
   factory CoinListModel.fromJson(Map<String, dynamic> json) {
     return CoinListModel(
       id: json['id'],
       rank:
           json['market_cap_rank'] != null
               ? json['market_cap_rank'] as int
-              : 9999,
-
+              : 9999, // fallback jika rank tidak tersedia
       name: json['name'] ?? '',
       symbol: (json['symbol'] ?? '').toString().toUpperCase(),
       price: (json['current_price'] as num?)?.toDouble() ?? 0.0,

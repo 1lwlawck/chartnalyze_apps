@@ -136,3 +136,22 @@ class CryptoPanicConstants {
     return Uri.parse('$baseUrl$postsEndpoint?$queryString');
   }
 }
+
+class AuthConstants {
+  static final String baseUrl = "http://192.168.199.38:80/api";
+
+  static const String loginEndpoint = '/users/login';
+  static const String registerEndpoint = '/users/register';
+  static const String logoutEndpoint = '/users/logout';
+  static const String updateSelf = '/users/self';
+  static const String updateSelfPassword = '/users/self/password';
+  static const String updateSelfAvatar = '/users/self/avatar';
+  static const String updateSelfEmail = '/users/self/email';
+  static const String showSelf = '/users/self';
+}
+
+class WatchlistConstants {
+  static const String store = '/users/self/watched-assets';
+  static const String index = '/users/self/watched-assets';
+  static String destroy(String key) => '/users/self/watched-assets/$key';
+}

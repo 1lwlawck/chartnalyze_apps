@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:chartnalyze_apps/app/constants/fonts.dart';
-import 'package:chartnalyze_apps/app/data/models/SearchCoinModel.dart';
+import 'package:chartnalyze_apps/app/data/models/crypto/SearchCoinModel.dart';
 
 class SearchResultTile extends StatelessWidget {
   final SearchCoinModel coin;

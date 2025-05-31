@@ -62,7 +62,7 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: controller.sendCode,
+                onPressed: controller.requestOTP,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryGreen,
                   padding: const EdgeInsets.symmetric(vertical: 14),

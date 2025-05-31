@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:chartnalyze_apps/app/data/models/NewsItemModel.dart';
+import 'package:chartnalyze_apps/app/data/models/news/NewsItemModel.dart';
 import 'package:chartnalyze_apps/app/data/services/news/CoinPanicService.dart';
 
 class NewsController extends GetxController {

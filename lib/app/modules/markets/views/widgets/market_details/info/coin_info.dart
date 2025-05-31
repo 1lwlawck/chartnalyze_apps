@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:chartnalyze_apps/app/data/models/CoinDetailModel.dart';
+import 'package:chartnalyze_apps/app/data/models/crypto/CoinDetailModel.dart';
 
 class CoinInfoSection extends StatelessWidget {
   final CoinDetailModel coin;

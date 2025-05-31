@@ -1,10 +1,10 @@
-import 'package:chartnalyze_apps/app/modules/Auth/forgot_password/controllers/forgot_password_controller.dart';
+import 'package:chartnalyze_apps/app/constants/strings.dart';
+import 'package:chartnalyze_apps/app/constants/colors.dart';
+import 'package:chartnalyze_apps/app/constants/fonts.dart';
 import 'package:chartnalyze_apps/widgets/text_field/CustomTextField.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chartnalyze_apps/app/constants/colors.dart';
-import 'package:chartnalyze_apps/app/constants/fonts.dart';
-import 'package:chartnalyze_apps/app/constants/strings.dart';
+import 'package:chartnalyze_apps/app/modules/Auth/forgot_password/controllers/forgot_password_controller.dart';
 
 class ChangePasswordView extends GetView<ForgotPasswordController> {
   const ChangePasswordView({super.key});
@@ -64,8 +64,8 @@ class ChangePasswordView extends GetView<ForgotPasswordController> {
                     suffixIcon: IconButton(
                       icon: Image.asset(
                         controller.isNewPasswordVisible.value
-                            ? 'assets/images/eye 1.png'
-                            : 'assets/images/eye-off 1.png',
+                            ? 'assets/images/password-icons/eye 1.png'
+                            : 'assets/images/password-icons/eye-off 1.png',
                         width: 20,
                         height: 20,
                       ),
@@ -99,7 +99,29 @@ class ChangePasswordView extends GetView<ForgotPasswordController> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: controller.updatePassword,
+                    onPressed: () async {
+                      final password =
+                          controller.newPasswordController.text.trim();
+                      final confirmPassword =
+                          controller.confirmPasswordController.text.trim();
+
+                      if (password.isEmpty || confirmPassword.isEmpty) {
+                        Get.snackbar('Error', 'Password cannot be empty');
+                        return;
+                      }
+
+                      if (password.length < 6) {
+                        Get.snackbar('Error', 'Password too short');
+                        return;
+                      }
+
+                      if (password != confirmPassword) {
+                        Get.snackbar('Error', 'Passwords do not match');
+                        return;
+                      }
+
+                      controller.updatePassword();
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primaryGreen,
                       padding: const EdgeInsets.symmetric(vertical: 14),

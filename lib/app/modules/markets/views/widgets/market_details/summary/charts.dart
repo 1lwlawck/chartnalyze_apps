@@ -3,7 +3,7 @@ import 'package:chartnalyze_apps/app/constants/fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:chartnalyze_apps/app/data/models/OHLCDataModel.dart';
+import 'package:chartnalyze_apps/app/data/models/crypto/OHLCDataModel.dart';
 
 class MarketChart extends StatelessWidget {
   final List<OHLCDataModel> ohlcData;

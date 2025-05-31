@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:chartnalyze_apps/app/data/models/SearchCoinModel.dart';
+import 'package:chartnalyze_apps/app/data/models/crypto/SearchCoinModel.dart';
 import 'package:get/get.dart';
 import 'package:chartnalyze_apps/app/data/services/crypto/CoinService.dart';
 import 'package:flutter/material.dart';

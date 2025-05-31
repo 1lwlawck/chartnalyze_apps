@@ -5,7 +5,7 @@ import 'package:chartnalyze_apps/app/utils/validator.dart';
 import 'package:chartnalyze_apps/app/routes/app_pages.dart';
 
 class RegisterController extends GetxController {
-  final AuthService authService = Get.find<AuthService>();
+  final authService = Get.find<AuthService>();
 
   final usernameController = TextEditingController();
   final emailController = TextEditingController();
@@ -16,43 +16,33 @@ class RegisterController extends GetxController {
   final isConfirmPasswordVisible = false.obs;
   final isLoading = false.obs;
 
-  void togglePasswordVisibility() {
-    isPasswordVisible.value = !isPasswordVisible.value;
-  }
+  void togglePasswordVisibility() =>
+      isPasswordVisible.value = !isPasswordVisible.value;
 
-  void toggleConfirmPasswordVisibility() {
-    isConfirmPasswordVisible.value = !isConfirmPasswordVisible.value;
-  }
+  void toggleConfirmPasswordVisibility() =>
+      isConfirmPasswordVisible.value = !isConfirmPasswordVisible.value;
 
   void register() async {
     final username = usernameController.text.trim();
     final email = emailController.text.trim();
-    final password = passwordController.text;
-    final confirmPassword = confirmPasswordController.text;
+    final password = passwordController.text.trim();
+    final confirmPassword = confirmPasswordController.text.trim();
 
-    final usernameError = Validator.validateUsername(username);
-    final emailError = Validator.validateEmail(email);
-    final passwordError = Validator.validatePassword(password);
-    final confirmPasswordError = Validator.validateConfirmPassword(
-      password,
-      confirmPassword,
+    // Validate fields
+    final validationMessage = _validateForm(
+      username: username,
+      email: email,
+      password: password,
+      confirmPassword: confirmPassword,
     );
 
-    if (usernameError != null ||
-        emailError != null ||
-        passwordError != null ||
-        confirmPasswordError != null) {
-      Get.snackbar(
-        'Error',
-        usernameError ?? emailError ?? passwordError ?? confirmPasswordError!,
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+    if (validationMessage != null) {
+      _showErrorSnackbar(validationMessage);
       return;
     }
 
     isLoading.value = true;
+    print("📨 Registering: $username / $email");
 
     try {
       final success = await authService.register(
@@ -61,31 +51,55 @@ class RegisterController extends GetxController {
         password: password,
       );
 
-      if (success) {
-        Get.toNamed(
-          Routes.EMAIL_VERIFICATION,
-          arguments: {'email': emailController.text.trim()},
-        );
-      } else {
-        Get.snackbar(
-          'Error',
-          'Registration failed, username already taken.',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+      if (!success) {
+        _showErrorSnackbar('Registration failed.');
+        return;
       }
-    } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Something went wrong',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
+
+      final loggedIn = await authService.login(
+        email: email,
+        password: password,
       );
+      if (!loggedIn) {
+        _showErrorSnackbar('Automatic login failed.');
+        return;
+      }
+
+      final otpSent = await authService.sendOTP(email);
+      if (!otpSent) {
+        _showErrorSnackbar('Failed to send OTP.');
+        return;
+      }
+
+      Get.toNamed(Routes.EMAIL_VERIFICATION, arguments: {'email': email});
+    } catch (e) {
+      print("❌ Registration error: $e");
+      _showErrorSnackbar('Something went wrong. Please try again.');
     } finally {
       isLoading.value = false;
     }
+  }
+
+  String? _validateForm({
+    required String username,
+    required String email,
+    required String password,
+    required String confirmPassword,
+  }) {
+    return Validator.validateUsername(username) ??
+        Validator.validateEmail(email) ??
+        Validator.validatePassword(password) ??
+        Validator.validateConfirmPassword(password, confirmPassword);
+  }
+
+  void _showErrorSnackbar(String message) {
+    Get.snackbar(
+      'Error',
+      message,
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
   }
 
   @override

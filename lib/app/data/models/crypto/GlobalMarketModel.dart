@@ -1,12 +1,14 @@
 class GlobalMarketModel {
+  // Data pasar global saat ini
   final double totalMarketCap;
   final double totalVolume;
   final double btcDominance;
 
-  // Optional: previous values
+  // Data sebelumnya (opsional)
   final double? previousMarketCap;
   final double? previousVolume;
 
+  // Konstruktor
   GlobalMarketModel({
     required this.totalMarketCap,
     required this.totalVolume,
@@ -15,6 +17,7 @@ class GlobalMarketModel {
     this.previousVolume,
   });
 
+  // Konversi dari JSON ke model
   factory GlobalMarketModel.fromJson(
     Map<String, dynamic> json, {
     double? previousMarketCap,

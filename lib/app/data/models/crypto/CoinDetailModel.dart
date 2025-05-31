@@ -1,4 +1,5 @@
 class CoinDetailModel {
+  // Informasi umum dan teknis koin
   final String id;
   final String name;
   final String symbol;
@@ -6,13 +7,15 @@ class CoinDetailModel {
   final String hashingAlgorithm;
   final int blockTime;
   final String genesisDate;
+
+  // Gambar dan tautan eksternal
   final String imageUrl;
   final String homepage;
   final String explorer;
   final String whitepaper;
   final List<String> categories;
 
-  // Tambahan dari CoinModel
+  // Data pasar dan statistik
   final double price;
   final double priceIdr;
   final double marketCap;
@@ -27,6 +30,7 @@ class CoinDetailModel {
   final double low24h;
   final List<double> sparkline;
 
+  // Konstruktor
   CoinDetailModel({
     required this.id,
     required this.name,
@@ -40,7 +44,6 @@ class CoinDetailModel {
     required this.explorer,
     required this.whitepaper,
     required this.categories,
-    // Tambahan dari CoinModel
     required this.price,
     required this.priceIdr,
     required this.marketCap,
@@ -56,6 +59,7 @@ class CoinDetailModel {
     required this.sparkline,
   });
 
+  // Konversi dari JSON ke model
   factory CoinDetailModel.fromJson(Map<String, dynamic> json) {
     return CoinDetailModel(
       id: json['id'],
@@ -76,8 +80,6 @@ class CoinDetailModel {
               : '',
       whitepaper: json['links']['whitepaper'] ?? '',
       categories: List<String>.from(json['categories'] ?? []),
-
-      // Fields from CoinModel
       price:
           (json['market_data']?['current_price']?['usd'] as num?)?.toDouble() ??
           0.0,

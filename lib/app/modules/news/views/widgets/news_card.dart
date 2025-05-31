@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:metadata_fetch/metadata_fetch.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:chartnalyze_apps/app/data/models/NewsItemModel.dart';
+import 'package:chartnalyze_apps/app/data/models/news/NewsItemModel.dart';
 
 class NewsCard extends StatefulWidget {
   final NewsItem news;

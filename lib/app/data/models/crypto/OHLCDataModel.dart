@@ -1,4 +1,5 @@
 class OHLCDataModel {
+  // Data harga per waktu (Open, High, Low, Close, Volume)
   final DateTime time;
   final double open;
   final double high;
@@ -15,6 +16,7 @@ class OHLCDataModel {
     required this.volume,
   });
 
+  // Parsing dari list angka (biasanya dari API OHLC)
   factory OHLCDataModel.fromList(List<dynamic> entry) {
     return OHLCDataModel(
       time: DateTime.fromMillisecondsSinceEpoch(entry[0] as int),

@@ -123,16 +123,74 @@ class MarketDetailView extends GetView<MarketsController> {
                           ),
                           const Spacer(),
                           ...[
-                            Icons.search,
-                            Icons.share_outlined,
-                            Icons.notifications_none,
-                            Icons.star_border,
-                          ].map(
-                            (icon) => IconButton(
-                              icon: Icon(icon, color: Colors.white, size: 20),
+                            IconButton(
+                              icon: const Icon(
+                                Icons.search,
+                                color: Colors.white,
+                                size: 20,
+                              ),
                               onPressed: () {},
                             ),
-                          ),
+                            IconButton(
+                              icon: const Icon(
+                                Icons.share_outlined,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                              onPressed: () async {
+                                await controller.shareScreenshot(
+                                  controller.shareKey,
+                                );
+                              },
+                            ),
+
+                            IconButton(
+                              icon: const Icon(
+                                Icons.notifications_none,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                              onPressed: () {},
+                            ),
+                            Obx(
+                              () => IconButton(
+                                icon: SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child:
+                                      controller.isTogglingWatchlist.value
+                                          ? const CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                  Colors.white,
+                                                ),
+                                          )
+                                          : Icon(
+                                            controller
+                                                    .isCurrentCoinWatched
+                                                    .value
+                                                ? Icons.star
+                                                : Icons.star_border,
+                                            color:
+                                                controller
+                                                        .isCurrentCoinWatched
+                                                        .value
+                                                    ? Colors.amber
+                                                    : Colors.white,
+                                          ),
+                                ),
+
+                                onPressed: () async {
+                                  controller.isTogglingWatchlist.value = true;
+                                  await controller.toggleWatchlist(
+                                    controller.coinDetail.value!,
+                                  );
+                                  controller.isTogglingWatchlist.value = false;
+                                },
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     );
@@ -162,6 +220,7 @@ class MarketDetailView extends GetView<MarketsController> {
             child: TabBarView(
               children: [
                 /// Ringkasan
+                /// Ringkasan
                 Obx(() {
                   final coin = controller.coinDetail.value;
                   final loading = controller.isLoadingDetail.value;
@@ -181,39 +240,56 @@ class MarketDetailView extends GetView<MarketsController> {
                     );
                   }
 
-                  return ListView(
+                  return SingleChildScrollView(
                     padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
-                    children: [
-                      MarketPriceHeader(
-                        coin: coin,
-                        usdToIdrRate: controller.usdToIdrRate.value,
-                      ),
-                      const SizedBox(height: 12),
-                      const MarketChartInterval(),
-                      const SizedBox(height: 12),
-                      Obx(() {
-                        if (controller.isLoadingOhlc.value) {
-                          return const ShimmerContainer(
-                            width: double.infinity,
-                            height: 240,
-                          );
-                        }
-                        return MarketChart(
-                          ohlcData: controller.ohlcData,
-                          interval: controller.selectedInterval.value,
-                        );
-                      }),
-                      const SizedBox(height: 12),
-                      MarketPerformanceTabs(
-                        data: {
-                          '24H': coin.change24h,
-                          '7D': coin.change7d,
-                          '1M': coin.change30d,
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                      MarketStatisticCard(coin: coin),
-                    ],
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        /// BAGIAN YANG AKAN DI-SHARE
+                        RepaintBoundary(
+                          key: controller.shareKey,
+                          child: Container(
+                            color: Colors.white,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                MarketPriceHeader(
+                                  coin: coin,
+                                  usdToIdrRate: controller.usdToIdrRate.value,
+                                ),
+                                const SizedBox(height: 12),
+                                const MarketChartInterval(),
+                                const SizedBox(height: 12),
+                                Obx(() {
+                                  if (controller.isLoadingOhlc.value) {
+                                    return const ShimmerContainer(
+                                      width: double.infinity,
+                                      height: 240,
+                                    );
+                                  }
+                                  return MarketChart(
+                                    ohlcData: controller.ohlcData,
+                                    interval: controller.selectedInterval.value,
+                                  );
+                                }),
+                                const SizedBox(height: 12),
+                                MarketPerformanceTabs(
+                                  data: {
+                                    '24H': coin.change24h,
+                                    '7D': coin.change7d,
+                                    '1M': coin.change30d,
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        /// BAGIAN YANG TIDAK IKUT DI-SHARE
+                        const SizedBox(height: 12),
+                        MarketStatisticCard(coin: coin),
+                      ],
+                    ),
                   );
                 }),
 

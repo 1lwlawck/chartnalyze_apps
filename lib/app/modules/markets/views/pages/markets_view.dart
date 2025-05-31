@@ -1,6 +1,7 @@
 import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/modules/markets/views/widgets/stocks/stocks_list.dart';
 import 'package:chartnalyze_apps/app/modules/markets/views/widgets/common/table_header.dart';
+import 'package:chartnalyze_apps/app/modules/markets/views/widgets/watched_assets/watched_list.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/markets_controller.dart';
@@ -32,13 +33,13 @@ class MarketsView extends GetView<MarketsController> {
                     case 0:
                       return const MarketCoinList();
                     case 1:
-                      return const Center(child: Text('Watchlists'));
-                    case 2:
-                      return const Center(child: Text('Overview'));
-                    case 3:
-                      return const Center(child: Text('Exchanges'));
-                    case 4:
                       return const MarketStocksList();
+                    case 2:
+                      return const MarketWatchlistList();
+                    case 3:
+                      return const Center(child: Text('Overview'));
+                    case 4:
+                      return const Center(child: Text('Exchanges'));
                     default:
                       return const SizedBox.shrink();
                   }

@@ -52,7 +52,7 @@ class SuccessVerificationView extends StatelessWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      Get.offAllNamed(Routes.LOGIN);
+                      Get.offNamed(Routes.LOGIN, arguments: {'email': email});
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.white,

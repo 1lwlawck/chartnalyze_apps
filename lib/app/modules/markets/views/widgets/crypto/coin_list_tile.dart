@@ -1,5 +1,5 @@
 import 'package:chartnalyze_apps/app/constants/colors.dart';
-import 'package:chartnalyze_apps/app/data/models/CoinListModel.dart';
+import 'package:chartnalyze_apps/app/data/models/crypto/CoinListModel.dart';
 import 'package:chart_sparkline/chart_sparkline.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';

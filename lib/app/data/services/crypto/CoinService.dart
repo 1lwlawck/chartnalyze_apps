@@ -1,12 +1,12 @@
 import 'dart:convert';
-import 'package:chartnalyze_apps/app/data/models/GlobalMarketModel.dart';
-import 'package:chartnalyze_apps/app/data/models/SearchCoinModel.dart';
-import 'package:chartnalyze_apps/app/data/models/TickerModel.dart';
+import 'package:chartnalyze_apps/app/data/models/crypto/GlobalMarketModel.dart';
+import 'package:chartnalyze_apps/app/data/models/crypto/SearchCoinModel.dart';
+import 'package:chartnalyze_apps/app/data/models/crypto/TickerModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:chartnalyze_apps/app/constants/api.dart';
-import 'package:chartnalyze_apps/app/data/models/CoinListModel.dart';
-import 'package:chartnalyze_apps/app/data/models/CoinDetailModel.dart';
-import 'package:chartnalyze_apps/app/data/models/OHLCDataModel.dart';
+import 'package:chartnalyze_apps/app/data/models/crypto/CoinListModel.dart';
+import 'package:chartnalyze_apps/app/data/models/crypto/CoinDetailModel.dart';
+import 'package:chartnalyze_apps/app/data/models/crypto/OHLCDataModel.dart';
 
 // for testing purposes only
 Future<http.Response> safeGet(Uri url, {int retries = 3}) async {
@@ -188,7 +188,7 @@ class CoinService {
 
   Future<List<TickerModel>> fetchTickers(String coinId) async {
     final url = Uri.parse(
-      "https://api.coingecko.com/api/v3/coins/$coinId/tickers",
+      "${CoinGeckoConstants.baseUrl}/coins/$coinId/tickers?include_exchange_logo=true&depth=false&order=trust_score_desc&per_page=10&page=1&sparkline=false",
     );
     final response = await http.get(url);
 

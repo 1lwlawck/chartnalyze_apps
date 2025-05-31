@@ -12,6 +12,15 @@ class LoginController extends GetxController {
 
   final AuthService authService = Get.find<AuthService>();
 
+  @override
+  void onInit() {
+    final arg = Get.arguments;
+    if (arg != null && arg['email'] != null) {
+      emailController.text = arg['email'];
+    }
+    super.onInit();
+  }
+
   void togglePasswordVisibility() {
     isPasswordVisible.value = !isPasswordVisible.value;
   }

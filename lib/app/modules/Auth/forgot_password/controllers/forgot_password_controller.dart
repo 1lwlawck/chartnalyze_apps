@@ -1,50 +1,136 @@
-// lib/app/modules/auth/forgot_password/controllers/forgot_password_controller.dart
+// === forgot_password_controller.dart ===
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:chartnalyze_apps/app/routes/app_pages.dart';
-import 'package:chartnalyze_apps/app/constants/strings.dart';
 import 'package:chartnalyze_apps/app/data/services/auth/AuthService.dart';
 
 class ForgotPasswordController extends GetxController {
-  // STEP 1 - EMAIL
   final emailController = TextEditingController();
-  final _authService = AuthService();
+  final newPasswordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
-  // STEP 2 - OTP
-  var email = ''.obs;
-  var otpCode = ''.obs;
-  var isResendEnabled = false.obs;
-  var counter = 60.obs;
-  Timer? _timer;
+  final isNewPasswordVisible = false.obs;
+  final isConfirmPasswordVisible = false.obs;
+
   final List<TextEditingController> otpControllers = List.generate(
     6,
     (_) => TextEditingController(),
   );
   final List<FocusNode> focusNodes = List.generate(6, (_) => FocusNode());
 
-  // STEP 3 - PASSWORD
-  final newPasswordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
-  final isNewPasswordVisible = false.obs;
-  final isConfirmPasswordVisible = false.obs;
+  final otpCode = ''.obs;
+  final isResendEnabled = false.obs;
+  final counter = 60.obs;
+  final email = ''.obs;
+  final _authService = Get.find<AuthService>();
+  Timer? _timer;
 
-  // === Step 1: Kirim Email ===
-  void sendCode() async {
+  void requestOTP() async {
     final emailInput = emailController.text.trim();
     if (emailInput.isEmpty) {
-      Get.snackbar(AppStrings.errorTitle, AppStrings.emptyEmailMessage);
+      Get.snackbar('Error', 'Email cannot be empty');
       return;
     }
 
-    final success = await _authService.sendPasswordResetEmail(emailInput);
+    final success = await _authService.sendPasswordResetOTP(emailInput);
     if (success) {
       email.value = emailInput;
+      startTimer();
       Get.toNamed(Routes.OTP_RESET_PASSWORD, arguments: emailInput);
+    } else {
+      Get.snackbar('Error', 'Failed to send OTP');
     }
   }
 
-  // === Step 2: OTP ===
+  void resendOTP() async {
+    if (!isResendEnabled.value) return;
+
+    final result = await _authService.sendPasswordResetOTP(email.value);
+    if (result) {
+      startTimer();
+      Get.snackbar('Success', 'OTP has been resent to your email');
+    } else {
+      Get.snackbar('Error', 'Failed to resend OTP');
+    }
+  }
+
+  void verifyOTPAndProceed() async {
+    if (otpCode.value.length != 6) {
+      Get.snackbar('Error', 'Enter 6-digit OTP');
+      return;
+    }
+
+    final verified = await _authService.verifyPasswordResetOTP(
+      email.value,
+      otpCode.value,
+    );
+
+    if (verified) {
+      Get.toNamed(
+        Routes.CHANGE_PASSWORD,
+        arguments: {'email': email.value, 'code': otpCode.value},
+      );
+    } else {
+      Get.snackbar('Error', 'Invalid OTP');
+    }
+  }
+
+  void updatePassword() async {
+    final password = newPasswordController.text.trim();
+    final confirmPassword = confirmPasswordController.text.trim();
+
+    if (password.isEmpty || confirmPassword.isEmpty) {
+      Get.snackbar('Error', 'Password cannot be empty');
+      return;
+    }
+
+    if (password.length < 6) {
+      Get.snackbar('Error', 'Password too short');
+      return;
+    }
+
+    if (password != confirmPassword) {
+      Get.snackbar('Error', 'Passwords do not match');
+      return;
+    }
+
+    final success = await _authService.resetPassword(
+      code: otpCode.value,
+      password: password,
+      confirmPassword: confirmPassword,
+    );
+
+    if (success) {
+      Get.snackbar('Success', 'Password updated');
+      Get.offAllNamed(Routes.LOGIN);
+    } else {
+      Get.snackbar('Error', 'Failed to update password');
+    }
+  }
+
+  void toggleNewPasswordVisibility() {
+    isNewPasswordVisible.value = !isNewPasswordVisible.value;
+  }
+
+  void toggleConfirmPasswordVisibility() {
+    isConfirmPasswordVisible.value = !isConfirmPasswordVisible.value;
+  }
+
+  void handleOtpInput(String value, int index) {
+    if (value.isNotEmpty && index < 5) {
+      Future.delayed(const Duration(milliseconds: 50), () {
+        focusNodes[index + 1].requestFocus();
+      });
+    } else if (value.isEmpty && index > 0) {
+      Future.delayed(const Duration(milliseconds: 50), () {
+        focusNodes[index - 1].requestFocus();
+      });
+    }
+
+    otpCode.value = otpControllers.map((c) => c.text).join();
+  }
+
   void startTimer() {
     counter.value = 60;
     isResendEnabled.value = false;
@@ -59,64 +145,14 @@ class ForgotPasswordController extends GetxController {
     });
   }
 
-  void resendOTP() {
-    startTimer();
-    Get.snackbar('Success', 'OTP has been resent');
-  }
-
-  void submitOTP() {
-    if (otpCode.value.length != 6) {
-      Get.snackbar('Error', 'Please enter all 6 digits');
-      return;
-    }
-    Get.snackbar('Success', 'OTP verified successfully');
-    Get.toNamed(Routes.CHANGE_PASSWORD);
-  }
-
-  void handleOtpInput(String value, int index) {
-    if (value.isNotEmpty && index < 5) {
-      Future.delayed(const Duration(milliseconds: 50), () {
-        focusNodes[index + 1].requestFocus();
-      });
-    } else if (value.isEmpty && index > 0) {
-      Future.delayed(const Duration(milliseconds: 50), () {
-        focusNodes[index - 1].requestFocus();
-      });
-    }
-    otpCode.value = otpControllers.map((c) => c.text).join();
-  }
-
-  // === Step 3: Password ===
-  void toggleNewPasswordVisibility() => isNewPasswordVisible.toggle();
-  void toggleConfirmPasswordVisibility() => isConfirmPasswordVisible.toggle();
-
-  void updatePassword() {
-    final newPassword = newPasswordController.text.trim();
-    final confirmPassword = confirmPasswordController.text.trim();
-
-    if (newPassword.isEmpty || confirmPassword.isEmpty) {
-      Get.snackbar(AppStrings.errorTitle, AppStrings.passwordEmpty);
-      return;
-    }
-    if (newPassword.length < 6) {
-      Get.snackbar(AppStrings.errorTitle, AppStrings.passwordTooShort);
-      return;
-    }
-    if (newPassword != confirmPassword) {
-      Get.snackbar(AppStrings.errorTitle, AppStrings.passwordsNotMatch);
-      return;
-    }
-
-    // TODO: Call API update password
-    Get.snackbar('Success', 'Password updated successfully');
-    Get.offAllNamed(Routes.LOGIN);
-  }
-
   @override
   void onInit() {
     final arg = Get.arguments;
     if (arg is String) {
       email.value = arg;
+    } else if (arg is Map<String, String>) {
+      email.value = arg['email'] ?? '';
+      otpCode.value = arg['code'] ?? '';
     }
     super.onInit();
   }
@@ -127,12 +163,6 @@ class ForgotPasswordController extends GetxController {
     emailController.dispose();
     newPasswordController.dispose();
     confirmPasswordController.dispose();
-    for (var c in otpControllers) {
-      c.dispose();
-    }
-    for (var f in focusNodes) {
-      f.dispose();
-    }
     super.onClose();
   }
 }

@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:chartnalyze_apps/app/constants/api.dart';
-import 'package:chartnalyze_apps/app/data/models/NewsItemModel.dart';
+import 'package:chartnalyze_apps/app/data/models/news/NewsItemModel.dart';
 
 class CoinPanicService {
   Future<List<NewsItem>> fetchNews({

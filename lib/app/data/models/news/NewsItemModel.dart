@@ -1,4 +1,5 @@
 class NewsItem {
+  // Informasi dasar berita
   final String title;
   final String url;
   final String publishedAt;
@@ -13,6 +14,7 @@ class NewsItem {
     this.source,
   });
 
+  // Parsing dari JSON
   factory NewsItem.fromJson(Map<String, dynamic> json) {
     return NewsItem(
       title: json['title'] ?? '',
@@ -23,6 +25,7 @@ class NewsItem {
     );
   }
 
+  // Konversi ke JSON
   Map<String, dynamic> toJson() => {
     'title': title,
     'url': url,
@@ -31,6 +34,7 @@ class NewsItem {
     'source': source,
   };
 
+  // Buat salinan data dengan perubahan nilai tertentu
   NewsItem copyWith({
     String? title,
     String? url,
@@ -47,6 +51,7 @@ class NewsItem {
     );
   }
 
+  // Konversi string waktu ke DateTime
   DateTime? get publishedDateTime {
     try {
       return DateTime.parse(publishedAt).toLocal();

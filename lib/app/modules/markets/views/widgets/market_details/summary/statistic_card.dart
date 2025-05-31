@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/constants/fonts.dart';
-import 'package:chartnalyze_apps/app/data/models/CoinDetailModel.dart';
+import 'package:chartnalyze_apps/app/data/models/crypto/CoinDetailModel.dart';
 
 class MarketStatisticCard extends StatelessWidget {
   final CoinDetailModel coin;

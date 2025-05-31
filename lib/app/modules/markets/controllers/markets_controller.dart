@@ -1,19 +1,29 @@
-import 'package:chartnalyze_apps/app/data/models/CoinDetailModel.dart';
-import 'package:chartnalyze_apps/app/data/models/CoinListModel.dart';
-import 'package:chartnalyze_apps/app/data/models/GlobalMarketModel.dart';
-import 'package:chartnalyze_apps/app/data/models/NewsItemModel.dart';
-import 'package:chartnalyze_apps/app/data/models/OHLCDataModel.dart';
-import 'package:chartnalyze_apps/app/data/models/TickerModel.dart';
+import 'dart:io';
+import 'dart:ui' as ui;
+
+import 'package:chartnalyze_apps/app/data/models/crypto/CoinDetailModel.dart';
+import 'package:chartnalyze_apps/app/data/models/crypto/CoinListModel.dart';
+import 'package:chartnalyze_apps/app/data/models/crypto/GlobalMarketModel.dart';
+import 'package:chartnalyze_apps/app/data/models/news/NewsItemModel.dart';
+import 'package:chartnalyze_apps/app/data/models/crypto/OHLCDataModel.dart';
+import 'package:chartnalyze_apps/app/data/models/crypto/TickerModel.dart';
 import 'package:chartnalyze_apps/app/data/services/crypto/CoinService.dart';
+import 'package:chartnalyze_apps/app/data/services/crypto/WatchlistService.dart';
 import 'package:chartnalyze_apps/app/data/services/news/CoinPanicService.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 class MarketsController extends GetxController {
   final CoinService _coinService = CoinService();
   final CoinPanicService _newsService = CoinPanicService();
+  final WatchlistService _watchlistService = Get.put(WatchlistService());
 
   var isLoading = true.obs;
   var coins = <CoinListModel>[].obs;
+  var detailedWatchlist = <CoinListModel>[].obs;
 
   var page = 1;
   final perPage = 25;
@@ -28,12 +38,13 @@ class MarketsController extends GetxController {
 
   final tickers = <TickerModel>[].obs;
   final isLoadingTickers = false.obs;
+  final GlobalKey shareKey = GlobalKey();
 
   var ohlcData = <OHLCDataModel>[].obs;
   var isLoadingOhlc = false.obs;
 
   final RxBool isChartLoading = false.obs;
-  final RxDouble usdToIdrRate = 16500.0.obs; // Default, replaced via API
+  final RxDouble usdToIdrRate = 16500.0.obs;
 
   final RxString selectedInterval = '1 day'.obs;
 
@@ -43,6 +54,11 @@ class MarketsController extends GetxController {
   final RxList<NewsItem> newsList = <NewsItem>[].obs;
   final RxBool isLoadingNews = false.obs;
   final RxBool hasFetchedNews = false.obs;
+
+  final RxList<CoinListModel> watchlist = <CoinListModel>[].obs;
+  final RxBool isLoadingWatchlist = false.obs;
+  final RxBool isCurrentCoinWatched = false.obs;
+  final RxBool isTogglingWatchlist = false.obs;
 
   final List<String> tabLabels = [
     'Coins',
@@ -64,6 +80,7 @@ class MarketsController extends GetxController {
     fetchUsdToIdrRate();
     fetchGlobalMarketModel();
     fetchCoinListData(isInitial: true);
+    fetchWatchlist();
 
     debounce<String>(selectedInterval, (val) async {
       isChartLoading.value = true;
@@ -76,6 +93,94 @@ class MarketsController extends GetxController {
   void changeTab(int index) {
     selectedTabIndex = index;
     update();
+  }
+
+  Future<void> shareScreenshot(GlobalKey key) async {
+    try {
+      final boundary =
+          key.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      final image = await boundary.toImage(pixelRatio: 3.0);
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      final pngBytes = byteData!.buffer.asUint8List();
+
+      final tempDir = await getTemporaryDirectory();
+      final file = await File('${tempDir.path}/shared_chart.png').create();
+      await file.writeAsBytes(pngBytes);
+
+      await Share.shareXFiles([
+        XFile(file.path),
+      ], text: 'Lihat harga dan grafik crypto ini! 📈');
+    } catch (e) {
+      print('❌ Error during screenshot sharing: $e');
+    }
+  }
+
+  Future<void> toggleWatchlist(CoinDetailModel coin) async {
+    final coinModel = CoinListModel(
+      id: coin.id,
+      name: coin.name,
+      symbol: coin.symbol,
+      icon: coin.imageUrl,
+      price: coin.price,
+      rank: coin.rank,
+      change24h: coin.change24h,
+      change7d: coin.change7d,
+      marketCap: coin.marketCap,
+      sparkline: [],
+    );
+
+    // Optimistically update state
+    final wasWatched = isWatched(coin.id);
+    isCurrentCoinWatched.value = !wasWatched;
+
+    if (wasWatched) {
+      final success = await _watchlistService.removeFromWatchlist(coin.id);
+      if (success) {
+        watchlist.removeWhere((item) => item.id == coin.id);
+        detailedWatchlist.removeWhere((item) => item.id == coin.id);
+      } else {
+        isCurrentCoinWatched.value = true; // Revert if failed
+      }
+    } else {
+      final success = await _watchlistService.addToWatchlist(coinModel);
+      if (success) {
+        watchlist.add(coinModel);
+        detailedWatchlist.add(coinModel);
+      } else {
+        isCurrentCoinWatched.value = false; // Revert if failed
+      }
+    }
+  }
+
+  bool isWatched(String id) => watchlist.any((item) => item.id == id);
+
+  Future<void> fetchWatchlist() async {
+    isLoadingWatchlist.value = true;
+    try {
+      final rawWatchlist = await _watchlistService.getWatchlist();
+      final ids = rawWatchlist.map((e) => e.key).join(',');
+
+      if (ids.isEmpty) {
+        watchlist.clear();
+        detailedWatchlist.clear();
+        return;
+      }
+
+      final detailed = await _watchlistService.fetchCoinListDataByIds(ids: ids);
+      for (var item in detailed) {
+        final match = rawWatchlist.firstWhereOrNull((e) => e.key == item.id);
+        if (match != null && match.imageUrl.isNotEmpty) {
+          item.icon = match.imageUrl;
+        }
+      }
+
+      watchlist.assignAll(detailed);
+      detailedWatchlist.assignAll(detailed);
+    } catch (e) {
+      print("❌ Error fetching detailed watchlist: $e");
+    } finally {
+      isLoadingWatchlist.value = false;
+    }
   }
 
   Future<void> fetchUsdToIdrRate() async {
@@ -125,6 +230,8 @@ class MarketsController extends GetxController {
       ohlcData.clear();
       final result = await _coinService.fetchCoinDetail(id);
       coinDetail.value = result;
+
+      isCurrentCoinWatched.value = isWatched(result.id);
       await loadOhlcData(result.id);
     } catch (e) {
       print('❌ Failed to fetch coin detail: $e');
