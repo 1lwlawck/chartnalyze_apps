@@ -13,6 +13,7 @@ class ProfileView extends GetView<ProfileController> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(ProfileController());
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -31,13 +32,20 @@ class ProfileView extends GetView<ProfileController> {
           elevation: 0.5,
         ),
         backgroundColor: Colors.white,
-        body: const Column(
-          children: [
-            ProfileInfo(),
-            ProfileTabs(),
-            Expanded(child: ProfileEmptyView()),
-          ],
-        ),
+        body: Obx(() {
+          if (controller.isLoading.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          return const Column(
+            children: [
+              ProfileInfo(),
+              ProfileTabs(),
+              Expanded(child: ProfileEmptyView()),
+            ],
+          );
+        }),
+
         floatingActionButton: const ProfileExpandableFAB(),
       ),
     );

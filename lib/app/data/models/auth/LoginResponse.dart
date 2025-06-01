@@ -1,4 +1,4 @@
-import 'package:chartnalyze_apps/app/data/models/auth/UserModel.dart';
+import 'package:chartnalyze_apps/app/data/models/users/UserModel.dart';
 
 class LoginResponse {
   // Data user setelah login berhasil
@@ -29,7 +29,7 @@ class LoginResponse {
       user:
           data['user'] != null
               ? UserModel.fromJson(data['user'])
-              : UserModel.empty(), // fallback jika user null
+              : UserModel.empty(),
       accessToken: data['access_token'] ?? '',
       message: json['message'] ?? '',
       status: json['status'] ?? 0,

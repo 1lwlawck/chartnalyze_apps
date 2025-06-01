@@ -5,8 +5,6 @@ import '../controllers/community_controller.dart';
 class CommunityBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<CommunityController>(
-      () => CommunityController(),
-    );
+    Get.lazyPut<CommunityController>(() => CommunityController());
   }
 }

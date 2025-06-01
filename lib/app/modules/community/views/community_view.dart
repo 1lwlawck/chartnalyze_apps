@@ -9,18 +9,19 @@ class CommunityView extends GetView<CommunityController> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(CommunityController());
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0.5,
         title: const Text(
-          'Komunitas',
+          'Community',
           style: TextStyle(
             fontFamily: AppFonts.nextTrial,
             fontWeight: FontWeight.bold,
             fontSize: 30,
-            color: Colors.black,
+            color: AppColors.primaryGreen,
           ),
         ),
         centerTitle: false,
@@ -36,78 +37,33 @@ class CommunityView extends GetView<CommunityController> {
           SizedBox(width: 12),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          _buildCommunityPost(
-            username: 'Da Investopedia',
-            handle: '@Dalnvestopedia',
-            time: '10j',
-            content:
-                '"🪙 \$BTC adalah aset moneter terbaik yang pernah kita miliki" ungkap ekonom dan penulis terkenal Saifedean Ammous selama Hari Investor Bitwise Standard Corporations...',
-            image:
-                'https://jabarekspres.com/wp-content/uploads/2024/02/3423423-1.jpg',
-            likes: 523,
-            views: '186K',
-            comments: 23,
-            reposts: 13,
-          ),
-          const SizedBox(height: 12),
-          _buildCommunityPost(
-            username: 'Crypto Uncle',
-            handle: '@CryptoUncle_Log',
-            time: '8j',
-            content:
-                '🚨 UPDATE: AZ Sen. Wendy Rogers respond veto of her #Bitcoin ₿ \$BTC Reserve Bill, says she\'ll refile next session.',
-            image: null,
-            likes: 152,
-            views: '98K',
-            comments: 11,
-            reposts: 8,
-          ),
-          const SizedBox(height: 12),
-          _buildCommunityPost(
-            username: 'Altcoin Radar',
-            handle: '@AltRadar',
-            time: '5j',
-            content:
-                '🔥 \$MANTA up 23% in the last 24h. Community getting hyped about upcoming ecosystem expansion.',
-            image:
-                'https://blog.pintu.co.id/wp-content/uploads/2023/09/manta-network-1024x642.jpg',
-            likes: 348,
-            views: '145K',
-            comments: 19,
-            reposts: 5,
-          ),
-          const SizedBox(height: 12),
-          _buildCommunityPost(
-            username: 'DefiVerse',
-            handle: '@DefiTalks',
-            time: '3j',
-            content:
-                '🌐 Liquid staking on Solana just hit a new ATH in TVL. \$SOL ecosystem keeps pushing boundaries. #DeFi #Solana',
-            image: null,
-            likes: 287,
-            views: '112K',
-            comments: 16,
-            reposts: 4,
-          ),
-          const SizedBox(height: 12),
-          _buildCommunityPost(
-            username: 'CryptoPanicID',
-            handle: '@CryptoPanicID',
-            time: '1j',
-            content:
-                '📰 BREAKING: Binance listing rumor sparks \$TURBO price rally. Coin jumps over 40% in a few hours!',
-            image:
-                'https://blog.pintu.co.id/wp-content/uploads/2024/05/turbo-crypto.jpg', // contoh image dummy
-            likes: 491,
-            views: '200K',
-            comments: 34,
-            reposts: 12,
-          ),
-        ],
-      ),
+      body: Obx(() {
+        if (controller.isLoading.value || controller.isUserLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        return ListView.separated(
+          padding: const EdgeInsets.all(16),
+          itemCount: controller.posts.length,
+          separatorBuilder: (_, __) => const SizedBox(height: 12),
+          itemBuilder: (context, index) {
+            final post = controller.posts[index];
+            final user = controller.getUser(post.userId);
+
+            return _buildCommunityPost(
+              username: user?.name ?? 'Loading...',
+              handle: '@${user?.username ?? 'unknown'}',
+              time: post.createdAt.substring(0, 10),
+              content: post.body,
+              image: post.imageUrls.isNotEmpty ? post.imageUrls.first : null,
+              likes: post.likeCount,
+              views: '0',
+              comments: post.commentCount,
+              reposts: 0,
+            );
+          },
+        );
+      }),
     );
   }
 
@@ -123,14 +79,14 @@ class CommunityView extends GetView<CommunityController> {
     required int reposts,
   }) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.05),
-            blurRadius: 4,
+            color: Colors.grey.withOpacity(0.06),
+            blurRadius: 6,
             offset: const Offset(0, 2),
           ),
         ],
@@ -140,44 +96,41 @@ class CommunityView extends GetView<CommunityController> {
         children: [
           // Header
           Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const CircleAvatar(
-                radius: 18,
-                backgroundImage: NetworkImage('https://i.pravatar.cc/300'),
+                radius: 20,
+                backgroundImage: NetworkImage('https://i.pravatar.cc/150'),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 12),
               Expanded(
-                child: Text.rich(
-                  TextSpan(
-                    text: username,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontFamily: AppFonts.nextTrial,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: '  $handle • $time',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.normal,
-                          fontSize: 12,
-                          fontFamily: AppFonts.circularStd,
-                          color: Colors.grey,
-                        ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      username,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: AppFonts.nextTrial,
+                        fontSize: 15,
                       ),
-                    ],
-                  ),
+                    ),
+                    Text(
+                      '$handle • $time',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey,
+                        fontFamily: AppFonts.circularStd,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              // TextButton(
-              //   onPressed: () {},
-              //   child: const Text('+ Mengikuti',
-              //       style:
-              //           TextStyle(fontSize: 12, color: AppColors.primaryGreen)),
-              // )
+              Icon(Icons.more_horiz, color: Colors.grey[400]),
             ],
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
 
           // Content
           Text(
@@ -191,21 +144,21 @@ class CommunityView extends GetView<CommunityController> {
           if (image != null) ...[
             const SizedBox(height: 10),
             ClipRRect(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(12),
               child: Image.network(image),
             ),
           ],
 
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
 
           // Stats
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildStat(icon: Icons.remove_red_eye, label: views),
-              _buildStat(icon: Icons.comment, label: '$comments'),
+              _buildStat(icon: Icons.remove_red_eye_outlined, label: views),
+              _buildStat(icon: Icons.comment_outlined, label: '$comments'),
               _buildStat(icon: Icons.repeat, label: '$reposts'),
-              _buildStat(icon: Icons.favorite, label: '$likes'),
+              _buildStat(icon: Icons.favorite_border, label: '$likes'),
             ],
           ),
         ],
@@ -216,14 +169,16 @@ class CommunityView extends GetView<CommunityController> {
   Widget _buildStat({required IconData icon, required String label}) {
     return Row(
       children: [
-        Icon(icon, size: 16, color: Colors.grey),
+        Icon(icon, size: 18, color: Colors.grey[600]),
         const SizedBox(width: 4),
-        Text(label,
-            style: const TextStyle(
-              fontSize: 12,
-              fontFamily: AppFonts.circularStd,
-              color: Colors.grey,
-            )),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 13,
+            color: Colors.black87,
+            fontFamily: AppFonts.circularStd,
+          ),
+        ),
       ],
     );
   }

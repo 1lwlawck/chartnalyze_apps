@@ -31,3 +31,7 @@ class NoData {
 class VerifiedImage {
   static const String verifiedImage = 'assets/images/verified_image.png';
 }
+
+class NoProfileImage {
+  static const String noProfileImage = 'assets/images/me.png';
+}

@@ -93,6 +93,7 @@ flutter:
     - assets/images/empty-post.png
     - assets/images/verified_image.png
     - assets/images/no-data.png
+    - assets/images/me.png
 
   fonts:
     - family: NextTrial
