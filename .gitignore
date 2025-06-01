@@ -1,5 +1,5 @@
 # Miscellaneous
-*.flutter.env
+*.env
 *.class
 *.log
 *.pyc
