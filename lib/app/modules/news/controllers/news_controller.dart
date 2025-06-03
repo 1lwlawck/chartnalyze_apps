@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:chartnalyze_apps/app/data/models/news/NewsItemModel.dart';
-import 'package:chartnalyze_apps/app/data/services/news/CoinDeskService.dart';
+import 'package:chartnalyze_apps/app/data/services/news/CoindeskService.dart';
 
 class NewsController extends GetxController {
   final _newsService = CoinDeskService();
