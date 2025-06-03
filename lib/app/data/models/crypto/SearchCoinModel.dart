@@ -9,7 +9,6 @@ class SearchCoinModel {
     required this.name,
     required this.symbol,
     required this.thumb,
-    required,
   });
 
   factory SearchCoinModel.fromJson(Map<String, dynamic> json) {
