@@ -202,7 +202,7 @@ class AuthService extends GetxService {
   }) async {
     try {
       final response = await dioClient.patch(
-        '/users/self/password/reset', // ✅ tanp `/api`, karena sudah di baseUrl
+        '/users/self/password/reset',
         data: dio.FormData.fromMap({
           'code': code,
           'password': password,

@@ -27,8 +27,10 @@ class CoinListTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-        margin: const EdgeInsets.symmetric(vertical: 6),
+        padding: const EdgeInsets.fromLTRB(12, 0, 9, 10),
+
+        margin: const EdgeInsets.only(top: 0, bottom: 16),
+
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),

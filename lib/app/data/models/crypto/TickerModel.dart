@@ -1,35 +1,33 @@
 class TickerModel {
-  final String exchangeName;
+  final String marketName;
   final String base;
   final String target;
-  final double lastPrice;
-  final double volumeUsd;
+  final double price;
+  final double volume;
   final String trustScore;
   final String tradeUrl;
-  final String exchangeUrl; // <--- tambahkan ini
+  final String exchangeLogo;
 
   TickerModel({
-    required this.exchangeName,
+    required this.marketName,
     required this.base,
     required this.target,
-    required this.lastPrice,
-    required this.volumeUsd,
+    required this.price,
+    required this.volume,
     required this.trustScore,
     required this.tradeUrl,
-    required this.exchangeUrl,
+    required this.exchangeLogo,
   });
 
   factory TickerModel.fromJson(Map<String, dynamic> json) {
     return TickerModel(
-      exchangeName: json['market']['name'] ?? '',
-      exchangeUrl:
-          json['market']['identifier'] != null
-              ? 'https://${json['market']['identifier']}.com'
-              : '', // <--- akali jadi URL
-      base: json['base'],
-      target: json['target'],
-      lastPrice: (json['last'] as num).toDouble(),
-      volumeUsd: (json['converted_volume']['usd'] as num?)?.toDouble() ?? 0,
+      marketName: json['market']['name'] ?? '',
+      exchangeLogo:
+          json['market']['logo'] ?? '', // ✅ Logo exchange diambil dari sini
+      base: json['base'] ?? '',
+      target: json['target'] ?? '',
+      price: (json['last'] as num).toDouble(),
+      volume: (json['converted_volume']['usd'] as num?)?.toDouble() ?? 0,
       trustScore: json['trust_score'] ?? '',
       tradeUrl: json['trade_url'] ?? '',
     );

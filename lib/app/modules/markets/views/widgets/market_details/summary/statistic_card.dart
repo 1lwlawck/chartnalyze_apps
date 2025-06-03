@@ -33,7 +33,7 @@ class MarketStatisticCard extends StatelessWidget {
         children: [
           const _Header(),
           const SizedBox(height: 12),
-          const _ToggleRow(),
+          // const _ToggleRow(),
           const SizedBox(height: 12),
           const Text(
             'Low / High',
@@ -127,8 +127,8 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: const [
-        Text(
+      children: [
+        const Text(
           'Statistics',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -136,64 +136,55 @@ class _Header extends StatelessWidget {
             fontFamily: AppFonts.circularStd,
           ),
         ),
-        Text(
-          'See All',
-          style: TextStyle(
-            color: AppColors.primaryGreen,
-            fontWeight: FontWeight.w500,
-            fontSize: 13,
-            fontFamily: AppFonts.circularStd,
-          ),
-        ),
       ],
     );
   }
 }
 
-/// Widget: Toggle row (24h, 30d, 1y)
-class _ToggleRow extends StatelessWidget {
-  const _ToggleRow();
+// /// Widget: Toggle row (24h, 30d, 1y)
+// class _ToggleRow extends StatelessWidget {
+//   const _ToggleRow();
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: const [
-        _Toggle('24h', true),
-        _Toggle('30d', false),
-        _Toggle('1y', false),
-      ],
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Row(
+//       mainAxisAlignment: MainAxisAlignment.end,
+//       children: const [
+//         _Toggle('24h', true),
+//         _Toggle('30d', false),
+//         _Toggle('1y', false),
+//       ],
+//     );
+//   }
+// }
 
 /// Widget: Single toggle button
-class _Toggle extends StatelessWidget {
-  final String label;
-  final bool isActive;
+// class _Toggle extends StatelessWidget {
+//   final String label;
+//   final bool isActive;
 
-  const _Toggle(this.label, this.isActive);
+//   const _Toggle(this.label, this.isActive);
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 6),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-      decoration: BoxDecoration(
-        color: isActive ? Colors.grey[200] : Colors.transparent,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontSize: 13,
-          fontFamily: AppFonts.circularStd,
-          fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       margin: const EdgeInsets.symmetric(horizontal: 6),
+//       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+//       decoration: BoxDecoration(
+//         color: isActive ? Colors.grey[200] : Colors.transparent,
+//         borderRadius: BorderRadius.circular(10),
+//       ),
+//       child: Text(
+//         label,
+//         style: TextStyle(
+//           fontSize: 13,
+//           fontFamily: AppFonts.circularStd,
+//           fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 /// Widget: Group of stats (left or right column)
 class _StatGroup extends StatelessWidget {

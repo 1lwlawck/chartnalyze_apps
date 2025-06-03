@@ -64,7 +64,7 @@ class _MarketCoinListState extends State<MarketCoinList> {
             builder:
                 (context) => SafeArea(
                   child: Container(
-                    width: double.infinity, // 👈 memastikan lebar penuh
+                    width: double.infinity,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 24,

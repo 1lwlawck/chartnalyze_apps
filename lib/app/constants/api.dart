@@ -77,12 +77,25 @@ class CoinGeckoConstants {
   static Uri searchCoinUrl(String query) {
     return Uri.parse('$baseUrl/search?query=$query&x-cg-demo-api-key=$apiKey');
   }
+
+  static Uri trendingUrl() {
+    return Uri.parse('$baseUrl/search/trending?x-cg-demo-api-key=$apiKey');
+  }
+
+  static Uri tickersUrl(String id, {int page = 1, int perPage = 100}) {
+    return Uri.parse(
+      '$baseUrl/coins/$id/tickers'
+      '?page=$page&per_page=$perPage'
+      '&include_exchange_logo=true'
+      '&x-cg-demo-api-key=$apiKey',
+    );
+  }
 }
 
 // https://cryptopanic.com/api/v1/posts/?auth_token=740d524ea774623286008b92dc14679ff253c3a9
 // for CryptoPanic news
 class CryptoPanicConstants {
-  static const String baseUrl = 'https://cryptopanic.com/api/v1';
+  static const String baseUrl = 'https://cryptopanic.com/api/developer/v2';
   static final String? apiKey = dotenv.env['CRYPTOPANIC_API_KEY'];
 
   static const String postsEndpoint = '/posts/';

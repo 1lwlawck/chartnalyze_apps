@@ -1,10 +1,12 @@
 class NewsItem {
-  // Informasi dasar berita
   final String title;
   final String url;
   final String publishedAt;
   final String? thumbnail;
   final String? source;
+  final String? body;
+  final String? sentiment;
+  final List<String>? categories;
 
   NewsItem({
     required this.title,
@@ -12,46 +14,42 @@ class NewsItem {
     required this.publishedAt,
     this.thumbnail,
     this.source,
+    this.body,
+    this.sentiment,
+    this.categories,
   });
 
-  // Parsing dari JSON
   factory NewsItem.fromJson(Map<String, dynamic> json) {
     return NewsItem(
-      title: json['title'] ?? '',
-      url: json['source']?['url'] ?? '',
-      publishedAt: json['published_at'] ?? '',
-      source: json['source']?['title'],
-      thumbnail: null,
+      title: json['TITLE'] ?? '',
+      url: json['URL'] ?? '',
+      publishedAt:
+          DateTime.fromMillisecondsSinceEpoch(
+            (json['PUBLISHED_ON'] ?? 0) * 1000,
+          ).toIso8601String(),
+      thumbnail: json['IMAGE_URL'],
+      source: json['SOURCE_DATA']?['NAME'] ?? 'Unknown Source',
+      body: json['BODY'],
+      sentiment: json['SENTIMENT'],
+      categories:
+          (json['CATEGORY_DATA'] as List<dynamic>?)
+              ?.map((cat) => cat['CATEGORY']?.toString() ?? '')
+              .where((e) => e.isNotEmpty)
+              .toList(),
     );
   }
 
-  // Konversi ke JSON
   Map<String, dynamic> toJson() => {
     'title': title,
     'url': url,
     'published_at': publishedAt,
     'thumbnail': thumbnail,
     'source': source,
+    'body': body,
+    'sentiment': sentiment,
+    'categories': categories,
   };
 
-  // Buat salinan data dengan perubahan nilai tertentu
-  NewsItem copyWith({
-    String? title,
-    String? url,
-    String? publishedAt,
-    String? thumbnail,
-    String? source,
-  }) {
-    return NewsItem(
-      title: title ?? this.title,
-      url: url ?? this.url,
-      publishedAt: publishedAt ?? this.publishedAt,
-      thumbnail: thumbnail ?? this.thumbnail,
-      source: source ?? this.source,
-    );
-  }
-
-  // Konversi string waktu ke DateTime
   DateTime? get publishedDateTime {
     try {
       return DateTime.parse(publishedAt).toLocal();

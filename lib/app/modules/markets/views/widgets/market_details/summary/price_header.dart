@@ -120,18 +120,6 @@ class MarketPriceHeader extends StatelessWidget {
         // RIGHT SIDE
         Row(
           children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.notifications,
-                size: 20,
-                color: Colors.orange,
-              ),
-            ),
             const SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),

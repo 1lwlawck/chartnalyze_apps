@@ -22,11 +22,21 @@ class MarketStats extends GetView<MarketsController> {
     return current >= previous ? Colors.green : Colors.red;
   }
 
-  // ignore: unused_element
-  Widget _statBox(String title, String value, String change, Color color) {
+  /// Widget statistik
+  Widget _statBox(
+    String title,
+    String value,
+    String change,
+    Color color, {
+    IconData? icon,
+  }) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center, // Center semua isi
       children: [
+        if (icon != null) ...[
+          Icon(icon, size: 20, color: AppColors.primaryGreen),
+          const SizedBox(height: 6),
+        ],
         Text(
           title,
           style: const TextStyle(
@@ -46,20 +56,22 @@ class MarketStats extends GetView<MarketsController> {
             fontFamily: AppFonts.circularStd,
           ),
         ),
-        const SizedBox(height: 4),
-        Text(
-          change,
-          style: TextStyle(
-            color: color,
-            fontSize: 12,
-            fontFamily: AppFonts.circularStd,
+        if (change.isNotEmpty) ...[
+          const SizedBox(height: 4),
+          Text(
+            change,
+            style: TextStyle(
+              color: color,
+              fontSize: 12,
+              fontFamily: AppFonts.circularStd,
+            ),
           ),
-        ),
+        ],
       ],
     );
   }
 
-  // ignore: unused_element
+  /// Garis vertikal pemisah antar stat
   Widget _verticalDivider() {
     return Container(
       height: 50,
@@ -116,96 +128,44 @@ class MarketStats extends GetView<MarketsController> {
       );
 
       return Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            _miniCard(
-              icon: Icons.pie_chart,
-              title: 'Market Cap',
-              value: marketCapStr,
-              change: marketCapChange,
-              color: marketCapColor,
-            ),
-            const SizedBox(width: 10),
-            _miniCard(
-              icon: Icons.bar_chart,
-              title: 'Volume',
-              value: volumeStr,
-              change: volumeChange,
-              color: volumeColor,
-            ),
-            const SizedBox(width: 10),
-            _miniCard(
-              icon: Icons.percent,
-              title: 'Dominance',
-              value: dominanceStr,
-              change: '',
-              color: Colors.grey,
-            ),
-          ],
+        padding: const EdgeInsets.all(10),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 6,
+                offset: const Offset(2, 2),
+              ),
+            ],
+            border: Border.all(color: Colors.grey.withOpacity(0.1)),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: _statBox(
+                  'Market Cap',
+                  marketCapStr,
+                  marketCapChange,
+                  marketCapColor,
+                ),
+              ),
+              _verticalDivider(),
+              Expanded(
+                child: _statBox('Volume', volumeStr, volumeChange, volumeColor),
+              ),
+              _verticalDivider(),
+              Expanded(
+                child: _statBox('Dominance', dominanceStr, '', Colors.grey),
+              ),
+            ],
+          ),
         ),
       );
     });
-  }
-
-  Widget _miniCard({
-    required IconData icon,
-    required String title,
-    required String value,
-    required String change,
-    required Color color,
-  }) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 6,
-              offset: const Offset(2, 2),
-            ),
-          ],
-          border: Border.all(color: Colors.grey.withOpacity(0.1)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, size: 20, color: AppColors.primaryGreen),
-            const SizedBox(height: 6),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.black54,
-                fontFamily: AppFonts.circularStd,
-              ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                fontFamily: AppFonts.circularStd,
-              ),
-            ),
-            if (change.isNotEmpty) ...[
-              const SizedBox(height: 2),
-              Text(
-                change,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: color,
-                  fontFamily: AppFonts.circularStd,
-                ),
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
   }
 }

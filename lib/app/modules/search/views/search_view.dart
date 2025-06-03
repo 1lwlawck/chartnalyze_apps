@@ -1,9 +1,12 @@
+import 'package:chartnalyze_apps/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/constants/fonts.dart';
 import 'package:chartnalyze_apps/app/modules/search/controllers/search_controller.dart';
 import 'package:chartnalyze_apps/app/modules/search/widgets/search_result_tile.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SearchView extends GetView<SearchControllers> {
   const SearchView({super.key});
@@ -24,54 +27,68 @@ class SearchView extends GetView<SearchControllers> {
         backgroundColor: AppColors.white,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(120),
-          child: AppBar(
-            backgroundColor: AppColors.primaryGreen,
-            elevation: 0.5,
-            automaticallyImplyLeading: false,
-            flexibleSpace: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Cari Aset',
-                      style: TextStyle(
-                        color: AppColors.white,
-                        fontFamily: AppFonts.nextTrial,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: controller.searchController,
-                      decoration: InputDecoration(
-                        hintText: 'Cari koin atau penukaran...',
-                        hintStyle: const TextStyle(
-                          fontFamily: AppFonts.circularStd,
-                          fontSize: 13,
-                          color: Colors.grey,
-                        ),
-                        prefixIcon: const Icon(Icons.search),
-                        fillColor: Colors.white,
-                        filled: true,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 0),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
+          child: Container(
+            decoration: const BoxDecoration(
+              color: AppColors.primaryGreen,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
+              ),
+            ),
+            child: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              automaticallyImplyLeading: false,
+              flexibleSpace: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Search Assets',
+                        style: GoogleFonts.poppins(
+                          color: AppColors.white,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 25,
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: controller.searchController,
+                        decoration: InputDecoration(
+                          hintText: 'Search assets ex: Bitcoin, Ethereum',
+                          hintTextDirection: TextDirection.ltr,
+                          hintStyle: GoogleFonts.poppins(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.grey,
+                          ),
+                          prefixIcon: const Icon(Icons.search),
+                          fillColor: Colors.white,
+                          filled: true,
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 0,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
         ),
+
         body: Obx(() {
           if (controller.isLoading.value) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: SpinKitWave(color: AppColors.primaryGreen, size: 20),
+            );
           }
 
           final query = controller.searchController.text.trim();
@@ -83,7 +100,7 @@ class SearchView extends GetView<SearchControllers> {
               padding: const EdgeInsets.all(16),
               children: [
                 const Text(
-                  'Aset yang Baru Dicari',
+                  'Recent Assets',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontFamily: AppFonts.nextTrial,
@@ -102,7 +119,11 @@ class SearchView extends GetView<SearchControllers> {
                       coin: coin,
                       onTap: () {
                         controller.addToRecentAsset(coin);
-                        // Get.toNamed(Routes.COIN_DETAIL, arguments: coin.id);
+
+                        Get.toNamed(
+                          Routes.MARKETS_DETAIL,
+                          arguments: {'coinId': coin.id},
+                        );
                       },
                     );
                   },
@@ -114,7 +135,7 @@ class SearchView extends GetView<SearchControllers> {
           if (query.isNotEmpty && results.isEmpty) {
             return const Center(
               child: Text(
-                'Data tidak ditemukan.',
+                'No results found',
                 style: TextStyle(color: Colors.grey),
               ),
             );
@@ -130,7 +151,10 @@ class SearchView extends GetView<SearchControllers> {
                 coin: coin,
                 onTap: () {
                   controller.addToRecentAsset(coin);
-                  // Get.toNamed(Routes.COIN_DETAIL, arguments: coin.id);
+                  Get.toNamed(
+                    Routes.MARKETS_DETAIL,
+                    arguments: {'coinId': coin.id},
+                  );
                 },
               );
             },

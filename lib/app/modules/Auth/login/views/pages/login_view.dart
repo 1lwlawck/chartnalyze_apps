@@ -6,6 +6,7 @@ import 'package:chartnalyze_apps/widgets/button/CustomButton.dart';
 import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/constants/fonts.dart';
 import 'package:chartnalyze_apps/app/constants/strings.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/login_controller.dart';
 import 'package:chartnalyze_apps/app/routes/app_pages.dart';
 
@@ -35,13 +36,12 @@ class LoginView extends GetView<LoginController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 10),
-              const Text(
+              Text(
                 AppStrings.signIn,
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   fontSize: 40,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w700,
                   color: Colors.black,
-                  fontFamily: AppFonts.nextTrial,
                 ),
               ),
               const SizedBox(height: 10),

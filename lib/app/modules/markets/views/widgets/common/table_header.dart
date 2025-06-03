@@ -7,8 +7,8 @@ class MarketTableHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(12),
@@ -24,7 +24,7 @@ class MarketTableHeader extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Index #
-          const SizedBox(width: 5),
+          const SizedBox(width: 1),
           const SizedBox(
             width: 15,
             child: SafeArea(
@@ -39,7 +39,7 @@ class MarketTableHeader extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(width: 15),
+          const SizedBox(width: 14),
 
           // Market Cap
           const Expanded(

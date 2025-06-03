@@ -9,7 +9,7 @@ import 'package:chartnalyze_apps/app/data/models/crypto/OHLCDataModel.dart';
 import 'package:chartnalyze_apps/app/data/models/crypto/TickerModel.dart';
 import 'package:chartnalyze_apps/app/data/services/crypto/CoinService.dart';
 import 'package:chartnalyze_apps/app/data/services/crypto/WatchlistService.dart';
-import 'package:chartnalyze_apps/app/data/services/news/CoinPanicService.dart';
+import 'package:chartnalyze_apps/app/data/services/news/CoindeskService.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
@@ -18,7 +18,7 @@ import 'package:share_plus/share_plus.dart';
 
 class MarketsController extends GetxController {
   final CoinService _coinService = CoinService();
-  final CoinPanicService _newsService = CoinPanicService();
+  final CoinDeskService _newsService = CoinDeskService();
   final WatchlistService _watchlistService = Get.put(WatchlistService());
 
   var isLoading = true.obs;
@@ -241,13 +241,12 @@ class MarketsController extends GetxController {
   }
 
   Future<void> fetchMarketTickers(String coinId) async {
-    isLoadingTickers.value = true;
     try {
-      final result = await _coinService.fetchTickers(coinId);
-      tickers.assignAll(result);
+      isLoadingTickers.value = true;
+      final data = await _coinService.fetchTickers(coinId);
+      tickers.assignAll(data);
     } catch (e) {
-      tickers.clear();
-      print('❌ Error fetching tickers: $e');
+      Get.snackbar('Error', 'Gagal mengambil data market: $e');
     } finally {
       isLoadingTickers.value = false;
     }
@@ -292,12 +291,27 @@ class MarketsController extends GetxController {
 
   Future<void> fetchNewsForCoin(String symbol) async {
     isLoadingNews.value = true;
+
+    // [DEBUG] Tampilkan simbol coin
+    print('🔍 Fetching news for coin symbol: $symbol');
+
     try {
-      final news = await _newsService.fetchNews(currencies: symbol);
+      final news = await _newsService.fetchNews(
+        categories: [symbol.toUpperCase()],
+        limit: 10,
+      );
+
+      // [DEBUG] Cek apakah responsenya kosong atau ada isinya
+      print('✅ News fetched for $symbol → Total: ${news.length}');
+      for (var n in news) {
+        print('📰 ${n.title} | ${n.publishedAt}');
+      }
+
       newsList.assignAll(news);
     } catch (e) {
+      // [DEBUG] Jika gagal, tampilkan error-nya
+      print('❌ Error fetching news for $symbol: $e');
       newsList.clear();
-      print('Error fetching news for $symbol: $e');
     } finally {
       isLoadingNews.value = false;
     }

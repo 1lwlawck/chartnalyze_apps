@@ -29,7 +29,9 @@ class MarketTabs extends StatelessWidget {
                         controller.tabLabels[index],
                         style: TextStyle(
                           color:
-                              isSelected ? AppColors.primaryGreen : Colors.grey,
+                              isSelected
+                                  ? AppColors.white
+                                  : AppColors.white.withOpacity(0.6),
                           fontWeight:
                               isSelected ? FontWeight.bold : FontWeight.normal,
                           fontSize: 16,
@@ -40,9 +42,7 @@ class MarketTabs extends StatelessWidget {
                         height: 2,
                         width: 20,
                         color:
-                            isSelected
-                                ? AppColors.primaryGreen
-                                : Colors.transparent,
+                            isSelected ? AppColors.white : Colors.transparent,
                       ),
                     ],
                   ),

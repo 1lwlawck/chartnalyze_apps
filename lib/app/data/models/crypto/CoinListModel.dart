@@ -61,4 +61,8 @@ class CoinListModel {
               : [],
     );
   }
+
+  get image => null;
+
+  get marketCapRank => null;
 }

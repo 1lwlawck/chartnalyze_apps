@@ -14,6 +14,9 @@ class CoinDetailModel {
   final String explorer;
   final String whitepaper;
   final List<String> categories;
+  final Map<String, String> homepageLinks;
+  final Map<String, String> visitorLinks;
+  final Map<String, String> communityLinks;
 
   // Data pasar dan statistik
   final double price;
@@ -30,7 +33,6 @@ class CoinDetailModel {
   final double low24h;
   final List<double> sparkline;
 
-  // Konstruktor
   CoinDetailModel({
     required this.id,
     required this.name,
@@ -44,6 +46,9 @@ class CoinDetailModel {
     required this.explorer,
     required this.whitepaper,
     required this.categories,
+    required this.homepageLinks,
+    required this.visitorLinks,
+    required this.communityLinks,
     required this.price,
     required this.priceIdr,
     required this.marketCap,
@@ -61,6 +66,41 @@ class CoinDetailModel {
 
   // Konversi dari JSON ke model
   factory CoinDetailModel.fromJson(Map<String, dynamic> json) {
+    final homepageLinks = <String, String>{};
+    if ((json['links']['homepage'] as List).isNotEmpty) {
+      homepageLinks['Homepage'] = json['links']['homepage'][0];
+    }
+
+    final visitorLinks = <String, String>{};
+    for (var url in (json['links']['blockchain_site'] as List)) {
+      if (url != null && url.toString().isNotEmpty) {
+        final uri = Uri.tryParse(url);
+        if (uri != null && uri.host.isNotEmpty) {
+          final name = uri.host.replaceAll('www.', '');
+          visitorLinks[name] = url;
+        }
+      }
+    }
+
+    final communityLinks = <String, String>{};
+    if ((json['links']['twitter_screen_name'] ?? '').toString().isNotEmpty) {
+      communityLinks['Twitter'] =
+          'https://twitter.com/${json['links']['twitter_screen_name']}';
+    }
+    if ((json['links']['facebook_username'] ?? '').toString().isNotEmpty) {
+      communityLinks['Facebook'] =
+          'https://facebook.com/${json['links']['facebook_username']}';
+    }
+    if ((json['links']['subreddit_url'] ?? '').toString().isNotEmpty) {
+      communityLinks['Reddit'] = json['links']['subreddit_url'];
+    }
+    if ((json['links']['official_forum_url'] as List).isNotEmpty) {
+      final url = json['links']['official_forum_url'][0];
+      if (url.toString().isNotEmpty) {
+        communityLinks['bitcointalk.org'] = url;
+      }
+    }
+
     return CoinDetailModel(
       id: json['id'],
       name: json['name'],
@@ -70,6 +110,9 @@ class CoinDetailModel {
       blockTime: json['block_time_in_minutes'] ?? 0,
       genesisDate: json['genesis_date'] ?? '-',
       imageUrl: json['image']['small'] ?? '',
+      homepageLinks: homepageLinks,
+      visitorLinks: visitorLinks,
+      communityLinks: communityLinks,
       homepage:
           json['links']['homepage'].isNotEmpty
               ? json['links']['homepage'][0]

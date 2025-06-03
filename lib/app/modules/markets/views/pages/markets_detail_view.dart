@@ -2,6 +2,8 @@ import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/constants/fonts.dart';
 import 'package:chartnalyze_apps/app/helpers/text_helper.dart';
 import 'package:chartnalyze_apps/app/modules/markets/controllers/markets_controller.dart';
+// import 'package:chartnalyze_apps/app/modules/markets/views/widgets/market_details/market/market_ticker_row.dart';
+import 'package:chartnalyze_apps/app/modules/markets/views/widgets/market_details/market/market_ticker_section.dart';
 import 'package:chartnalyze_apps/app/modules/markets/views/widgets/market_details/summary/chart_interval.dart';
 import 'package:chartnalyze_apps/app/modules/markets/views/widgets/market_details/summary/charts.dart';
 import 'package:chartnalyze_apps/app/modules/markets/views/widgets/market_details/info/coin_info.dart';
@@ -43,6 +45,7 @@ class MarketDetailView extends GetView<MarketsController> {
               (context, innerBoxIsScrolled) => [
                 SliverAppBar(
                   backgroundColor: AppColors.primaryGreen,
+
                   elevation: 0.5,
                   pinned: true,
                   toolbarHeight: 56,
@@ -123,14 +126,14 @@ class MarketDetailView extends GetView<MarketsController> {
                           ),
                           const Spacer(),
                           ...[
-                            IconButton(
-                              icon: const Icon(
-                                Icons.search,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                              onPressed: () {},
-                            ),
+                            // IconButton(
+                            //   icon: const Icon(
+                            //     Icons.search,
+                            //     color: Colors.white,
+                            //     size: 20,
+                            //   ),
+                            //   onPressed: () {},
+                            // ),
                             IconButton(
                               icon: const Icon(
                                 Icons.share_outlined,
@@ -286,7 +289,35 @@ class MarketDetailView extends GetView<MarketsController> {
                         ),
 
                         /// BAGIAN YANG TIDAK IKUT DI-SHARE
-                        const SizedBox(height: 12),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Builder(
+                            builder:
+                                (context) => TextButton(
+                                  onPressed: () {
+                                    final tabController =
+                                        DefaultTabController.of(context);
+                                    tabController.animateTo(
+                                      1, // Tab "Info"
+                                      duration: const Duration(
+                                        milliseconds: 700,
+                                      ),
+                                      curve: Curves.easeInOut,
+                                    );
+                                  },
+                                  child: const Text(
+                                    'See All',
+                                    style: TextStyle(
+                                      color: AppColors.primaryGreen,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 13,
+                                      fontFamily: AppFonts.circularStd,
+                                    ),
+                                  ),
+                                ),
+                          ),
+                        ),
+                        const SizedBox(height: 5),
                         MarketStatisticCard(coin: coin),
                       ],
                     ),
@@ -308,6 +339,29 @@ class MarketDetailView extends GetView<MarketsController> {
                   }
 
                   return CoinInfoSection(coin: coin);
+                }),
+                Obx(() {
+                  if (controller.isLoadingTickers.value) {
+                    return const Center(
+                      child: SpinKitWave(
+                        color: AppColors.primaryGreen,
+                        size: 24.0,
+                      ),
+                    );
+                  }
+
+                  if (controller.tickers.isEmpty) {
+                    return const Center(
+                      child: Text('No market data available.'),
+                    );
+                  }
+
+                  return ListView(
+                    padding: const EdgeInsets.only(top: 0),
+                    children: [
+                      MarketTickerSection(tickers: controller.tickers),
+                    ],
+                  );
                 }),
 
                 // Obx(() {
@@ -348,7 +402,6 @@ class MarketDetailView extends GetView<MarketsController> {
                 //     ],
                 //   );
                 // }),
-                const Center(child: Text('Market')),
 
                 /// Berita
                 Obx(() {

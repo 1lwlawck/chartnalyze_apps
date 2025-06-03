@@ -20,8 +20,8 @@ class EmptyPost {
 }
 
 class PasswordIcons {
-  static const String eye = 'assets/images/password-icons/eye 1.png';
-  static const String eyeOff = 'assets/images/password-icons/eye-off 1.png';
+  static const String eye = 'assets/images/password-icons/OnEye.png';
+  static const String eyeOff = 'assets/images/password-icons/OffEye.png';
 }
 
 class NoData {
