@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:chartnalyze_apps/app/data/models/crypto/ExchangeModel.dart';
 import 'package:chartnalyze_apps/app/data/models/crypto/GlobalMarketModel.dart';
 import 'package:chartnalyze_apps/app/data/models/crypto/SearchCoinModel.dart';
 import 'package:chartnalyze_apps/app/data/models/crypto/TickerModel.dart';
@@ -198,6 +199,39 @@ class CoinService {
       return tickers.map((e) => TickerModel.fromJson(e)).toList();
     } else {
       throw Exception('Failed to load tickers');
+    }
+  }
+
+  Future<List<ExchangeModel>> fetchExchanges({
+    int page = 1,
+    int perPage = 100,
+  }) async {
+    final url = Uri.parse(
+      '${CoinGeckoConstants.baseUrl}/exchanges?per_page=$perPage&page=$page&x-cg-demo-api-key=${CoinGeckoConstants.apiKey}',
+    );
+
+    final response = await safeGet(url);
+    if (response.statusCode == 200) {
+      final List data = jsonDecode(response.body);
+      return data.map((e) => ExchangeModel.fromJson(e)).toList();
+    } else {
+      throw Exception('Failed to load exchanges');
+    }
+  }
+
+  // Fungsi baru: Fetch detail 1 exchange by id
+  Future<ExchangeModel> fetchExchangeDetail(String id) async {
+    final url = Uri.parse(
+      'https://api.coingecko.com/api/v3/exchanges/$id'
+      '?x-cg-demo-api-key=${CoinGeckoConstants.apiKey}',
+    );
+
+    final response = await safeGet(url);
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return ExchangeModel.fromJson(data);
+    } else {
+      throw Exception('Failed to fetch exchange detail');
     }
   }
 }

@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:chartnalyze_apps/app/data/models/crypto/SearchCoinModel.dart';
 import 'package:get/get.dart';
 import 'package:chartnalyze_apps/app/data/services/crypto/CoinService.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class SearchControllers extends GetxController {
   final CoinService _coinService = CoinService();
@@ -11,6 +13,9 @@ class SearchControllers extends GetxController {
   var searchResults = <SearchCoinModel>[].obs;
   var recentAssets = <SearchCoinModel>[].obs;
   var recentSearches = <String>[].obs;
+  var trendingCoins = <Map<String, dynamic>>[].obs;
+  var trendingNFTs = <Map<String, dynamic>>[].obs;
+  var trendingCategories = <Map<String, dynamic>>[].obs;
 
   final searchController = TextEditingController();
   Timer? _debounce;
@@ -19,6 +24,7 @@ class SearchControllers extends GetxController {
   void onInit() {
     super.onInit();
     searchController.addListener(_onSearchChanged);
+    fetchTrendingSearch();
   }
 
   void _onSearchChanged() {
@@ -32,6 +38,30 @@ class SearchControllers extends GetxController {
         searchCoins(query);
       }
     });
+  }
+
+  Future<void> fetchTrendingSearch() async {
+    try {
+      final response = await http.get(
+        Uri.parse('https://api.coingecko.com/api/v3/search/trending'),
+        headers: {'accept': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+
+        trendingCoins.value = List<Map<String, dynamic>>.from(
+          (data['coins'] as List).map((e) => e['item']),
+        );
+
+        trendingNFTs.value = List<Map<String, dynamic>>.from(data['nfts']);
+        trendingCategories.value = List<Map<String, dynamic>>.from(
+          data['categories'],
+        );
+      }
+    } catch (e) {
+      print('Error fetching trending search: $e');
+    }
   }
 
   Future<void> searchCoins(String query) async {

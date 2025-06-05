@@ -8,7 +8,7 @@ import 'package:chartnalyze_apps/app/data/models/crypto/TickerModel.dart';
 class MarketTickerRow extends StatelessWidget {
   final TickerModel ticker;
 
-  const MarketTickerRow({required this.ticker});
+  const MarketTickerRow({super.key, required this.ticker});
 
   @override
   Widget build(BuildContext context) {
@@ -181,10 +181,13 @@ class MarketTickerRow extends StatelessWidget {
                       ),
                     ),
                     icon: const Icon(Icons.open_in_new, size: 18),
-                    label: const Text(
+                    label: Text(
                       'View on Exchange',
-                      style: TextStyle(fontSize: 14),
-                      selectionColor: Colors.white,
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
                     ),
                     onPressed: () async {
                       final url = ticker.tradeUrl;

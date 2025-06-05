@@ -12,7 +12,7 @@ class MarketTickerSection extends StatelessWidget {
       children: [
         _tableHeader(),
         const Divider(height: 1),
-        ...tickers.map((ticker) => MarketTickerRow(ticker: ticker)).toList(),
+        ...tickers.map((ticker) => MarketTickerRow(ticker: ticker)),
       ],
     );
   }

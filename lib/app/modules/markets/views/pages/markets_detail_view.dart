@@ -2,7 +2,6 @@ import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/constants/fonts.dart';
 import 'package:chartnalyze_apps/app/helpers/text_helper.dart';
 import 'package:chartnalyze_apps/app/modules/markets/controllers/markets_controller.dart';
-// import 'package:chartnalyze_apps/app/modules/markets/views/widgets/market_details/market/market_ticker_row.dart';
 import 'package:chartnalyze_apps/app/modules/markets/views/widgets/market_details/market/market_ticker_section.dart';
 import 'package:chartnalyze_apps/app/modules/markets/views/widgets/market_details/summary/chart_interval.dart';
 import 'package:chartnalyze_apps/app/modules/markets/views/widgets/market_details/summary/charts.dart';
@@ -11,7 +10,6 @@ import 'package:chartnalyze_apps/app/modules/markets/views/widgets/market_detail
 import 'package:chartnalyze_apps/app/modules/markets/views/widgets/market_details/summary/price_header.dart';
 import 'package:chartnalyze_apps/app/modules/markets/views/widgets/market_details/summary/statistic_card.dart';
 import 'package:chartnalyze_apps/app/modules/news/views/widgets/news_card.dart';
-
 import 'package:chartnalyze_apps/widgets/shimmer/ShimmerContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -22,19 +20,24 @@ class MarketDetailView extends GetView<MarketsController> {
 
   @override
   Widget build(BuildContext context) {
-    final args = Get.arguments as Map<String, dynamic>;
+    final args = Get.arguments;
+    if (args == null ||
+        args is! Map<String, dynamic> ||
+        !args.containsKey('coinId')) {
+      return const Scaffold(body: Center(child: Text('Coin ID not provided.')));
+    }
     final String coinId = args['coinId'];
 
-    // Panggil detail dulu, lalu baru ambil berita setelah symbol tersedia
-    controller.fetchCoinDetail(coinId).then((_) {
-      final coin = controller.coinDetail.value;
-      if (coin != null) {
-        controller.fetchNewsForCoin(coin.symbol.toUpperCase());
-        controller.fetchMarketTickers(coin.id);
-      }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchCoinDetail(coinId).then((_) {
+        final coin = controller.coinDetail.value;
+        if (coin != null) {
+          controller.fetchNewsForCoin(coin.symbol.toUpperCase());
+          controller.fetchMarketTickers(coin.id);
+        }
+      });
+      controller.loadOhlcData(coinId);
     });
-
-    controller.loadOhlcData(coinId);
 
     return DefaultTabController(
       length: 4,
@@ -44,18 +47,32 @@ class MarketDetailView extends GetView<MarketsController> {
           headerSliverBuilder:
               (context, innerBoxIsScrolled) => [
                 SliverAppBar(
-                  backgroundColor: AppColors.primaryGreen,
-
-                  elevation: 0.5,
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
                   pinned: true,
-                  toolbarHeight: 56,
-                  titleSpacing: 0,
+                  expandedHeight: 110,
                   automaticallyImplyLeading: false,
+                  flexibleSpace: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(20),
+                      bottomRight: Radius.circular(20),
+                    ),
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(
+                            'assets/images/bg-appbar.png',
+                          ), // Gambar header
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
                   title: Obx(() {
                     final coin = controller.coinDetail.value;
                     if (coin == null) return const SizedBox.shrink();
                     return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 0),
                       child: Row(
                         children: [
                           IconButton(
@@ -125,91 +142,76 @@ class MarketDetailView extends GetView<MarketsController> {
                             ],
                           ),
                           const Spacer(),
-                          ...[
-                            // IconButton(
-                            //   icon: const Icon(
-                            //     Icons.search,
-                            //     color: Colors.white,
-                            //     size: 20,
-                            //   ),
-                            //   onPressed: () {},
-                            // ),
-                            IconButton(
-                              icon: const Icon(
-                                Icons.share_outlined,
-                                color: Colors.white,
-                                size: 20,
+                          IconButton(
+                            icon: const Icon(
+                              Icons.share_outlined,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                            onPressed:
+                                () async => await controller.shareScreenshot(
+                                  controller.shareKey,
+                                ),
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.notifications_none,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                            onPressed: () {},
+                          ),
+                          Obx(
+                            () => IconButton(
+                              icon: SizedBox(
+                                width: 24,
+                                height: 24,
+                                child:
+                                    controller.isTogglingWatchlist.value
+                                        ? const CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                Colors.white,
+                                              ),
+                                        )
+                                        : Icon(
+                                          controller.isCurrentCoinWatched.value
+                                              ? Icons.star
+                                              : Icons.star_border,
+                                          color:
+                                              controller
+                                                      .isCurrentCoinWatched
+                                                      .value
+                                                  ? Colors.amber
+                                                  : Colors.white,
+                                        ),
                               ),
                               onPressed: () async {
-                                await controller.shareScreenshot(
-                                  controller.shareKey,
+                                controller.isTogglingWatchlist.value = true;
+                                await controller.toggleWatchlist(
+                                  controller.coinDetail.value!,
                                 );
+                                controller.isTogglingWatchlist.value = false;
                               },
                             ),
-
-                            IconButton(
-                              icon: const Icon(
-                                Icons.notifications_none,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                              onPressed: () {},
-                            ),
-                            Obx(
-                              () => IconButton(
-                                icon: SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                  child:
-                                      controller.isTogglingWatchlist.value
-                                          ? const CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                                  Colors.white,
-                                                ),
-                                          )
-                                          : Icon(
-                                            controller
-                                                    .isCurrentCoinWatched
-                                                    .value
-                                                ? Icons.star
-                                                : Icons.star_border,
-                                            color:
-                                                controller
-                                                        .isCurrentCoinWatched
-                                                        .value
-                                                    ? Colors.amber
-                                                    : Colors.white,
-                                          ),
-                                ),
-
-                                onPressed: () async {
-                                  controller.isTogglingWatchlist.value = true;
-                                  await controller.toggleWatchlist(
-                                    controller.coinDetail.value!,
-                                  );
-                                  controller.isTogglingWatchlist.value = false;
-                                },
-                              ),
-                            ),
-                          ],
+                          ),
                         ],
                       ),
                     );
                   }),
-                  bottom: TabBar(
+                  bottom: const TabBar(
                     isScrollable: false,
                     labelColor: Colors.white,
                     unselectedLabelColor: Colors.white54,
                     indicatorColor: Colors.white,
                     indicatorWeight: 1.6,
-                    labelStyle: const TextStyle(
+                    labelStyle: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 13,
                       fontFamily: AppFonts.nextTrial,
                     ),
-                    tabs: const [
+                    tabs: [
                       Tab(text: 'Summary'),
                       Tab(text: 'Info'),
                       Tab(text: 'Market'),
@@ -218,19 +220,17 @@ class MarketDetailView extends GetView<MarketsController> {
                   ),
                 ),
               ],
+
           body: RefreshIndicator(
             onRefresh: () async => await controller.fetchCoinDetail(coinId),
             child: TabBarView(
               children: [
-                /// Ringkasan
-                /// Ringkasan
                 Obx(() {
                   final coin = controller.coinDetail.value;
                   final loading = controller.isLoadingDetail.value;
-
                   if (loading || coin == null) {
                     return ListView(
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(16),
                       children: const [
                         ShimmerContainer(width: double.infinity, height: 60),
                         SizedBox(height: 12),
@@ -242,13 +242,11 @@ class MarketDetailView extends GetView<MarketsController> {
                       ],
                     );
                   }
-
                   return SingleChildScrollView(
                     padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        /// BAGIAN YANG AKAN DI-SHARE
                         RepaintBoundary(
                           key: controller.shareKey,
                           child: Container(
@@ -287,8 +285,6 @@ class MarketDetailView extends GetView<MarketsController> {
                             ),
                           ),
                         ),
-
-                        /// BAGIAN YANG TIDAK IKUT DI-SHARE
                         Align(
                           alignment: Alignment.centerRight,
                           child: Builder(
@@ -298,7 +294,7 @@ class MarketDetailView extends GetView<MarketsController> {
                                     final tabController =
                                         DefaultTabController.of(context);
                                     tabController.animateTo(
-                                      1, // Tab "Info"
+                                      1,
                                       duration: const Duration(
                                         milliseconds: 700,
                                       ),
@@ -323,12 +319,9 @@ class MarketDetailView extends GetView<MarketsController> {
                     ),
                   );
                 }),
-
-                /// Info
                 Obx(() {
                   final coin = controller.coinDetail.value;
                   final loading = controller.isLoadingDetail.value;
-
                   if (loading || coin == null) {
                     return const Center(
                       child: SpinKitWave(
@@ -337,7 +330,6 @@ class MarketDetailView extends GetView<MarketsController> {
                       ),
                     );
                   }
-
                   return CoinInfoSection(coin: coin);
                 }),
                 Obx(() {
@@ -349,13 +341,11 @@ class MarketDetailView extends GetView<MarketsController> {
                       ),
                     );
                   }
-
                   if (controller.tickers.isEmpty) {
                     return const Center(
                       child: Text('No market data available.'),
                     );
                   }
-
                   return ListView(
                     padding: const EdgeInsets.only(top: 0),
                     children: [
@@ -363,47 +353,6 @@ class MarketDetailView extends GetView<MarketsController> {
                     ],
                   );
                 }),
-
-                // Obx(() {
-                //   if (controller.isLoadingTickers.value) {
-                //     return const Center(
-                //       child: SpinKitWave(
-                //         color: AppColors.primaryGreen,
-                //         size: 24.0,
-                //       ),
-                //     );
-                //   }
-
-                //   if (controller.tickers.isEmpty) {
-                //     return const Center(
-                //       child: Text('No market data available.'),
-                //     );
-                //   }
-
-                //   return Column(
-                //     children: [
-                //       const MarketTableHeader(), // Ini header tabel baru
-                //       const SizedBox(height: 4),
-                //       Expanded(
-                //         child: ListView.separated(
-                //           itemCount: controller.tickers.length,
-                //           separatorBuilder: (_, __) => const Divider(height: 1),
-                //           itemBuilder: (context, index) {
-                //             final ticker = controller.tickers[index];
-                //             return MarketRow(
-                //               index: index + 1,
-                //               ticker: ticker,
-                //               pair: '${ticker.base}/${ticker.target}',
-                //               price: ticker.price,
-                //             );
-                //           },
-                //         ),
-                //       ),
-                //     ],
-                //   );
-                // }),
-
-                /// Berita
                 Obx(() {
                   if (controller.isLoadingNews.value) {
                     return const Center(
@@ -413,13 +362,11 @@ class MarketDetailView extends GetView<MarketsController> {
                       ),
                     );
                   }
-
                   if (controller.newsList.isEmpty) {
                     return const Center(
                       child: Text('No news available for this coin.'),
                     );
                   }
-
                   return ListView.builder(
                     padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
                     itemCount: controller.newsList.length,

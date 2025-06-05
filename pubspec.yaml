@@ -96,6 +96,8 @@ flutter:
     - assets/images/verified_image.png
     - assets/images/no-data.png
     - assets/images/me.png
+    - assets/images/bg-appbar.png
+    - assets/images/bg-news.png
 
   fonts:
     - family: NextTrial

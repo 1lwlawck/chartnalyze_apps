@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:chartnalyze_apps/app/data/models/crypto/CoinDetailModel.dart';
 import 'package:chartnalyze_apps/app/data/models/crypto/CoinListModel.dart';
+import 'package:chartnalyze_apps/app/data/models/crypto/ExchangeModel.dart';
 import 'package:chartnalyze_apps/app/data/models/crypto/GlobalMarketModel.dart';
 import 'package:chartnalyze_apps/app/data/models/news/NewsItemModel.dart';
 import 'package:chartnalyze_apps/app/data/models/crypto/OHLCDataModel.dart';
@@ -60,6 +61,9 @@ class MarketsController extends GetxController {
   final RxBool isCurrentCoinWatched = false.obs;
   final RxBool isTogglingWatchlist = false.obs;
 
+  final exchanges = <ExchangeModel>[].obs;
+  final isLoadingExchanges = false.obs;
+
   final List<String> tabLabels = [
     'Coins',
     'Stocks',
@@ -81,6 +85,7 @@ class MarketsController extends GetxController {
     fetchGlobalMarketModel();
     fetchCoinListData(isInitial: true);
     fetchWatchlist();
+    fetchExchanges();
 
     debounce<String>(selectedInterval, (val) async {
       isChartLoading.value = true;
@@ -95,6 +100,21 @@ class MarketsController extends GetxController {
     update();
   }
 
+  Future<void> fetchExchanges({int page = 1, int perPage = 100}) async {
+    isLoadingExchanges.value = true;
+    try {
+      final data = await _coinService.fetchExchanges(
+        page: page,
+        perPage: perPage,
+      );
+      exchanges.assignAll(data);
+    } catch (e) {
+      print('❌ Failed to fetch exchanges: $e');
+    } finally {
+      isLoadingExchanges.value = false;
+    }
+  }
+
   Future<void> shareScreenshot(GlobalKey key) async {
     try {
       final boundary =
@@ -107,9 +127,11 @@ class MarketsController extends GetxController {
       final file = await File('${tempDir.path}/shared_chart.png').create();
       await file.writeAsBytes(pngBytes);
 
-      await Share.shareXFiles([
-        XFile(file.path),
-      ], text: 'Lihat harga dan grafik crypto ini! 📈');
+      await Share.shareXFiles(
+        [XFile(file.path)],
+        text:
+            'Chart of ${coinDetail.value?.name} (${coinDetail.value?.symbol} - ${selectedInterval.value} interval})',
+      );
     } catch (e) {
       print('❌ Error during screenshot sharing: $e');
     }

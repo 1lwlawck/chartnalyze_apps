@@ -1,14 +1,15 @@
 import 'package:chartnalyze_apps/app/constants/colors.dart';
-import 'package:chartnalyze_apps/app/modules/markets/views/widgets/stocks/stocks_list.dart';
+import 'package:chartnalyze_apps/app/modules/markets/controllers/markets_controller.dart';
+import 'package:chartnalyze_apps/app/modules/markets/views/widgets/crypto/list/coin_list.dart';
 import 'package:chartnalyze_apps/app/modules/markets/views/widgets/common/table_header.dart';
+import 'package:chartnalyze_apps/app/modules/markets/views/widgets/common/tabs.dart';
+import 'package:chartnalyze_apps/app/modules/markets/views/widgets/exchanges/exchanges_list.dart';
+import 'package:chartnalyze_apps/app/modules/markets/views/widgets/stocks/stocks_list.dart';
+import 'package:chartnalyze_apps/app/modules/markets/views/widgets/statistics/stats.dart';
 import 'package:chartnalyze_apps/app/modules/markets/views/widgets/watched_assets/watched_list.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../controllers/markets_controller.dart';
-import '../widgets/crypto/list/coin_list.dart';
-import '../widgets/statistics/stats.dart';
-import '../widgets/common/tabs.dart';
 
 class MarketsView extends GetView<MarketsController> {
   const MarketsView({super.key});
@@ -17,65 +18,82 @@ class MarketsView extends GetView<MarketsController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
-      appBar: AppBar(
-        backgroundColor: AppColors.primaryGreen,
-        elevation: 2,
-        title: Text(
-          'Markets',
-          style: GoogleFonts.poppins(
-            color: Colors.white,
-            fontSize: 25,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-      ),
-      body: Column(
-        children: [
-          // Stats dan Tabs tetap ada di bawah AppBar
-          // Stats dan Tabs tetap ada di bawah AppBar
-          Container(
-            decoration: const BoxDecoration(
-              color: AppColors.primaryGreen,
-              borderRadius: BorderRadius.only(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(200),
+        child: Stack(
+          children: [
+            // Background image with rounded bottom
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20),
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 6,
-                  offset: Offset(0, 3),
+              child: Container(
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/bg-appbar.png'),
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ],
+              ),
             ),
-            padding: const EdgeInsets.symmetric(vertical: 0),
-            child: const Column(
-              children: [
-                MarketStats(),
-                SizedBox(height: 2),
-                MarketTabs(),
-                SizedBox(height: 10),
-              ],
+
+            // Foreground content
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Markets',
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontSize: 25,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    const MarketStats(),
+                    const SizedBox(height: 0),
+                    const MarketTabs(),
+                  ],
+                ),
+              ),
             ),
-          ),
-          // Table header
-          const SizedBox(height: 10),
-          MarketTableHeader(),
-          // Konten utama
+          ],
+        ),
+      ),
+
+      body: Column(
+        children: [
+          // Body konten berdasarkan tab
           Expanded(
             child: GetBuilder<MarketsController>(
               builder: (controller) {
                 switch (controller.selectedTabIndex) {
-                  case 0:
-                    return const MarketCoinList();
-                  case 1:
+                  case 0: // Coins
+                    return Column(
+                      children: const [
+                        SizedBox(height: 5),
+                        MarketTableHeader(),
+                        Expanded(child: MarketCoinList()),
+                      ],
+                    );
+                  case 1: // Stocks
                     return const MarketStocksList();
-                  case 2:
-                    return const MarketWatchlistList();
-                  case 3:
+                  case 2: // Watchlists
+                    return Column(
+                      children: const [
+                        SizedBox(height: 10),
+                        MarketTableHeader(),
+                        Expanded(child: MarketWatchlistList()),
+                      ],
+                    );
+                  case 3: // Overview
                     return const Center(child: Text('Overview'));
-                  case 4:
-                    return const Center(child: Text('Exchanges'));
+                  case 4: // Exchanges
+                    return const ExchangesListView();
                   default:
                     return const SizedBox.shrink();
                 }

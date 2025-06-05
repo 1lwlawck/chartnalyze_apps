@@ -90,65 +90,76 @@ class CoinGeckoConstants {
       '&x-cg-demo-api-key=$apiKey',
     );
   }
+
+  static Uri exchangesUrl({int perPage = 100, int page = 1}) {
+    return Uri.parse(
+      '$baseUrl/exchanges?per_page=$perPage&page=$page'
+      '&x-cg-demo-api-key=$apiKey',
+    );
+  }
+
+  static Uri exchangeDetailUrl(String id) {
+    return Uri.parse('$baseUrl/exchanges/$id?x-cg-demo-api-key=$apiKey');
+  }
 }
 
 // https://cryptopanic.com/api/v1/posts/?auth_token=740d524ea774623286008b92dc14679ff253c3a9
 // for CryptoPanic news
-class CryptoPanicConstants {
-  static const String baseUrl = 'https://cryptopanic.com/api/developer/v2';
-  static final String? apiKey = dotenv.env['CRYPTOPANIC_API_KEY'];
+// class CryptoPanicConstants {
+//   static const String baseUrl = 'https://cryptopanic.com/api/developer/v2';
+//   static final String? apiKey = dotenv.env['CRYPTOPANIC_API_KEY'];
 
-  static const String postsEndpoint = '/posts/';
-  static const String portfolioEndpoint = '/portfolio/';
-  static const String rssEndpoint = '/news/rss/';
+//   static const String postsEndpoint = '/posts/';
+//   static const String portfolioEndpoint = '/portfolio/';
+//   static const String rssEndpoint = '/news/rss/';
 
-  /// URL builder untuk ambil berita
-  static Uri postsUrl({
-    String? filter, // e.g. trending, bullish, bearish, important, etc.
-    String? currencies, // e.g. BTC,ETH
-    String? regions, // e.g. en,de,cn
-    String? kind, // e.g. news, media
-    bool public = true,
-    bool following = false,
-    bool approved = true,
-    int page = 1,
-  }) {
-    final params = <String, String>{
-      'auth_token': apiKey ?? '',
-      'public': public.toString(),
-      'approved': approved.toString(),
-      'page': page.toString(),
-    };
+//   /// URL builder untuk ambil berita
+//   static Uri postsUrl({
+//     String? filter, // e.g. trending, bullish, bearish, important, etc.
+//     String? currencies, // e.g. BTC,ETH
+//     String? regions, // e.g. en,de,cn
+//     String? kind, // e.g. news, media
+//     bool public = true,
+//     bool following = false,
+//     bool approved = true,
+//     int page = 1,
+//   }) {
+//     final params = <String, String>{
+//       'auth_token': apiKey ?? '',
+//       'public': public.toString(),
+//       'approved': approved.toString(),
+//       'page': page.toString(),
+//     };
 
-    if (filter != null) params['filter'] = filter;
-    if (currencies != null) params['currencies'] = currencies;
-    if (regions != null) params['regions'] = regions;
-    if (kind != null) params['kind'] = kind;
-    if (following) params['following'] = 'true';
+//     if (filter != null) params['filter'] = filter;
+//     if (currencies != null) params['currencies'] = currencies;
+//     if (regions != null) params['regions'] = regions;
+//     if (kind != null) params['kind'] = kind;
+//     if (following) params['following'] = 'true';
 
-    final queryString = Uri(queryParameters: params).query;
-    return Uri.parse('$baseUrl$postsEndpoint?$queryString');
-  }
+//     final queryString = Uri(queryParameters: params).query;
+//     return Uri.parse('$baseUrl$postsEndpoint?$queryString');
+//   }
 
-  /// Portfolio API (private only)
-  static Uri portfolioUrl() {
-    return Uri.parse('$baseUrl$portfolioEndpoint?auth_token=$apiKey');
-  }
+//   /// Portfolio API (private only)
+//   static Uri portfolioUrl() {
+//     return Uri.parse('$baseUrl$portfolioEndpoint?auth_token=$apiKey');
+//   }
 
-  /// RSS Format URL (optional)
-  static Uri rssFeedUrl({String? currencies, String? filter}) {
-    final params = <String, String>{
-      'auth_token': apiKey ?? '',
-      'format': 'rss',
-    };
+//   /// RSS Format URL (optional)
+//   static Uri rssFeedUrl({String? currencies, String? filter}) {
+//     final params = <String, String>{
+//       'auth_token': apiKey ?? '',
+//       'format': 'rss',
+//     };
 
-    if (currencies != null) params['currencies'] = currencies;
-    if (filter != null) params['filter'] = filter;
+//     if (currencies != null) params['currencies'] = currencies;
+//     if (filter != null) params['filter'] = filter;
 
-    final queryString = Uri(queryParameters: params).query;
-    return Uri.parse('$baseUrl$postsEndpoint?$queryString');
-  }
-}
+//     final queryString = Uri(queryParameters: params).query;
+//     return Uri.parse('$baseUrl$postsEndpoint?$queryString');
+//   }
+// }
 
 class AuthConstants {
   static final String baseUrl = "http://192.168.199.38:80/api";

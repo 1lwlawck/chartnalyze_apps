@@ -26,12 +26,18 @@ class NewsView extends GetView<NewsController> {
         preferredSize: const Size.fromHeight(180),
         child: Container(
           decoration: const BoxDecoration(
-            color: AppColors.primaryGreen,
+            image: DecorationImage(
+              image: AssetImage(
+                'assets/images/bg-appbar.png',
+              ), // ← pastikan path sesuai
+              fit: BoxFit.cover,
+            ),
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(24),
               bottomRight: Radius.circular(24),
             ),
           ),
+
           child: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
