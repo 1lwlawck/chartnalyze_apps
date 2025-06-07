@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:chartnalyze_apps/app/data/models/crypto/SearchCoinModel.dart';
+import 'package:chartnalyze_apps/app/data/models/crypto/TrendingCoin.dart';
 import 'package:get/get.dart';
 import 'package:chartnalyze_apps/app/data/services/crypto/CoinService.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 class SearchControllers extends GetxController {
   final CoinService _coinService = CoinService();
@@ -13,7 +12,7 @@ class SearchControllers extends GetxController {
   var searchResults = <SearchCoinModel>[].obs;
   var recentAssets = <SearchCoinModel>[].obs;
   var recentSearches = <String>[].obs;
-  var trendingCoins = <Map<String, dynamic>>[].obs;
+  var trendingCoins = <TrendingCoin>[].obs;
   var trendingNFTs = <Map<String, dynamic>>[].obs;
   var trendingCategories = <Map<String, dynamic>>[].obs;
 
@@ -24,7 +23,7 @@ class SearchControllers extends GetxController {
   void onInit() {
     super.onInit();
     searchController.addListener(_onSearchChanged);
-    fetchTrendingSearch();
+    loadTrendingCoins();
   }
 
   void _onSearchChanged() {
@@ -40,27 +39,40 @@ class SearchControllers extends GetxController {
     });
   }
 
-  Future<void> fetchTrendingSearch() async {
+  // Future<void> fetchTrendingSearch() async {
+  //   try {
+  //     final response = await http.get(
+  //       Uri.parse('https://api.coingecko.com/api/v3/search/trending'),
+  //       headers: {'accept': 'application/json'},
+  //     );
+
+  //     if (response.statusCode == 200) {
+  //       final data = json.decode(response.body);
+
+  //       trendingCoins.value = List<Map<String, dynamic>>.from(
+  //         (data['coins'] as List).map((e) => e['item']),
+  //       );
+
+  //       trendingNFTs.value = List<Map<String, dynamic>>.from(data['nfts']);
+  //       trendingCategories.value = List<Map<String, dynamic>>.from(
+  //         data['categories'],
+  //       );
+  //     }
+  //   } catch (e) {
+  //     print('Error fetching trending search: $e');
+  //   }
+  // }
+
+  Future<void> loadTrendingCoins() async {
     try {
-      final response = await http.get(
-        Uri.parse('https://api.coingecko.com/api/v3/search/trending'),
-        headers: {'accept': 'application/json'},
-      );
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-
-        trendingCoins.value = List<Map<String, dynamic>>.from(
-          (data['coins'] as List).map((e) => e['item']),
-        );
-
-        trendingNFTs.value = List<Map<String, dynamic>>.from(data['nfts']);
-        trendingCategories.value = List<Map<String, dynamic>>.from(
-          data['categories'],
-        );
-      }
+      isLoading(true);
+      final coins = await _coinService.fetchTrendingCoins();
+      trendingCoins.assignAll(coins);
     } catch (e) {
-      print('Error fetching trending search: $e');
+      print("❌ Trending coins error: $e");
+      trendingCoins.clear();
+    } finally {
+      isLoading(false);
     }
   }
 

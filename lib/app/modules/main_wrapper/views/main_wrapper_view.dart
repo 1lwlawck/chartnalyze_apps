@@ -3,7 +3,7 @@ import 'package:chartnalyze_apps/app/constants/fonts.dart';
 import 'package:chartnalyze_apps/widgets/navigation_bar/custom_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../community/views/community_view.dart';
+import '../../community/views/pages/community_view.dart';
 import '../../markets/views/pages/markets_view.dart';
 import '../../news/views/pages/news_view.dart';
 import '../../profile/views/pages/profile_view.dart';

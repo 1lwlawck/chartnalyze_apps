@@ -4,6 +4,7 @@ import 'package:chart_sparkline/chart_sparkline.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:chartnalyze_apps/app/helpers/number_format_helper.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CoinListTile extends StatelessWidget {
   final CoinListModel coin;
@@ -48,8 +49,8 @@ class CoinListTile extends StatelessWidget {
               padding: const EdgeInsets.only(right: 10),
               child: Text(
                 '${coin.rank}',
-                style: TextStyle(
-                  color: AppColors.black,
+                style: GoogleFonts.poppins(
+                  color: AppColors.grey,
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                 ),
@@ -78,7 +79,7 @@ class CoinListTile extends StatelessWidget {
                       children: [
                         Text(
                           coin.symbol,
-                          style: TextStyle(
+                          style: GoogleFonts.poppins(
                             color: AppColors.black,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
@@ -105,9 +106,9 @@ class CoinListTile extends StatelessWidget {
                   alignment: Alignment.center,
                   child: Text(
                     NumberFormatHelper.usdt(coin.price),
-                    style: const TextStyle(
+                    style: GoogleFonts.poppins(
                       color: AppColors.black,
-                      fontSize: 14,
+                      fontSize: 13,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -125,6 +126,7 @@ class CoinListTile extends StatelessWidget {
                     style: TextStyle(
                       color:
                           isUp24h ? AppColors.primaryGreen : AppColors.errorRed,
+                      fontSize: 14,
                     ),
                   ),
                 ),

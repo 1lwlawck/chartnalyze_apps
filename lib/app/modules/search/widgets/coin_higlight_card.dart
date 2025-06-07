@@ -1,3 +1,4 @@
+import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -17,31 +18,50 @@ class CoinHighlightCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isPositive = change >= 0;
+
     return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       margin: const EdgeInsets.symmetric(vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Row(
         children: [
+          // Logo coin
           ClipRRect(
             borderRadius: BorderRadius.circular(6),
             child: Image.network(
               imageUrl,
-              width: 28,
-              height: 28,
-              errorBuilder: (_, __, ___) => const Icon(Icons.error, size: 28),
+              width: 32,
+              height: 32,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => const Icon(Icons.error, size: 32),
             ),
           ),
           const SizedBox(width: 12),
+
+          // Nama coin
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  symbol,
+                  symbol.toUpperCase(),
                   style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                     fontSize: 14,
                   ),
                 ),
+                const SizedBox(height: 2),
                 Text(
                   name,
                   style: GoogleFonts.poppins(
@@ -52,12 +72,34 @@ class CoinHighlightCard extends StatelessWidget {
               ],
             ),
           ),
-          Text(
-            '${change >= 0 ? '+' : ''}${change.toStringAsFixed(2)}%',
-            style: GoogleFonts.poppins(
-              fontWeight: FontWeight.w600,
-              fontSize: 13,
-              color: change >= 0 ? Colors.green : Colors.red,
+
+          // Persentase perubahan
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            // Removed 'borderRadius' here, as it should be inside the BoxDecoration below.
+            decoration: BoxDecoration(
+              color:
+                  isPositive
+                      ? Colors.green.withOpacity(0.1)
+                      : Colors.red.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  isPositive ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                  size: 20,
+                  color: isPositive ? Colors.green : Colors.red,
+                ),
+                Text(
+                  '${isPositive ? '+' : ''}${change.toStringAsFixed(2)}%',
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
+                    color: isPositive ? AppColors.primaryGreen : Colors.red,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

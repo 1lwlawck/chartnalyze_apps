@@ -3,6 +3,7 @@ import 'package:chartnalyze_apps/app/data/models/crypto/ExchangeModel.dart';
 import 'package:chartnalyze_apps/app/data/models/crypto/GlobalMarketModel.dart';
 import 'package:chartnalyze_apps/app/data/models/crypto/SearchCoinModel.dart';
 import 'package:chartnalyze_apps/app/data/models/crypto/TickerModel.dart';
+import 'package:chartnalyze_apps/app/data/models/crypto/TrendingCoin.dart';
 import 'package:http/http.dart' as http;
 import 'package:chartnalyze_apps/app/constants/api.dart';
 import 'package:chartnalyze_apps/app/data/models/crypto/CoinListModel.dart';
@@ -232,6 +233,29 @@ class CoinService {
       return ExchangeModel.fromJson(data);
     } else {
       throw Exception('Failed to fetch exchange detail');
+    }
+  }
+
+  Future<List<TrendingCoin>> fetchTrendingCoins() async {
+    final url = Uri.parse('https://api.coingecko.com/api/v3/search/trending');
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {'accept': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final coins = data['coins'] as List<dynamic>;
+
+        return coins.map((e) => TrendingCoin.fromJson(e['item'])).toList();
+      } else {
+        throw Exception('Failed to load trending coins');
+      }
+    } catch (e) {
+      print('Error in fetchTrendingCoins: $e');
+      return [];
     }
   }
 }

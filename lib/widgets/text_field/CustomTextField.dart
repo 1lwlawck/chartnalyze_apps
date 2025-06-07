@@ -1,5 +1,6 @@
 import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -23,10 +24,10 @@ class CustomTextField extends StatelessWidget {
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType ?? TextInputType.text,
-      style: TextStyle(fontFamily: 'CircularStd', color: Colors.black),
+      style: GoogleFonts.aBeeZee(color: Colors.black),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: Colors.grey, fontFamily: 'CircularStd'),
+        labelStyle: GoogleFonts.aBeeZee(color: Colors.grey),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: AppColors.primaryGreen),
           borderRadius: BorderRadius.circular(8),

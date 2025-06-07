@@ -130,7 +130,7 @@ class MarketsController extends GetxController {
       await Share.shareXFiles(
         [XFile(file.path)],
         text:
-            'Chart of ${coinDetail.value?.name} (${coinDetail.value?.symbol} - ${selectedInterval.value} interval})',
+            'Chart of ${coinDetail.value?.name} Current Price \$${coinDetail.value?.price} Track your ${coinDetail.value?.symbol} Here: ${coinDetail.value?.explorer})',
       );
     } catch (e) {
       print('❌ Error during screenshot sharing: $e');

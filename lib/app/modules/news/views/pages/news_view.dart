@@ -68,9 +68,9 @@ class NewsView extends GetView<NewsController> {
                     const SizedBox(height: 12),
                     TextField(
                       decoration: InputDecoration(
-                        hintText: 'Search',
-                        hintStyle: GoogleFonts.poppins(
-                          fontSize: 14,
+                        hintText: 'Search any news here',
+                        hintStyle: GoogleFonts.newsreader(
+                          fontSize: 16,
                           color: Colors.grey,
                           fontWeight: FontWeight.w800,
                         ),
@@ -108,8 +108,8 @@ class NewsView extends GetView<NewsController> {
                                   children: [
                                     Text(
                                       categories[index]['label']!,
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 14,
+                                      style: GoogleFonts.newsreader(
+                                        fontSize: 15,
                                         fontWeight: FontWeight.w600,
                                         color:
                                             isSelected

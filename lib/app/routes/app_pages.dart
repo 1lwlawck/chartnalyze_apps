@@ -21,7 +21,7 @@ import '../modules/intro/second_splash/views/second_splash_view.dart';
 import '../modules/intro/third_splash/bindings/third_splash_binding.dart';
 import '../modules/intro/third_splash/views/third_splash_view.dart';
 import '../modules/community/bindings/community_binding.dart';
-import '../modules/community/views/community_view.dart';
+import '../modules/community/views/pages/community_view.dart';
 import '../modules/main_wrapper/bindings/main_wrapper_binding.dart';
 import '../modules/main_wrapper/views/main_wrapper_view.dart';
 import '../modules/markets/bindings/markets_binding.dart';
