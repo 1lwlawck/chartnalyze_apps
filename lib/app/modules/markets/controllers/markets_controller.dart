@@ -8,7 +8,7 @@ import 'package:chartnalyze_apps/app/data/models/crypto/GlobalMarketModel.dart';
 import 'package:chartnalyze_apps/app/data/models/news/NewsItemModel.dart';
 import 'package:chartnalyze_apps/app/data/models/crypto/OHLCDataModel.dart';
 import 'package:chartnalyze_apps/app/data/models/crypto/TickerModel.dart';
-import 'package:chartnalyze_apps/app/data/models/stocks/FinhubQuoteModel.dart';
+import 'package:chartnalyze_apps/app/data/models/stocks/FinnhubQuoteModel.dart';
 import 'package:chartnalyze_apps/app/data/services/crypto/CoinService.dart';
 import 'package:chartnalyze_apps/app/data/services/crypto/WatchlistService.dart';
 import 'package:chartnalyze_apps/app/data/services/news/CoindeskService.dart';
@@ -108,77 +108,77 @@ class MarketsController extends GetxController {
   }
 
   Future<void> fetchStocksData() async {
+    isLoadingStocks.value = true;
+
+    final symbols = [
+      'AAPL', // Apple
+      'GOOGL', // Alphabet (Google)
+      'AMZN', // Amazon
+      'MSFT', // Microsoft
+      'TSLA', // Tesla
+      'META', // Meta Platforms (Facebook)
+      'NFLX', // Netflix
+      'NVDA', // NVIDIA
+      'BRK.B', // Berkshire Hathaway
+      'V', // Visa
+      'JPM', // JPMorgan Chase
+      'WMT', // Walmart
+      'DIS', // The Walt Disney Company
+      'PYPL', // PayPal
+      'INTC', // Intel Corporation
+      'ADBE', // Adobe Systems
+      'CSCO', // Cisco Systems
+      'CMCSA', // Comcast Corporation
+      'MSTR', // Mastercard
+      'VZ', // Verizon Communications
+      'ORCL', // Oracle Corporation
+      'PFE', // Pfizer Inc.
+      'KO', // The Coca-Cola Company
+      'PEP', // PepsiCo, Inc.
+      'NKE', // Nike, Inc.
+      'XOM', // Exxon Mobil Corporation
+      'CVX', // Chevron Corporation
+      'MRK', // Merck & Co., Inc.
+      'ABT', // Abbott Laboratories
+      'T', // AT&T Inc.
+      'UNH', // UnitedHealth Group
+      'HD', // The Home Depot
+      'PG', // Procter & Gamble Co.
+      'LLY', // Eli Lilly and Company
+      'BA', // The Boeing Company
+      'WFC', // Wells Fargo & Company
+      'BAC', // The Bank of America Corporation
+    ];
+    final List<FinnhubQuoteModel> results = [];
     try {
-      isLoadingStocks.value = true;
-
-      final symbols = [
-        'AAPL', // Apple
-        'GOOGL', // Alphabet (Google)
-        'AMZN', // Amazon
-        'MSFT', // Microsoft
-        'TSLA', // Tesla
-        'META', // Meta Platforms (Facebook)
-        'NFLX', // Netflix
-        'NVDA', // NVIDIA
-        'BRK.B', // Berkshire Hathaway
-        'V', // Visa
-        'JPM', // JPMorgan Chase
-        'WMT', // Walmart
-        'DIS', // The Walt Disney Company
-        'PYPL', // PayPal
-        'INTC', // Intel Corporation
-        'ADBE', // Adobe Systems
-        'CSCO', // Cisco Systems
-        'CMCSA', // Comcast Corporation
-        'MSTR', // Mastercard
-        'VZ', // Verizon Communications
-        'ORCL', // Oracle Corporation
-        'PFE', // Pfizer Inc.
-        'KO', // The Coca-Cola Company
-        'PEP', // PepsiCo, Inc.
-        'NKE', // Nike, Inc.
-        'XOM', // Exxon Mobil Corporation
-        'CVX', // Chevron Corporation
-        'MRK', // Merck & Co., Inc.
-        'ABT', // Abbott Laboratories
-        'T', // AT&T Inc.
-        'UNH', // UnitedHealth Group
-        'HD', // The Home Depot
-        'PG', // Procter & Gamble Co.
-        'LLY', // Eli Lilly and Company
-        'BA', // The Boeing Company
-        'WFC', // Wells Fargo & Company
-        'BAC', // The Bank of America Corporation
-      ];
-      final List<FinnhubQuoteModel> results = [];
-
       for (var symbol in symbols) {
         print('📦 Getting data for $symbol');
 
-        // Fetch quote and profile
-        final quote = await _stockService.fetchQuote(symbol);
-        final profile = await _stockService.fetchProfile(symbol);
+        try {
+          // Fetch quote and profile
+          final quote = await _stockService.fetchQuote(symbol);
+          final profile = await _stockService.fetchProfile(symbol);
 
-        // Fetch sparkline from Alpha Vantage
-        final sparkline = await _stockService.fetchAlphaVantageSparkline(
-          symbol,
-        );
+          // Fetch sparkline from Alpha Vantage
+          final sparkline = await _stockService.fetchAlphaVantageSparkline(
+            symbol,
+          );
 
-        // Combine all data
-        final enriched = quote.copyWith(
-          symbol: symbol,
-          name: profile.name,
-          logo: profile.logo,
-          sparkline: sparkline,
-        );
+          // Combine all data
+          final enriched = quote.copyWith(
+            symbol: symbol,
+            name: profile.name,
+            logo: profile.logo,
+            sparkline: sparkline,
+          );
 
-        results.add(enriched);
+          results.add(enriched);
+        } catch (e) {
+          print('❌ Failed to fetch data for $symbol: $e');
+        }
       }
-
       stocksList.assignAll(results);
       print('✅ Loaded ${stocksList.length} stocks');
-    } catch (e) {
-      print('❌ Failed to fetch stock data: $e');
     } finally {
       isLoadingStocks.value = false;
     }

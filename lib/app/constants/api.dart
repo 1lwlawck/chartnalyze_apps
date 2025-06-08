@@ -105,7 +105,7 @@ class CoinGeckoConstants {
 
 class AlphaVantageConstants {
   static const String baseUrl = 'https://www.alphavantage.co/query';
-  static final String? apiKey = dotenv.env['ALPHAVANTAGE_API_KEY'];
+  static final String? apiKey = dotenv.env['ALPHA_VANTAGE_API_KEY'];
 
   // Global Quote endpoint
   static Uri globalQuoteUrl({required String symbol}) {

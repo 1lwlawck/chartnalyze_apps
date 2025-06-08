@@ -1,6 +1,6 @@
 import 'package:chartnalyze_apps/app/constants/api.dart';
-import 'package:chartnalyze_apps/app/data/models/stocks/FinhubQuoteModel.dart';
-import 'package:chartnalyze_apps/app/data/models/stocks/FinhubSymbolModel.dart';
+import 'package:chartnalyze_apps/app/data/models/stocks/FinnhubQuoteModel.dart';
+import 'package:chartnalyze_apps/app/data/models/stocks/FinnhubSymbolModel.dart';
 import 'package:chartnalyze_apps/app/data/models/stocks/FinnhubProfileModel.dart';
 import 'package:chartnalyze_apps/app/data/services/stocks/AlphaVantageService.dart';
 import 'package:chartnalyze_apps/app/helpers/dio_client.dart';

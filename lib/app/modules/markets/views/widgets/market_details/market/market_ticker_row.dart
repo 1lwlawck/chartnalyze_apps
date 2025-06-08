@@ -1,8 +1,8 @@
-import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/data/models/crypto/TickerModel.dart';
 
 class MarketTickerRow extends StatelessWidget {
@@ -17,8 +17,9 @@ class MarketTickerRow extends StatelessWidget {
     return InkWell(
       onTap: () => _showTickerDetailBottomSheet(context, ticker),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
               flex: 3,
@@ -36,16 +37,18 @@ class MarketTickerRow extends StatelessWidget {
                       children: [
                         Text(
                           ticker.marketName,
-
+                          overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.poppins(
+                            fontSize: 13,
                             fontWeight: FontWeight.w500,
+                            color: Colors.black87,
                           ),
                         ),
                         Text(
                           '${ticker.base}/${ticker.target}',
                           style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            color: Colors.grey,
+                            fontSize: 11.5,
+                            color: Colors.grey[600],
                           ),
                         ),
                       ],
@@ -58,19 +61,23 @@ class MarketTickerRow extends StatelessWidget {
               flex: 2,
               child: Text(
                 format.format(ticker.price),
-                style: GoogleFonts.aBeeZee(
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
                   fontSize: 13,
-                  color: Colors.grey[700],
+                  fontWeight: FontWeight.w400,
+                  color: Colors.grey[800],
                 ),
               ),
             ),
             Expanded(
-              flex: 3,
+              flex: 2,
               child: Text(
                 format.format(ticker.volume),
-                style: GoogleFonts.aBeeZee(
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
                   fontSize: 13,
-                  color: Colors.grey[700],
+                  fontWeight: FontWeight.w400,
+                  color: Colors.grey[800],
                 ),
               ),
             ),
@@ -135,52 +142,45 @@ class MarketTickerRow extends StatelessWidget {
                 Row(
                   children: [
                     CircleAvatar(
+                      radius: 18,
                       backgroundImage: NetworkImage(ticker.exchangeLogo),
                       backgroundColor: Colors.transparent,
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: Text(
                         ticker.marketName,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
+                        style: GoogleFonts.poppins(
                           fontSize: 16,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                const SizedBox(height: 20),
+                Wrap(
+                  spacing: 16,
+                  runSpacing: 16,
                   children: [
-                    _infoBox('BASE PRICE', format.format(ticker.price)),
+                    _infoBox('Base Price', format.format(ticker.price)),
                     _infoBox(
-                      'TARGET PRICE',
+                      'Target Price',
                       '${ticker.price} ${ticker.target}',
                     ),
+                    _infoBox('Base Volume', format.format(ticker.volume)),
+                    _infoBox('Trust Score', _trustLabel(ticker.trustScore)),
                   ],
                 ),
-                const SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _infoBox('BASE VOLUME', format.format(ticker.volume)),
-                    _infoBox('TRUST SCORE', _trustLabel(ticker.trustScore)),
-                  ],
-                ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryGreen,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                    icon: const Icon(
+                      Icons.open_in_new,
+                      size: 18,
+                      color: Colors.white,
                     ),
-                    icon: const Icon(Icons.open_in_new, size: 18),
                     label: Text(
                       'View on Exchange',
                       style: GoogleFonts.poppins(
@@ -201,6 +201,13 @@ class MarketTickerRow extends StatelessWidget {
                         }
                       }
                     },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryGreen,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -210,16 +217,30 @@ class MarketTickerRow extends StatelessWidget {
   }
 
   Widget _infoBox(String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: const TextStyle(fontSize: 11, color: Colors.grey)),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-        ),
-      ],
+    return SizedBox(
+      width: 140,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label.toUpperCase(),
+            style: GoogleFonts.poppins(
+              fontSize: 11,
+              color: Colors.grey[600],
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: GoogleFonts.poppins(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: Colors.black87,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
