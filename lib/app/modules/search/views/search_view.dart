@@ -26,7 +26,7 @@ class SearchView extends GetView<SearchControllers> {
       child: Scaffold(
         backgroundColor: AppColors.white,
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(150),
+          preferredSize: const Size.fromHeight(160),
           child: Stack(
             children: [
               ClipRRect(
@@ -57,6 +57,16 @@ class SearchView extends GetView<SearchControllers> {
                           fontSize: 25,
                         ),
                       ),
+                      const SizedBox(height: 0),
+                      Text(
+                        'Find your favorite coins quickly and easily',
+                        style: GoogleFonts.newsreader(
+                          fontSize: 17,
+                          color: Colors.white70,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+
                       const SizedBox(height: 12),
                       TextField(
                         controller: controller.searchController,

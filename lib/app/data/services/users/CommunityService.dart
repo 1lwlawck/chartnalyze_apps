@@ -12,8 +12,7 @@ class CommunityService {
       receiveTimeout: const Duration(seconds: 10),
       headers: {
         'Accept': 'application/json',
-        'x-api-key':
-            dotenv.env['CHARTNALYZE_API_KEY'] ?? '', // ✅ API KEY dari .env
+        'x-api-key': dotenv.env['CHARTNALYZE_API_KEY'] ?? '',
       },
     ),
   );

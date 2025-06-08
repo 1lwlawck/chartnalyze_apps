@@ -162,7 +162,7 @@ class CoinGeckoConstants {
 // }
 
 class AuthConstants {
-  static final String baseUrl = "http://192.168.199.38:80/api";
+  static final String baseUrl = "http://192.168.69.214:80/api";
 
   static const String loginEndpoint = '/users/login';
   static const String registerEndpoint = '/users/register';
@@ -172,6 +172,7 @@ class AuthConstants {
   static const String updateSelfAvatar = '/users/self/avatar';
   static const String updateSelfEmail = '/users/self/email';
   static const String showSelf = '/users/self';
+  static const String logout = '/users/self/logout';
 }
 
 class WatchlistConstants {

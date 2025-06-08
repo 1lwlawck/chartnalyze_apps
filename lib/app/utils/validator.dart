@@ -29,10 +29,17 @@ class Validator {
   }
 
   static String? validateConfirmPassword(
-      String password, String confirmPassword) {
+    String password,
+    String confirmPassword,
+  ) {
     if (password != confirmPassword) {
       return 'Passwords do not match';
     }
+    return null;
+  }
+
+  static String? validateIdentifier(String input) {
+    if (input.isEmpty) return "Email or username is required";
     return null;
   }
 }

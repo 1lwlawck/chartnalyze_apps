@@ -9,7 +9,7 @@ class PostModel {
   final int commentCount;
   final int likeCount;
   final List<String> imageUrls;
-  
+
   PostModel({
     required this.id,
     required this.userId,

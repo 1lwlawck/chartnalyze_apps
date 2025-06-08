@@ -50,13 +50,17 @@ class CommunityPostCard extends StatelessWidget {
     final handle = '@${user?.username ?? 'unknown'}';
     final time = post.createdAt.substring(0, 10);
 
+    final avatarUrl =
+        (user?.avatarUrl ?? '')
+                .replaceFirst('localhost', '192.168.69.214')
+                .isEmpty
+            ? 'https://api.dicebear.com/7.x/adventurer/png?seed=${Uri.encodeComponent(user?.name ?? "Anonymous")}&size=120'
+            : user!.avatarUrl!.replaceFirst('localhost', '192.168.69.214');
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const CircleAvatar(
-          radius: 20,
-          backgroundImage: NetworkImage('https://i.pravatar.cc/150'),
-        ),
+        CircleAvatar(radius: 20, backgroundImage: NetworkImage(avatarUrl)),
         const SizedBox(width: 12),
         Expanded(
           child: Column(

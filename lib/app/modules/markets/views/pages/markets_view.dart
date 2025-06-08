@@ -19,49 +19,57 @@ class MarketsView extends GetView<MarketsController> {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(200),
-        child: Stack(
-          children: [
-            // Background image with rounded bottom
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
-              ),
-              child: Container(
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/bg-appbar.png'),
-                    fit: BoxFit.cover,
+        preferredSize: const Size.fromHeight(220),
+        child: IntrinsicHeight(
+          child: Stack(
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
+                ),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/bg-appbar.png'),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
-            ),
-
-            // Foreground content
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Markets',
-                      style: GoogleFonts.poppins(
-                        color: Colors.white,
-                        fontSize: 25,
-                        fontWeight: FontWeight.w800,
+              SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min, // ✅ ini penting
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Markets',
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 25,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    const MarketStats(),
-                    const SizedBox(height: 0),
-                    const MarketTabs(),
-                  ],
+                      const SizedBox(height: 0),
+                      Text(
+                        'Explore the latest market trends and statistics',
+                        style: GoogleFonts.newsreader(
+                          fontSize: 17,
+                          color: Colors.white70,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      const MarketStats(),
+                      const SizedBox(height: 0),
+                      const MarketTabs(),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
 

@@ -31,7 +31,7 @@ class CommunityController extends GetxController {
       for (var id in uniqueUserIds) {
         if (!usersMap.containsKey(id)) {
           final user = await _userService.getUserById(id);
-          usersMap[id] = user;
+          usersMap[id] = user!;
         }
       }
 

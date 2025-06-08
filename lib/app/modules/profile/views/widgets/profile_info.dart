@@ -1,8 +1,7 @@
-import 'package:chartnalyze_apps/app/constants/images.dart';
 import 'package:chartnalyze_apps/app/modules/profile/controllers/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chartnalyze_apps/app/constants/fonts.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ProfileInfo extends StatelessWidget {
   const ProfileInfo({super.key});
@@ -25,13 +24,49 @@ class ProfileInfo extends StatelessWidget {
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  radius: 28,
-                  backgroundImage:
-                      user.avatarUrl != null
-                          ? NetworkImage(user.avatarUrl!)
-                          : const AssetImage(NoProfileImage.noProfileImage)
-                              as ImageProvider,
+                GestureDetector(
+                  onTap: controller.pickAndUploadAvatar,
+                  child: Stack(
+                    alignment: Alignment.bottomRight,
+                    children: [
+                      Obx(() {
+                        if (controller.isUploadingAvatar.value) {
+                          return const SizedBox(
+                            width: 70,
+                            height: 70,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          );
+                        }
+
+                        return CircleAvatar(
+                          radius: 35,
+                          backgroundImage: NetworkImage(
+                            (user.avatarUrl ?? '')
+                                    .replaceFirst('localhost', '192.168.69.214')
+                                    .isEmpty
+                                ? 'https://api.dicebear.com/7.x/adventurer/png?seed=${Uri.encodeComponent(user.name ?? "Anonymous")}&size=120'
+                                : user.avatarUrl!.replaceFirst(
+                                  'localhost',
+                                  '192.168.69.214',
+                                ),
+                          ),
+                          backgroundColor: Colors.transparent,
+                        );
+                      }),
+                      Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                        ),
+                        child: const Icon(
+                          Icons.edit,
+                          size: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -40,25 +75,22 @@ class ProfileInfo extends StatelessWidget {
                     children: [
                       Text(
                         user.name ?? '',
-                        style: const TextStyle(
+                        style: GoogleFonts.poppins(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          fontFamily: AppFonts.nextTrial,
                         ),
                       ),
                       Text(
                         '@${user.username}',
-                        style: const TextStyle(
+                        style: GoogleFonts.aBeeZee(
                           fontSize: 13,
-                          fontFamily: AppFonts.circularStd,
                           color: Colors.grey,
                         ),
                       ),
                       Text(
                         user.formattedCreatedAt,
-                        style: const TextStyle(
+                        style: GoogleFonts.aBeeZee(
                           fontSize: 12,
-                          fontFamily: AppFonts.circularStd,
                           color: Colors.grey,
                         ),
                       ),
@@ -72,33 +104,31 @@ class ProfileInfo extends StatelessWidget {
               children: [
                 Text(
                   '${controller.followeds.length} ',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w500,
                     fontSize: 15,
-                    fontFamily: AppFonts.nextTrial,
                   ),
                 ),
-                const Text(
+                Text(
                   'Following',
-                  style: TextStyle(
+                  style: GoogleFonts.poppins(
                     fontSize: 15,
-                    fontFamily: AppFonts.circularStd,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
                 const SizedBox(width: 16),
                 Text(
                   '${controller.followers.length} ',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w500,
                     fontSize: 15,
-                    fontFamily: AppFonts.nextTrial,
                   ),
                 ),
-                const Text(
+                Text(
                   'Followers',
-                  style: TextStyle(
+                  style: GoogleFonts.poppins(
                     fontSize: 15,
-                    fontFamily: AppFonts.circularStd,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],

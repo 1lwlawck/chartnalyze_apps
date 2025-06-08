@@ -23,7 +23,7 @@ class NewsView extends GetView<NewsController> {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(180),
+        preferredSize: const Size.fromHeight(190),
         child: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
@@ -59,8 +59,8 @@ class NewsView extends GetView<NewsController> {
                     const SizedBox(height: 4),
                     Text(
                       "News from Crypto World",
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
+                      style: GoogleFonts.newsreader(
+                        fontSize: 17,
                         fontWeight: FontWeight.w700,
                         color: Colors.white70,
                       ),

@@ -1,7 +1,8 @@
 import 'package:chartnalyze_apps/app/constants/colors.dart';
-import 'package:chartnalyze_apps/app/constants/fonts.dart';
+
 import 'package:chartnalyze_apps/app/modules/community/controllers/community_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../widgets/community_post_card.dart';
@@ -18,7 +19,9 @@ class CommunityView extends GetView<CommunityController> {
       appBar: _buildAppBar(),
       body: Obx(() {
         if (controller.isLoading.value || controller.isUserLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: SpinKitWave(color: AppColors.primaryGreen, size: 20.0),
+          );
         }
 
         return ListView.separated(
@@ -61,11 +64,10 @@ class CommunityView extends GetView<CommunityController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Community',
-                    style: TextStyle(
-                      fontFamily: AppFonts.nextTrial,
-                      fontWeight: FontWeight.bold,
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w900,
                       fontSize: 30,
                       color: Colors.white,
                     ),

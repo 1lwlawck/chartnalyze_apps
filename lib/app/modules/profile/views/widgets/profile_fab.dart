@@ -1,5 +1,7 @@
+import 'package:chartnalyze_apps/app/modules/profile/views/pages/my_account_view.dart';
 import 'package:flutter/material.dart';
 import 'package:chartnalyze_apps/app/constants/colors.dart';
+import 'package:get/get.dart';
 
 class ProfileExpandableFAB extends StatefulWidget {
   const ProfileExpandableFAB({super.key});
@@ -28,7 +30,7 @@ class _ProfileExpandableFABState extends State<ProfileExpandableFAB> {
           MiniActionButton(
             icon: Icons.edit_outlined,
             onPressed: () {
-              // TODO: Navigate to edit profile
+              Get.to(() => MyAccountView());
               setState(() => _expanded = false);
             },
           ),
