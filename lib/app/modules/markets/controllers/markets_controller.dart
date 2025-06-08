@@ -8,9 +8,11 @@ import 'package:chartnalyze_apps/app/data/models/crypto/GlobalMarketModel.dart';
 import 'package:chartnalyze_apps/app/data/models/news/NewsItemModel.dart';
 import 'package:chartnalyze_apps/app/data/models/crypto/OHLCDataModel.dart';
 import 'package:chartnalyze_apps/app/data/models/crypto/TickerModel.dart';
+import 'package:chartnalyze_apps/app/data/models/stocks/FinhubQuoteModel.dart';
 import 'package:chartnalyze_apps/app/data/services/crypto/CoinService.dart';
 import 'package:chartnalyze_apps/app/data/services/crypto/WatchlistService.dart';
 import 'package:chartnalyze_apps/app/data/services/news/CoindeskService.dart';
+import 'package:chartnalyze_apps/app/data/services/stocks/FinnhubService.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
@@ -21,6 +23,7 @@ class MarketsController extends GetxController {
   final CoinService _coinService = CoinService();
   final CoinDeskService _newsService = CoinDeskService();
   final WatchlistService _watchlistService = Get.put(WatchlistService());
+  final FinnhubService _stockService = Get.put(FinnhubService());
 
   var isLoading = true.obs;
   var coins = <CoinListModel>[].obs;
@@ -64,6 +67,9 @@ class MarketsController extends GetxController {
   final exchanges = <ExchangeModel>[].obs;
   final isLoadingExchanges = false.obs;
 
+  final stocksList = <FinnhubQuoteModel>[].obs;
+  final isLoadingStocks = false.obs;
+
   final List<String> tabLabels = [
     'Coins',
     'Stocks',
@@ -86,6 +92,7 @@ class MarketsController extends GetxController {
     fetchCoinListData(isInitial: true);
     fetchWatchlist();
     fetchExchanges();
+    fetchStocksData();
 
     debounce<String>(selectedInterval, (val) async {
       isChartLoading.value = true;
@@ -98,6 +105,45 @@ class MarketsController extends GetxController {
   void changeTab(int index) {
     selectedTabIndex = index;
     update();
+  }
+
+  Future<void> fetchStocksData() async {
+    try {
+      isLoading.value = true;
+
+      final symbols = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA'];
+      final List<FinnhubQuoteModel> results = [];
+
+      for (var symbol in symbols) {
+        print('📦 Getting data for $symbol');
+
+        // Fetch quote and profile
+        final quote = await _stockService.fetchQuote(symbol);
+        final profile = await _stockService.fetchProfile(symbol);
+
+        // Fetch sparkline from Alpha Vantage
+        final sparkline = await _stockService.fetchAlphaVantageSparkline(
+          symbol,
+        );
+
+        // Combine all data
+        final enriched = quote.copyWith(
+          symbol: symbol,
+          name: profile.name,
+          logo: profile.logo,
+          sparkline: sparkline,
+        );
+
+        results.add(enriched);
+      }
+
+      stocksList.assignAll(results);
+      print('✅ Loaded ${stocksList.length} stocks');
+    } catch (e) {
+      print('❌ Failed to fetch stock data: $e');
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   Future<void> fetchExchanges({int page = 1, int perPage = 100}) async {

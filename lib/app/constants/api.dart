@@ -103,6 +103,46 @@ class CoinGeckoConstants {
   }
 }
 
+class AlphaVantageConstants {
+  static const String baseUrl = 'https://www.alphavantage.co/query';
+  static final String? apiKey = dotenv.env['ALPHAVANTAGE_API_KEY'];
+
+  // Global Quote endpoint
+  static Uri globalQuoteUrl({required String symbol}) {
+    return Uri.parse(
+      '$baseUrl?function=GLOBAL_QUOTE&symbol=$symbol&apikey=$apiKey',
+    );
+  }
+
+  // Daily OHLC endpoint
+  static Uri dailyOhlcUrl({required String symbol}) {
+    return Uri.parse(
+      '$baseUrl?function=TIME_SERIES_DAILY&symbol=$symbol&outputsize=compact&apikey=$apiKey',
+    );
+  }
+}
+
+class FinnhubConstants {
+  static const String baseUrl = 'https://finnhub.io/api/v1';
+  static final String? apiKey = dotenv.env['FINNHUB_API_KEY'];
+
+  // List semua saham di US
+  static Uri symbolsUrl({String exchange = 'US'}) {
+    return Uri.parse('$baseUrl/stock/symbol?exchange=$exchange&token=$apiKey');
+  }
+
+  // Search saham berdasarkan nama atau simbol
+  static Uri searchStockUrl(String query) {
+    return Uri.parse('$baseUrl/search?q=$query&token=$apiKey');
+  }
+
+  // Real-time quote (opsional Finnhub juga bisa)
+  static Uri quoteUrl(String symbol) {
+    print("📦 Making quote URL for $symbol with token: $apiKey");
+    return Uri.parse('$baseUrl/quote?symbol=$symbol&token=$apiKey');
+  }
+}
+
 // https://cryptopanic.com/api/v1/posts/?auth_token=740d524ea774623286008b92dc14679ff253c3a9
 // for CryptoPanic news
 // class CryptoPanicConstants {
