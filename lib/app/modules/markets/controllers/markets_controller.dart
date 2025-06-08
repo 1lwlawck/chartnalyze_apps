@@ -109,9 +109,47 @@ class MarketsController extends GetxController {
 
   Future<void> fetchStocksData() async {
     try {
-      isLoading.value = true;
+      isLoadingStocks.value = true;
 
-      final symbols = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA'];
+      final symbols = [
+        'AAPL', // Apple
+        'GOOGL', // Alphabet (Google)
+        'AMZN', // Amazon
+        'MSFT', // Microsoft
+        'TSLA', // Tesla
+        'META', // Meta Platforms (Facebook)
+        'NFLX', // Netflix
+        'NVDA', // NVIDIA
+        'BRK.B', // Berkshire Hathaway
+        'V', // Visa
+        'JPM', // JPMorgan Chase
+        'WMT', // Walmart
+        'DIS', // The Walt Disney Company
+        'PYPL', // PayPal
+        'INTC', // Intel Corporation
+        'ADBE', // Adobe Systems
+        'CSCO', // Cisco Systems
+        'CMCSA', // Comcast Corporation
+        'MSTR', // Mastercard
+        'VZ', // Verizon Communications
+        'ORCL', // Oracle Corporation
+        'PFE', // Pfizer Inc.
+        'KO', // The Coca-Cola Company
+        'PEP', // PepsiCo, Inc.
+        'NKE', // Nike, Inc.
+        'XOM', // Exxon Mobil Corporation
+        'CVX', // Chevron Corporation
+        'MRK', // Merck & Co., Inc.
+        'ABT', // Abbott Laboratories
+        'T', // AT&T Inc.
+        'UNH', // UnitedHealth Group
+        'HD', // The Home Depot
+        'PG', // Procter & Gamble Co.
+        'LLY', // Eli Lilly and Company
+        'BA', // The Boeing Company
+        'WFC', // Wells Fargo & Company
+        'BAC', // The Bank of America Corporation
+      ];
       final List<FinnhubQuoteModel> results = [];
 
       for (var symbol in symbols) {
@@ -142,7 +180,7 @@ class MarketsController extends GetxController {
     } catch (e) {
       print('❌ Failed to fetch stock data: $e');
     } finally {
-      isLoading.value = false;
+      isLoadingStocks.value = false;
     }
   }
 

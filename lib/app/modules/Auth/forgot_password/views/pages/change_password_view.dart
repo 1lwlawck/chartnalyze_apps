@@ -1,3 +1,4 @@
+import 'package:chartnalyze_apps/app/constants/images.dart';
 import 'package:chartnalyze_apps/app/constants/strings.dart';
 import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/constants/fonts.dart';
@@ -64,8 +65,8 @@ class ChangePasswordView extends GetView<ForgotPasswordController> {
                     suffixIcon: IconButton(
                       icon: Image.asset(
                         controller.isNewPasswordVisible.value
-                            ? 'assets/images/password-icons/eye 1.png'
-                            : 'assets/images/password-icons/eye-off 1.png',
+                            ? PasswordIcons.eye
+                            : PasswordIcons.eyeOff,
                         width: 20,
                         height: 20,
                       ),
@@ -84,8 +85,8 @@ class ChangePasswordView extends GetView<ForgotPasswordController> {
                     suffixIcon: IconButton(
                       icon: Image.asset(
                         controller.isConfirmPasswordVisible.value
-                            ? 'assets/images/eye 1.png'
-                            : 'assets/images/eye-off 1.png',
+                            ? PasswordIcons.eye
+                            : PasswordIcons.eyeOff,
                         width: 20,
                         height: 20,
                       ),

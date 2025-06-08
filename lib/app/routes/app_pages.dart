@@ -1,3 +1,4 @@
+import 'package:chartnalyze_apps/app/modules/Auth/forgot_password/views/pages/password_verification_success_view.dart';
 import 'package:chartnalyze_apps/app/modules/markets/views/pages/markets_detail_view.dart';
 import 'package:chartnalyze_apps/app/modules/onboarding/bindings/onboarding_binding.dart';
 import 'package:chartnalyze_apps/app/modules/onboarding/views/onboarding_view.dart';
@@ -91,6 +92,11 @@ class AppPages {
     GetPage(
       name: _Paths.FORGOT_PASSWORD,
       page: () => ForgotPasswordView(),
+      binding: ForgotPasswordBinding(),
+    ),
+    GetPage(
+      name: Routes.SUCCESS_CHANGE_PASSWORD,
+      page: () => PasswordVerificationSuccessView(),
       binding: ForgotPasswordBinding(),
     ),
     GetPage(

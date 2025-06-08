@@ -55,25 +55,16 @@ class ForgotPasswordController extends GetxController {
     }
   }
 
-  void verifyOTPAndProceed() async {
+  void verifyOTPAndProceed() {
     if (otpCode.value.length != 6) {
       Get.snackbar('Error', 'Enter 6-digit OTP');
       return;
     }
 
-    final verified = await _authService.verifyPasswordResetOTP(
-      email.value,
-      otpCode.value,
+    Get.toNamed(
+      Routes.CHANGE_PASSWORD,
+      arguments: {'email': email.value, 'code': otpCode.value},
     );
-
-    if (verified) {
-      Get.toNamed(
-        Routes.CHANGE_PASSWORD,
-        arguments: {'email': email.value, 'code': otpCode.value},
-      );
-    } else {
-      Get.snackbar('Error', 'Invalid OTP');
-    }
   }
 
   void updatePassword() async {
@@ -96,6 +87,7 @@ class ForgotPasswordController extends GetxController {
     }
 
     final success = await _authService.resetPassword(
+      email: email.value,
       code: otpCode.value,
       password: password,
       confirmPassword: confirmPassword,
@@ -103,7 +95,17 @@ class ForgotPasswordController extends GetxController {
 
     if (success) {
       Get.snackbar('Success', 'Password updated');
-      Get.offAllNamed(Routes.LOGIN);
+
+      // ✅ Hindari crash saat dispose controller masih aktif
+      FocusScope.of(Get.context!).unfocus();
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Get.offAllNamed(
+          Routes.SUCCESS_CHANGE_PASSWORD,
+          arguments: {'email': email.value},
+        );
+      });
     } else {
       Get.snackbar('Error', 'Failed to update password');
     }
@@ -160,9 +162,15 @@ class ForgotPasswordController extends GetxController {
   @override
   void onClose() {
     _timer?.cancel();
+
+    for (final controller in otpControllers) {
+      controller.dispose();
+    }
+
     emailController.dispose();
     newPasswordController.dispose();
     confirmPasswordController.dispose();
+
     super.onClose();
   }
 }

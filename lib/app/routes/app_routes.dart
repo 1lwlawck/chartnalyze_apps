@@ -10,6 +10,7 @@ abstract class Routes {
   static const REGISTER = _Paths.REGISTER;
   static const EMAIL_VERIFICATION = _Paths.EMAIL_VERIFICATION;
   static const SUCCESS_VERIFICATION = _Paths.SUCCESS_VERIFICATION;
+  static const SUCCESS_CHANGE_PASSWORD = _Paths.SUCCESS_CHANGE_PASSWORD;
   static const FORGOT_PASSWORD = _Paths.FORGOT_PASSWORD;
   static const OTP_RESET_PASSWORD = _Paths.OTP_RESET_PASSWORD;
   static const CHANGE_PASSWORD = _Paths.CHANGE_PASSWORD;
@@ -33,6 +34,7 @@ abstract class _Paths {
   static const REGISTER = '/register';
   static const EMAIL_VERIFICATION = '/email-verification';
   static const SUCCESS_VERIFICATION = '/success-verification';
+  static const SUCCESS_CHANGE_PASSWORD = '/success-change-password';
   static const FORGOT_PASSWORD = '/forgot-password';
   static const OTP_RESET_PASSWORD = '/otp-reset-password';
   static const CHANGE_PASSWORD = '/change-password';

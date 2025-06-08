@@ -164,46 +164,48 @@ class AuthService extends GetxService {
     }
   }
 
-  Future<bool> verifyPasswordResetOTP(String email, String code) async {
-    final token = _storage.read('token');
+  // Future<bool> verifyPasswordResetOTP(String email, String code) async {
+  //   final token = _storage.read('token');
 
-    if (token == null) {
-      print("❌ No token found. User not authenticated.");
-      return false;
-    }
+  //   if (token == null) {
+  //     print("❌ No token found. User not authenticated.");
+  //     return false;
+  //   }
 
-    try {
-      final response = await dioClient.post(
-        '/users/self/email/verify',
-        data: dio.FormData.fromMap({'email': email, 'code': code}),
-        options: dio.Options(
-          contentType: 'multipart/form-data',
-          headers: {'Authorization': 'Bearer $token'},
-        ),
-      );
+  //   try {
+  //     final response = await dioClient.post(
+  //       '/users/self/email/verify',
+  //       data: dio.FormData.fromMap({'email': email, 'code': code}),
+  //       options: dio.Options(
+  //         contentType: 'multipart/form-data',
+  //         headers: {'Authorization': 'Bearer $token'},
+  //       ),
+  //     );
 
-      if (response.statusCode == 200) {
-        print("✅ Password reset OTP verified.");
-        return true;
-      }
+  //     if (response.statusCode == 200) {
+  //       print("✅ Password reset OTP verified.");
+  //       return true;
+  //     }
 
-      print("❌ Verification failed: ${response.data}");
-      return false;
-    } on dio.DioException catch (e) {
-      print("❌ verifyPasswordResetOTP error: ${e.response?.data ?? e.message}");
-      return false;
-    }
-  }
+  //     print("❌ Verification failed: ${response.data}");
+  //     return false;
+  //   } on dio.DioException catch (e) {
+  //     print("❌ verifyPasswordResetOTP error: ${e.response?.data ?? e.message}");
+  //     return false;
+  //   }
+  // }
 
   Future<bool> resetPassword({
+    required String email,
     required String code,
     required String password,
     required String confirmPassword,
   }) async {
     try {
       final response = await dioClient.patch(
-        '/users/self/password/reset',
+        '/users/reset-password',
         data: dio.FormData.fromMap({
+          'email': email,
           'code': code,
           'password': password,
           'confirm_password': confirmPassword,
@@ -212,7 +214,11 @@ class AuthService extends GetxService {
       );
       return response.statusCode == 200;
     } catch (e) {
-      print("❌ resetPassword error: $e");
+      if (e is dio.DioException && e.response != null) {
+        print('❌ Server says: ${e.response?.data}');
+      } else {
+        print("❌ resetPassword error: $e");
+      }
       return false;
     }
   }
