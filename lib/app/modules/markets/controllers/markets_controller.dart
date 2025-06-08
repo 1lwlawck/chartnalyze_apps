@@ -13,6 +13,7 @@ import 'package:chartnalyze_apps/app/data/services/crypto/CoinService.dart';
 import 'package:chartnalyze_apps/app/data/services/crypto/WatchlistService.dart';
 import 'package:chartnalyze_apps/app/data/services/news/CoindeskService.dart';
 import 'package:chartnalyze_apps/app/data/services/stocks/FinnhubService.dart';
+import 'package:chartnalyze_apps/app/data/models/stocks/FinnhubProfileModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
@@ -107,7 +108,27 @@ class MarketsController extends GetxController {
     update();
   }
 
-  Future<void> fetchStocksData() async {
+  Future<FinnhubQuoteModel> _loadStock(String symbol) async {
+    print('📦 Getting data for $symbol');
+    final results = await Future.wait([
+      _stockService.fetchQuote(symbol),
+      _stockService.fetchProfile(symbol),
+      _stockService.fetchAlphaVantageSparkline(symbol),
+    ]);
+
+    final quote = results[0] as FinnhubQuoteModel;
+    final profile = results[1] as FinnhubProfileModel;
+    final sparkline = results[2] as List<double>;
+
+    return quote.copyWith(
+      symbol: symbol,
+      name: profile.name,
+      logo: profile.logo,
+      sparkline: sparkline,
+    );
+  }
+
+  Future<void> fetchStocksData({int batchSize = 5}) async {
     try {
       isLoadingStocks.value = true;
 
@@ -152,27 +173,13 @@ class MarketsController extends GetxController {
       ];
       final List<FinnhubQuoteModel> results = [];
 
-      for (var symbol in symbols) {
-        print('📦 Getting data for $symbol');
-
-        // Fetch quote and profile
-        final quote = await _stockService.fetchQuote(symbol);
-        final profile = await _stockService.fetchProfile(symbol);
-
-        // Fetch sparkline from Alpha Vantage
-        final sparkline = await _stockService.fetchAlphaVantageSparkline(
-          symbol,
+      for (int i = 0; i < symbols.length; i += batchSize) {
+        final batch = symbols.sublist(
+          i,
+          i + batchSize > symbols.length ? symbols.length : i + batchSize,
         );
-
-        // Combine all data
-        final enriched = quote.copyWith(
-          symbol: symbol,
-          name: profile.name,
-          logo: profile.logo,
-          sparkline: sparkline,
-        );
-
-        results.add(enriched);
+        final batchResults = await Future.wait(batch.map(_loadStock));
+        results.addAll(batchResults);
       }
 
       stocksList.assignAll(results);
