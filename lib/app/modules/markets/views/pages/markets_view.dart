@@ -41,7 +41,7 @@ class MarketsView extends GetView<MarketsController> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: Column(
-                    mainAxisSize: MainAxisSize.min, // ✅ ini penting
+                    mainAxisSize: MainAxisSize.min, // ini penting
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(

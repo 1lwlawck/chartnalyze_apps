@@ -40,14 +40,14 @@ class AuthService extends GetxService {
         final token = loginResponse.accessToken;
 
         await _storage.write('token', token);
-        print("✅ Login successful. Token saved.");
+        print("Login successful. Token saved.");
         return true;
       }
 
-      print("⚠️ Login failed: ${response.statusCode}");
+      print("Login failed: ${response.statusCode}");
       return false;
     } on dio.DioException catch (e) {
-      print("❌ Login error: ${e.response?.data ?? e.message}");
+      print("Login error: ${e.response?.data ?? e.message}");
       return false;
     }
   }
@@ -72,14 +72,14 @@ class AuthService extends GetxService {
       );
 
       if (response.statusCode == 201) {
-        print("✅ Registration successful.");
+        print("Registration successful.");
         return true;
       }
 
-      print("⚠️ Registration failed: ${response.statusCode}");
+      print("Registration failed: ${response.statusCode}");
       return false;
     } on dio.DioException catch (e) {
-      print("❌ Register error: ${e.response?.data ?? e.message}");
+      print("Register error: ${e.response?.data ?? e.message}");
       return false;
     }
   }
@@ -94,14 +94,14 @@ class AuthService extends GetxService {
       );
 
       if (response.statusCode == 200) {
-        print("📨 OTP sent to $email");
+        print("OTP sent to $email");
         return true;
       }
 
-      print("❌ Failed to send OTP: ${response.data}");
+        print("Failed to send OTP: ${response.data}");
       return false;
     } on dio.DioException catch (e) {
-      print("❌ sendOTP error: ${e.response?.data ?? e.message}");
+        print("sendOTP error: ${e.response?.data ?? e.message}");
       return false;
     }
   }
@@ -116,7 +116,7 @@ class AuthService extends GetxService {
     final token = _storage.read('token');
 
     if (token == null) {
-      print("❌ No token found. User not authenticated.");
+        print("No token found. User not authenticated.");
       return false;
     }
 
@@ -131,14 +131,14 @@ class AuthService extends GetxService {
       );
 
       if (response.statusCode == 200) {
-        print("✅ Email verification successful.");
+          print("Email verification successful.");
         return true;
       }
 
-      print("❌ Verification failed: ${response.data}");
+        print("Verification failed: ${response.data}");
       return false;
     } on dio.DioException catch (e) {
-      print("❌ verifyOTP error: ${e.response?.data ?? e.message}");
+        print("verifyOTP error: ${e.response?.data ?? e.message}");
       return false;
     }
   }
@@ -146,7 +146,7 @@ class AuthService extends GetxService {
   /// LOGOUT
   Future<void> logout() async {
     await _storage.remove('token');
-    print("🚪 Logged out. Token removed.");
+      print("Logged out. Token removed.");
   }
 
   /// FORGOT PASSWORD
@@ -159,7 +159,7 @@ class AuthService extends GetxService {
       );
       return response.statusCode == 200;
     } catch (e) {
-      print("❌ sendPasswordResetOTP error: $e");
+        print("sendPasswordResetOTP error: $e");
       return false;
     }
   }
@@ -168,7 +168,7 @@ class AuthService extends GetxService {
   //   final token = _storage.read('token');
 
   //   if (token == null) {
-  //     print("❌ No token found. User not authenticated.");
+//     print("No token found. User not authenticated.");
   //     return false;
   //   }
 
@@ -183,14 +183,14 @@ class AuthService extends GetxService {
   //     );
 
   //     if (response.statusCode == 200) {
-  //       print("✅ Password reset OTP verified.");
+//       print("Password reset OTP verified.");
   //       return true;
   //     }
 
-  //     print("❌ Verification failed: ${response.data}");
+//     print("Verification failed: ${response.data}");
   //     return false;
   //   } on dio.DioException catch (e) {
-  //     print("❌ verifyPasswordResetOTP error: ${e.response?.data ?? e.message}");
+//     print("verifyPasswordResetOTP error: ${e.response?.data ?? e.message}");
   //     return false;
   //   }
   // }
@@ -215,9 +215,9 @@ class AuthService extends GetxService {
       return response.statusCode == 200;
     } catch (e) {
       if (e is dio.DioException && e.response != null) {
-        print('❌ Server says: ${e.response?.data}');
+        print('Server says: ${e.response?.data}');
       } else {
-        print("❌ resetPassword error: $e");
+        print("resetPassword error: $e");
       }
       return false;
     }

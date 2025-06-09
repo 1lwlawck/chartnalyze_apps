@@ -23,7 +23,7 @@ class TickerModel {
     return TickerModel(
       marketName: json['market']['name'] ?? '',
       exchangeLogo:
-          json['market']['logo'] ?? '', // ✅ Logo exchange diambil dari sini
+          json['market']['logo'] ?? '', // Logo exchange diambil dari sini
       base: json['base'] ?? '',
       target: json['target'] ?? '',
       price: (json['last'] as num).toDouble(),

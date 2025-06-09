@@ -87,7 +87,7 @@ class NewsController extends GetxController {
       newsList.addAll(fetchedNews);
       currentPage.value++;
     } catch (e) {
-      print('❌ Error fetching news: $e');
+      print('Error fetching news: $e');
     } finally {
       isLoading.value = false;
       isFetchingMore.value = false;
@@ -97,7 +97,7 @@ class NewsController extends GetxController {
   Future<void> openInBrowser(String url) async {
     final uri = Uri.parse(url);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      throw '❌ Could not launch $url';
+      throw 'Could not launch $url';
     }
   }
 }

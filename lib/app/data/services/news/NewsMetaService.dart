@@ -9,7 +9,7 @@ class NewsMetaService {
       final data = await MetadataFetch.extract(url);
       return data?.image;
     } catch (e) {
-      print('❌ Failed to fetch metadata for $url: $e');
+      print('Failed to fetch metadata for $url: $e');
       return null;
     }
   }

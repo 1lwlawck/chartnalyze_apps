@@ -114,7 +114,7 @@ class SearchView extends GetView<SearchControllers> {
             padding: const EdgeInsets.all(16),
             children: [
               if (query.isEmpty) ...[
-                // 🔥 Trending Coins
+                // Trending Coins
                 if (controller.trendingCoins.isNotEmpty) ...[
                   Text(
                     'Trending Coins',
@@ -173,7 +173,7 @@ class SearchView extends GetView<SearchControllers> {
                   ),
               ],
 
-              // 🔍 Search Results
+              // Search Results
               if (query.isNotEmpty) ...[
                 if (results.isEmpty)
                   Padding(

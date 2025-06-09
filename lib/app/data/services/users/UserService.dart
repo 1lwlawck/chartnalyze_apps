@@ -19,11 +19,11 @@ class UserService {
 
   final _storage = GetStorage();
 
-  /// ✅ Get profile of currently logged-in user
+  /// Get profile of currently logged-in user
   Future<UserModel?> getSelfProfile() async {
     final token = _storage.read('token');
     if (token == null) {
-      print("❌ [getSelfProfile] Token not found");
+      print("[getSelfProfile] Token not found");
       return null;
     }
 
@@ -37,17 +37,17 @@ class UserService {
         return UserModel.fromJson(response.data['data']['user']);
       }
     } catch (e) {
-      print("❌ [getSelfProfile] Error: $e");
+        print("[getSelfProfile] Error: $e");
     }
 
     return null;
   }
 
-  /// ✅ Get user by ID (for community posts, etc.)
+  /// Get user by ID (for community posts, etc.)
   Future<UserModel?> getUserById(String id) async {
     final token = _storage.read('token');
     if (token == null) {
-      print("❌ [getUserById] Token not found");
+      print("[getUserById] Token not found");
       return null;
     }
 
@@ -65,16 +65,16 @@ class UserService {
 
       return UserModel.fromJson(response.data['data']['user']);
     } catch (e) {
-      print("❌ [getUserById] Error: $e");
+        print("[getUserById] Error: $e");
       return null;
     }
   }
 
-  /// ✅ Update user profile
+  /// Update user profile
   Future<bool> updateSelfProfile(Map<String, String> data) async {
     final token = _storage.read('token');
     if (token == null) {
-      print("❌ [updateSelfProfile] Token not found");
+      print("[updateSelfProfile] Token not found");
       return false;
     }
 
@@ -89,14 +89,14 @@ class UserService {
 
       return response.statusCode == 200;
     } catch (e) {
-      print(
-        "❌ [updateSelfProfile] Error: ${e is DioException ? e.response?.data : e}",
-      );
+        print(
+          "[updateSelfProfile] Error: ${e is DioException ? e.response?.data : e}",
+        );
       return false;
     }
   }
 
-  /// ✅ Update user password
+  /// Update user password
   Future<bool> updateSelfPassword({
     required String currentPassword,
     required String newPassword,
@@ -104,7 +104,7 @@ class UserService {
   }) async {
     final token = _storage.read('token');
     if (token == null) {
-      print("❌ [updateSelfPassword] Token not found");
+      print("[updateSelfPassword] Token not found");
       return false;
     }
 
@@ -124,28 +124,28 @@ class UserService {
       if (response.statusCode == 200) {
         return true;
       } else {
-        print("❌ [updateSelfPassword] Failed: ${response.data}");
+          print("[updateSelfPassword] Failed: ${response.data}");
         return false;
       }
     } on DioException catch (e) {
-      print("❌ [updateSelfPassword] DioError: ${e.response?.data}");
+        print("[updateSelfPassword] DioError: ${e.response?.data}");
       return false;
     } catch (e) {
-      print("❌ [updateSelfPassword] Unknown Error: $e");
+        print("[updateSelfPassword] Unknown Error: $e");
       return false;
     }
   }
 
-  /// ✅ Kirim OTP ke email baru
+  /// Kirim OTP ke email baru
   Future<bool> sendOtpToEmail(String email) async {
     final token = _storage.read('token');
     if (token == null) {
-      print("❌ [sendOtpToEmail] Token not found");
+        print("[sendOtpToEmail] Token not found");
       return false;
     }
 
     try {
-      print("📨 [sendOtpToEmail] Sending OTP to: $email");
+        print("[sendOtpToEmail] Sending OTP to: $email");
 
       final response = await dioClient.post(
         '/otps/send',
@@ -153,26 +153,26 @@ class UserService {
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
 
-      print(
-        "✅ [sendOtpToEmail] Response: ${response.statusCode} - ${response.data}",
-      );
+        print(
+          "[sendOtpToEmail] Response: ${response.statusCode} - ${response.data}",
+        );
       return response.statusCode == 200;
     } on DioException catch (e) {
-      print("❌ [sendOtpToEmail] DioError:");
+        print("[sendOtpToEmail] DioError:");
       print("Status: ${e.response?.statusCode}");
       print("Data: ${e.response?.data}");
       return false;
     }
   }
 
-  /// ✅ Update email dengan OTP
+  /// Update email dengan OTP
   Future<bool> updateSelfEmail({
     required String email,
     required String code,
   }) async {
     final token = _storage.read('token');
     if (token == null) {
-      print("❌ [updateSelfEmail] Token not found");
+        print("[updateSelfEmail] Token not found");
       return false;
     }
 
@@ -182,7 +182,7 @@ class UserService {
         'code': code.trim(),
       });
 
-      print("📤 [updateSelfEmail] Submitting email update:");
+        print("[updateSelfEmail] Submitting email update:");
       print("Email: ${email.trim()}");
       print("Code : ${code.trim()}");
 
@@ -192,17 +192,17 @@ class UserService {
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
 
-      print("✅ [updateSelfEmail] Response: ${response.statusCode}");
-      print("🔁 Data: ${response.data}");
+        print("[updateSelfEmail] Response: ${response.statusCode}");
+        print("Data: ${response.data}");
 
       return response.statusCode == 200;
     } on DioException catch (e) {
-      print("❌ [updateSelfEmail] DioError:");
+        print("[updateSelfEmail] DioError:");
       print("Status: ${e.response?.statusCode}");
       print("Data: ${e.response?.data}");
       return false;
     } catch (e) {
-      print("❌ [updateSelfEmail] Unknown Error: $e");
+        print("[updateSelfEmail] Unknown Error: $e");
       return false;
     }
   }
@@ -224,10 +224,10 @@ class UserService {
 
       return response.statusCode == 200;
     } on DioException catch (e) {
-      print("❌ [updateSelfAvatar] DioError: ${e.response?.data ?? e.message}");
+        print("[updateSelfAvatar] DioError: ${e.response?.data ?? e.message}");
       return false;
     } catch (e) {
-      print("❌ [updateSelfAvatar] Unknown error: $e");
+        print("[updateSelfAvatar] Unknown error: $e");
       return false;
     }
   }
