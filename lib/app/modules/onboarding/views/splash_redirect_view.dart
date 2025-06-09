@@ -1,7 +1,9 @@
 import 'package:chartnalyze_apps/app/constants/colors.dart';
+import 'package:chartnalyze_apps/app/constants/fonts.dart';
 import 'package:chartnalyze_apps/app/constants/images.dart';
 import 'package:chartnalyze_apps/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
@@ -33,12 +35,24 @@ class SplashRedirectView extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: AppColors.primaryGreen,
-                fontSize: 24,
+                fontSize: 25,
                 fontWeight: FontWeight.w600,
+                fontFamily: AppFonts.nextTrial,
               ),
             ),
             const SizedBox(height: 10),
-            const CircularProgressIndicator(color: AppColors.primaryGreen),
+            const Text(
+              'Get real-time analysis and trends\nto stay ahead in the market.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppColors.black,
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                fontFamily: AppFonts.nextTrial,
+              ),
+            ),
+            const SizedBox(height: 40),
+            const SpinKitWave(color: AppColors.primaryGreen, size: 30),
           ],
         ),
       ),

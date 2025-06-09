@@ -202,7 +202,10 @@ class FinnhubConstants {
 // }
 
 class AuthConstants {
-  static final String baseUrl = "http://192.168.69.214:80/api";
+  /// Base URL for the backend API
+  /// Uses [AUTH_BASE_URL] from the environment if available
+  static final String baseUrl =
+      dotenv.env['AUTH_BASE_URL'] ?? 'http://192.168.69.214:80/api';
 
   static const String loginEndpoint = '/users/login';
   static const String registerEndpoint = '/users/register';
