@@ -22,6 +22,7 @@ abstract class Routes {
   static const PROFILE = _Paths.PROFILE;
   static const MAIN_WRAPPER = _Paths.MAIN_WRAPPER;
   static const ONBOARDING = _Paths.ONBOARDING;
+  static const SPLASH_REDIRECT = _Paths.SPLASH_REDIRECT;
 }
 
 abstract class _Paths {
@@ -46,4 +47,5 @@ abstract class _Paths {
   static const PROFILE = '/profile';
   static const MAIN_WRAPPER = '/main-wrapper';
   static const ONBOARDING = '/onboarding';
+  static const SPLASH_REDIRECT = '/splash-redirect';
 }

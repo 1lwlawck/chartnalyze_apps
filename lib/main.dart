@@ -10,13 +10,23 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
   await dotenv.load(fileName: ".env");
+  final storage = GetStorage();
+
+  final token = storage.read('token');
+  final onboardingDone = storage.read('onboarding_done') ?? false;
+
+  final initialRoute =
+      token != null && token.isNotEmpty
+          ? Routes.SPLASH_REDIRECT
+          : (onboardingDone ? Routes.LOGIN : Routes.ONBOARDING);
+
   Get.put<AuthService>(AuthService(), permanent: true);
 
   runApp(
     GetMaterialApp(
       title: "Chartnalyze Apps",
       debugShowCheckedModeBanner: false,
-      initialRoute: AppPages.INITIAL,
+      initialRoute: initialRoute,
       getPages: AppPages.routes,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch().copyWith(

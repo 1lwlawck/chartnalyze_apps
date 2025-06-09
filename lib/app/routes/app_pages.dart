@@ -2,6 +2,7 @@ import 'package:chartnalyze_apps/app/modules/Auth/forgot_password/views/pages/pa
 import 'package:chartnalyze_apps/app/modules/markets/views/pages/markets_detail_view.dart';
 import 'package:chartnalyze_apps/app/modules/onboarding/bindings/onboarding_binding.dart';
 import 'package:chartnalyze_apps/app/modules/onboarding/views/onboarding_view.dart';
+import 'package:chartnalyze_apps/app/modules/onboarding/views/splash_redirect_view.dart';
 import 'package:get/get.dart';
 
 import '../modules/Auth/email_verification/bindings/email_verification_binding.dart';
@@ -15,12 +16,12 @@ import '../modules/Auth/login/bindings/login_binding.dart';
 import '../modules/Auth/login/views/pages/login_view.dart';
 import '../modules/Auth/register/bindings/register_binding.dart';
 import '../modules/Auth/register/views/pages/register_view.dart';
-import '../modules/intro/first_splash/bindings/first_splash_binding.dart';
-import '../modules/intro/first_splash/views/first_splash_view.dart';
-import '../modules/intro/second_splash/bindings/second_splash_binding.dart';
-import '../modules/intro/second_splash/views/second_splash_view.dart';
-import '../modules/intro/third_splash/bindings/third_splash_binding.dart';
-import '../modules/intro/third_splash/views/third_splash_view.dart';
+// import '../modules/intro/first_splash/bindings/first_splash_binding.dart';
+// import '../modules/intro/first_splash/views/first_splash_view.dart';
+// import '../modules/intro/second_splash/bindings/second_splash_binding.dart';
+// import '../modules/intro/second_splash/views/second_splash_view.dart';
+// import '../modules/intro/third_splash/bindings/third_splash_binding.dart';
+// import '../modules/intro/third_splash/views/third_splash_view.dart';
 import '../modules/community/bindings/community_binding.dart';
 import '../modules/community/views/pages/community_view.dart';
 import '../modules/main_wrapper/bindings/main_wrapper_binding.dart';
@@ -39,7 +40,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.LOGIN;
+  static const INITIAL = Routes.ONBOARDING;
 
   static final routes = [
     GetPage(
@@ -47,28 +48,33 @@ class AppPages {
       page: () => OnboardingView(),
       binding: OnboardingBinding(),
     ),
+    GetPage(
+      name: Routes.SPLASH_REDIRECT,
+      page: () => SplashRedirectView(),
+      binding: MainWrapperBinding(),
+    ),
 
-    GetPage(
-      name: _Paths.FIRST_SPLASH,
-      page: () => FirstSplashView(),
-      transition: Transition.rightToLeft,
-      transitionDuration: const Duration(milliseconds: 500),
-      binding: FirstSplashBinding(),
-    ),
-    GetPage(
-      name: _Paths.SECOND_SPLASH,
-      page: () => SecondSplashView(),
-      transition: Transition.rightToLeft,
-      transitionDuration: const Duration(milliseconds: 500),
-      binding: SecondSplashBinding(),
-    ),
-    GetPage(
-      name: _Paths.THIRD_SPLASH,
-      page: () => ThirdSplashView(),
-      transition: Transition.rightToLeft,
-      transitionDuration: const Duration(milliseconds: 500),
-      binding: ThirdSplashBinding(),
-    ),
+    // GetPage(
+    //   name: _Paths.FIRST_SPLASH,
+    //   page: () => FirstSplashView(),
+    //   transition: Transition.rightToLeft,
+    //   transitionDuration: const Duration(milliseconds: 500),
+    //   binding: FirstSplashBinding(),
+    // ),
+    // GetPage(
+    //   name: _Paths.SECOND_SPLASH,
+    //   page: () => SecondSplashView(),
+    //   transition: Transition.rightToLeft,
+    //   transitionDuration: const Duration(milliseconds: 500),
+    //   binding: SecondSplashBinding(),
+    // ),
+    // GetPage(
+    //   name: _Paths.THIRD_SPLASH,
+    //   page: () => ThirdSplashView(),
+    //   transition: Transition.rightToLeft,
+    //   transitionDuration: const Duration(milliseconds: 500),
+    //   binding: ThirdSplashBinding(),
+    // ),
     GetPage(
       name: _Paths.LOGIN,
       page: () => LoginView(),
