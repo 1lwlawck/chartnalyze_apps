@@ -138,7 +138,6 @@ class FinnhubConstants {
 
   // Real-time quote (opsional Finnhub juga bisa)
   static Uri quoteUrl(String symbol) {
-    print("Making quote URL for $symbol with token: $apiKey");
     return Uri.parse('$baseUrl/quote?symbol=$symbol&token=$apiKey');
   }
 }

@@ -26,7 +26,6 @@ Future<http.Response> safeGet(Uri url, {int retries = 3}) async {
       return response;
     } catch (e) {
       attempt++;
-      print('Retrying... attempt $attempt');
       await Future.delayed(const Duration(seconds: 2));
     }
   }
@@ -254,7 +253,6 @@ class CoinService {
         throw Exception('Failed to load trending coins');
       }
     } catch (e) {
-      print('Error in fetchTrendingCoins: $e');
       return [];
     }
   }

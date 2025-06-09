@@ -152,7 +152,6 @@ class MarketsController extends GetxController {
     final List<FinnhubQuoteModel> results = [];
     try {
       for (var symbol in symbols) {
-        print(' Getting data for $symbol');
 
         try {
           // Fetch quote and profile
@@ -174,11 +173,9 @@ class MarketsController extends GetxController {
 
           results.add(enriched);
         } catch (e) {
-          print(' Failed to fetch data for $symbol: $e');
         }
       }
       stocksList.assignAll(results);
-      print(' Loaded ${stocksList.length} stocks');
     } finally {
       isLoadingStocks.value = false;
     }
@@ -193,7 +190,6 @@ class MarketsController extends GetxController {
       );
       exchanges.assignAll(data);
     } catch (e) {
-      print(' Failed to fetch exchanges: $e');
     } finally {
       isLoadingExchanges.value = false;
     }
@@ -217,7 +213,6 @@ class MarketsController extends GetxController {
             'Chart of ${coinDetail.value?.name} Current Price \$${coinDetail.value?.price} Track your ${coinDetail.value?.symbol} Here: ${coinDetail.value?.explorer})',
       );
     } catch (e) {
-      print(' Error during screenshot sharing: $e');
     }
   }
 
@@ -283,7 +278,6 @@ class MarketsController extends GetxController {
       watchlist.assignAll(detailed);
       detailedWatchlist.assignAll(detailed);
     } catch (e) {
-      print(" Error fetching detailed watchlist: $e");
     } finally {
       isLoadingWatchlist.value = false;
     }
@@ -294,7 +288,6 @@ class MarketsController extends GetxController {
       final rate = await _coinService.fetchUsdToIdrRate();
       usdToIdrRate.value = rate;
     } catch (e) {
-      print(' Failed to fetch USD to IDR rate: $e');
     }
   }
 
@@ -323,7 +316,6 @@ class MarketsController extends GetxController {
         page++;
       }
     } catch (e) {
-      print(' Error fetching coins: $e');
     } finally {
       isFetchingMore.value = false;
       isLoading.value = false;
@@ -340,7 +332,6 @@ class MarketsController extends GetxController {
       isCurrentCoinWatched.value = isWatched(result.id);
       await loadOhlcData(result.id);
     } catch (e) {
-      print(' Failed to fetch coin detail: $e');
     } finally {
       isLoadingDetail.value = false;
     }
@@ -369,7 +360,6 @@ class MarketsController extends GetxController {
       );
       ohlcData.value = result;
     } catch (e) {
-      print(' Failed to fetch OHLC data: $e');
       ohlcData.clear();
     } finally {
       isLoadingOhlc.value = false;
@@ -389,7 +379,6 @@ class MarketsController extends GetxController {
 
       marketData.value = result;
     } catch (e) {
-      print(' Failed to fetch global market data: $e');
     } finally {
       isGlobalMarketLoading.value = false;
     }
@@ -399,7 +388,6 @@ class MarketsController extends GetxController {
     isLoadingNews.value = true;
 
     // [DEBUG] Tampilkan simbol coin
-    print(' Fetching news for coin symbol: $symbol');
 
     try {
       final news = await _newsService.fetchNews(
@@ -408,15 +396,12 @@ class MarketsController extends GetxController {
       );
 
       // [DEBUG] Cek apakah responsenya kosong atau ada isinya
-      print(' News fetched for $symbol → Total: ${news.length}');
       for (var n in news) {
-        print(' ${n.title} | ${n.publishedAt}');
       }
 
       newsList.assignAll(news);
     } catch (e) {
       // [DEBUG] Jika gagal, tampilkan error-nya
-      print(' Error fetching news for $symbol: $e');
       newsList.clear();
     } finally {
       isLoadingNews.value = false;

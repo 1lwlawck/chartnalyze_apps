@@ -37,7 +37,6 @@ class CommunityController extends GetxController {
 
       isUserLoading.value = false;
     } catch (e) {
-      print(" Failed to fetch posts/users: $e");
     } finally {
       isLoading.value = false;
     }

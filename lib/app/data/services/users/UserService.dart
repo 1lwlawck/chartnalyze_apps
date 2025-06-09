@@ -23,7 +23,6 @@ class UserService {
   Future<UserModel?> getSelfProfile() async {
     final token = _storage.read('token');
     if (token == null) {
-      print(" [getSelfProfile] Token not found");
       return null;
     }
 
@@ -37,7 +36,6 @@ class UserService {
         return UserModel.fromJson(response.data['data']['user']);
       }
     } catch (e) {
-      print(" [getSelfProfile] Error: $e");
     }
 
     return null;
@@ -47,7 +45,6 @@ class UserService {
   Future<UserModel?> getUserById(String id) async {
     final token = _storage.read('token');
     if (token == null) {
-      print(" [getUserById] Token not found");
       return null;
     }
 
@@ -65,7 +62,6 @@ class UserService {
 
       return UserModel.fromJson(response.data['data']['user']);
     } catch (e) {
-      print(" [getUserById] Error: $e");
       return null;
     }
   }
@@ -74,7 +70,6 @@ class UserService {
   Future<bool> updateSelfProfile(Map<String, String> data) async {
     final token = _storage.read('token');
     if (token == null) {
-      print(" [updateSelfProfile] Token not found");
       return false;
     }
 
@@ -89,7 +84,6 @@ class UserService {
 
       return response.statusCode == 200;
     } catch (e) {
-      print(
         " [updateSelfProfile] Error: ${e is DioException ? e.response?.data : e}",
       );
       return false;
@@ -104,7 +98,6 @@ class UserService {
   }) async {
     final token = _storage.read('token');
     if (token == null) {
-      print(" [updateSelfPassword] Token not found");
       return false;
     }
 
@@ -124,14 +117,11 @@ class UserService {
       if (response.statusCode == 200) {
         return true;
       } else {
-        print(" [updateSelfPassword] Failed: ${response.data}");
         return false;
       }
     } on DioException catch (e) {
-      print(" [updateSelfPassword] DioError: ${e.response?.data}");
       return false;
     } catch (e) {
-      print(" [updateSelfPassword] Unknown Error: $e");
       return false;
     }
   }
@@ -140,12 +130,10 @@ class UserService {
   Future<bool> sendOtpToEmail(String email) async {
     final token = _storage.read('token');
     if (token == null) {
-      print(" [sendOtpToEmail] Token not found");
       return false;
     }
 
     try {
-      print(" [sendOtpToEmail] Sending OTP to: $email");
 
       final response = await dioClient.post(
         '/otps/send',
@@ -153,14 +141,10 @@ class UserService {
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
 
-      print(
         " [sendOtpToEmail] Response: ${response.statusCode} - ${response.data}",
       );
       return response.statusCode == 200;
     } on DioException catch (e) {
-      print(" [sendOtpToEmail] DioError:");
-      print("Status: ${e.response?.statusCode}");
-      print("Data: ${e.response?.data}");
       return false;
     }
   }
@@ -172,7 +156,6 @@ class UserService {
   }) async {
     final token = _storage.read('token');
     if (token == null) {
-      print(" [updateSelfEmail] Token not found");
       return false;
     }
 
@@ -182,9 +165,6 @@ class UserService {
         'code': code.trim(),
       });
 
-      print(" [updateSelfEmail] Submitting email update:");
-      print("Email: ${email.trim()}");
-      print("Code : ${code.trim()}");
 
       final response = await dioClient.patch(
         AuthConstants.updateSelfEmail,
@@ -192,17 +172,11 @@ class UserService {
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
 
-      print(" [updateSelfEmail] Response: ${response.statusCode}");
-      print(" Data: ${response.data}");
 
       return response.statusCode == 200;
     } on DioException catch (e) {
-      print(" [updateSelfEmail] DioError:");
-      print("Status: ${e.response?.statusCode}");
-      print("Data: ${e.response?.data}");
       return false;
     } catch (e) {
-      print(" [updateSelfEmail] Unknown Error: $e");
       return false;
     }
   }
@@ -224,10 +198,8 @@ class UserService {
 
       return response.statusCode == 200;
     } on DioException catch (e) {
-      print(" [updateSelfAvatar] DioError: ${e.response?.data ?? e.message}");
       return false;
     } catch (e) {
-      print(" [updateSelfAvatar] Unknown error: $e");
       return false;
     }
   }

@@ -25,12 +25,8 @@ class FinnhubService {
 
     // Debug Rate Limit
     final headers = res.headers.map;
-    print(' Finnhub Rate Limit Info:');
-    print('→ X-RateLimit-Limit: ${headers['x-ratelimit-limit']?.first}');
-    print(
       '→ X-RateLimit-Remaining: ${headers['x-ratelimit-remaining']?.first}',
     );
-    print('→ X-RateLimit-Reset: ${headers['x-ratelimit-reset']?.first}');
 
     //  Cek isi data sebelum parsing
     if (res.data == null || res.data is! Map<String, dynamic>) {

@@ -87,7 +87,6 @@ class NewsController extends GetxController {
       newsList.addAll(fetchedNews);
       currentPage.value++;
     } catch (e) {
-      print(' Error fetching news: $e');
     } finally {
       isLoading.value = false;
       isFetchingMore.value = false;

@@ -39,8 +39,6 @@ class CommunityService {
       final data = response.data['data']['posts'] as List;
       return data.map((e) => PostModel.fromJson(e)).toList();
     } on DioException catch (e) {
-      print(' Failed to fetch posts: ${e.response?.statusCode}');
-      print(' Error message: ${e.response?.data ?? e.message}');
       rethrow;
     }
   }
