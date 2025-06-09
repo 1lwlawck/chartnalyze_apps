@@ -7,7 +7,7 @@ import '../controllers/main_wrapper_controller.dart';
 class MainWrapperBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<MainWrapperController>(() => MainWrapperController());
+    Get.put<MainWrapperController>(MainWrapperController(), permanent: true);
 
     Get.put(MarketsController(), permanent: true);
     Get.put(NewsController(), permanent: true);
