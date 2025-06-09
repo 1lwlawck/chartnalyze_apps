@@ -69,7 +69,7 @@ class ProfileController extends GetxController {
       birthDateController.text = userData.birthDate ?? '';
       emailController.text = userData.email;
     } else {
-      print("⚠️ Failed to load user");
+      print("️ Failed to load user");
     }
 
     isLoading.value = false;
@@ -82,10 +82,10 @@ class ProfileController extends GetxController {
       followeds.value = await _followService.getFolloweds(userId);
       followers.value = await _followService.getFollowers(userId);
       print(
-        "✅ Fetched \${followeds.length} followeds and \${followers.length} followers.",
+        " Fetched \${followeds.length} followeds and \${followers.length} followers.",
       );
     } catch (e) {
-      print("❌ Error while fetching follows: \$e");
+      print(" Error while fetching follows: \$e");
     } finally {
       isFollowDataLoading.value = false;
     }
@@ -106,7 +106,7 @@ class ProfileController extends GetxController {
     }
 
     // Log sebelum kirim
-    print("🔄 Sending update payload: $payload");
+    print(" Sending update payload: $payload");
 
     try {
       final success = await _userService.updateSelfProfile(payload);
@@ -116,7 +116,7 @@ class ProfileController extends GetxController {
       }
       return false;
     } catch (e) {
-      print("❌ Update failed: $e");
+      print(" Update failed: $e");
       return false;
     }
   }
@@ -154,7 +154,7 @@ class ProfileController extends GetxController {
         return false;
       }
     } catch (e) {
-      print("❌ Exception while updating password: $e");
+      print(" Exception while updating password: $e");
       Get.snackbar("Error", "Something went wrong");
       return false;
     }
@@ -176,7 +176,7 @@ class ProfileController extends GetxController {
       }
       return sent;
     } catch (e) {
-      print("❌ Exception while sending OTP: $e");
+      print(" Exception while sending OTP: $e");
       return false;
     }
   }
@@ -204,7 +204,7 @@ class ProfileController extends GetxController {
       }
       return success;
     } catch (e) {
-      print("❌ Exception while updating email: $e");
+      print(" Exception while updating email: $e");
       return false;
     }
   }

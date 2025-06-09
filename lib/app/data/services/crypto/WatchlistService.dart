@@ -31,7 +31,7 @@ class WatchlistService extends GetxService {
   Future<bool> addToWatchlist(CoinListModel coin) async {
     final token = _storage.read('token');
     if (token == null) {
-      print("❌ Token not found");
+      print(" Token not found");
       return false;
     }
 
@@ -54,7 +54,7 @@ class WatchlistService extends GetxService {
 
       return response.statusCode == 201 || response.statusCode == 409;
     } catch (e) {
-      print("❌ addToWatchlist error: $e");
+      print(" addToWatchlist error: $e");
       return false;
     }
   }
@@ -62,7 +62,7 @@ class WatchlistService extends GetxService {
   Future<bool> removeFromWatchlist(String key) async {
     final token = _storage.read('token');
     if (token == null) {
-      print("❌ Token not found");
+      print(" Token not found");
       return false;
     }
 
@@ -79,7 +79,7 @@ class WatchlistService extends GetxService {
 
       return response.statusCode == 200;
     } catch (e) {
-      print("❌ removeFromWatchlist error: $e");
+      print(" removeFromWatchlist error: $e");
       return false;
     }
   }
@@ -87,7 +87,7 @@ class WatchlistService extends GetxService {
   Future<List<WatchedAssetModel>> getWatchlist() async {
     final token = _storage.read('token');
     if (token == null) {
-      print("❌ Token not found");
+      print(" Token not found");
       return [];
     }
 
@@ -106,11 +106,11 @@ class WatchlistService extends GetxService {
         final List data = response.data['data']['watched_assets'];
         return data.map((json) => WatchedAssetModel.fromJson(json)).toList();
       } else {
-        print("⚠️ getWatchlist failed: ${response.statusCode}");
+        print("️ getWatchlist failed: ${response.statusCode}");
         return [];
       }
     } catch (e) {
-      print("❌ getWatchlist error: $e");
+      print(" getWatchlist error: $e");
       return [];
     }
   }

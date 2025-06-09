@@ -23,7 +23,7 @@ class CommunityService {
   Future<List<PostModel>> getPosts({int page = 1}) async {
     final token = _storage.read('token');
     if (token == null || token.isEmpty) {
-      throw Exception('🔒 Token not found. User not authenticated.');
+      throw Exception(' Token not found. User not authenticated.');
     }
 
     try {
@@ -31,7 +31,7 @@ class CommunityService {
         '/posts?per_page=10&page=$page',
         options: Options(
           headers: {
-            'Authorization': 'Bearer $token', // ✅ Kirim token
+            'Authorization': 'Bearer $token', //  Kirim token
           },
         ),
       );
@@ -39,8 +39,8 @@ class CommunityService {
       final data = response.data['data']['posts'] as List;
       return data.map((e) => PostModel.fromJson(e)).toList();
     } on DioException catch (e) {
-      print('❌ Failed to fetch posts: ${e.response?.statusCode}');
-      print('❌ Error message: ${e.response?.data ?? e.message}');
+      print(' Failed to fetch posts: ${e.response?.statusCode}');
+      print(' Error message: ${e.response?.data ?? e.message}');
       rethrow;
     }
   }

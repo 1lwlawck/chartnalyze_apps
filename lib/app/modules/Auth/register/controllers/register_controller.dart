@@ -42,7 +42,7 @@ class RegisterController extends GetxController {
     }
 
     isLoading.value = true;
-    print("📨 Registering: $username / $email");
+    print(" Registering: $username / $email");
 
     try {
       final success = await authService.register(
@@ -73,7 +73,7 @@ class RegisterController extends GetxController {
 
       Get.toNamed(Routes.EMAIL_VERIFICATION, arguments: {'email': email});
     } catch (e) {
-      print("❌ Registration error: $e");
+      print(" Registration error: $e");
       _showErrorSnackbar('Something went wrong. Please try again.');
     } finally {
       isLoading.value = false;

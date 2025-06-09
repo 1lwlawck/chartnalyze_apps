@@ -22,8 +22,7 @@ class TickerModel {
   factory TickerModel.fromJson(Map<String, dynamic> json) {
     return TickerModel(
       marketName: json['market']['name'] ?? '',
-      exchangeLogo:
-          json['market']['logo'] ?? '', // ✅ Logo exchange diambil dari sini
+      exchangeLogo: json['market']['logo'] ?? '',
       base: json['base'] ?? '',
       target: json['target'] ?? '',
       price: (json['last'] as num).toDouble(),

@@ -69,7 +69,7 @@ class SearchControllers extends GetxController {
       final coins = await _coinService.fetchTrendingCoins();
       trendingCoins.assignAll(coins);
     } catch (e) {
-      print("❌ Trending coins error: $e");
+      print(" Trending coins error: $e");
       trendingCoins.clear();
     } finally {
       isLoading(false);
@@ -82,7 +82,7 @@ class SearchControllers extends GetxController {
       final results = await _coinService.searchCoins(query);
       searchResults.assignAll(results);
     } catch (e) {
-      print("❌ Search error: $e");
+      print(" Search error: $e");
       searchResults.clear();
     } finally {
       isLoading(false);

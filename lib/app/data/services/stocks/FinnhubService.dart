@@ -25,16 +25,16 @@ class FinnhubService {
 
     // Debug Rate Limit
     final headers = res.headers.map;
-    print('🔍 Finnhub Rate Limit Info:');
+    print(' Finnhub Rate Limit Info:');
     print('→ X-RateLimit-Limit: ${headers['x-ratelimit-limit']?.first}');
     print(
       '→ X-RateLimit-Remaining: ${headers['x-ratelimit-remaining']?.first}',
     );
     print('→ X-RateLimit-Reset: ${headers['x-ratelimit-reset']?.first}');
 
-    // ✅ Cek isi data sebelum parsing
+    //  Cek isi data sebelum parsing
     if (res.data == null || res.data is! Map<String, dynamic>) {
-      throw Exception('❌ Invalid quote response for $symbol: ${res.data}');
+      throw Exception(' Invalid quote response for $symbol: ${res.data}');
     }
 
     return FinnhubQuoteModel.fromJson(res.data);
@@ -47,7 +47,7 @@ class FinnhubService {
     final res = await _dio.getUri(url);
 
     if (res.data == null || res.data is! Map<String, dynamic>) {
-      throw Exception('❌ Invalid profile response for $symbol: ${res.data}');
+      throw Exception(' Invalid profile response for $symbol: ${res.data}');
     }
 
     return FinnhubProfileModel.fromJson(res.data);

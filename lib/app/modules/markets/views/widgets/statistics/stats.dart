@@ -99,7 +99,7 @@ class MarketStats extends GetView<MarketsController> {
       if (data == null) {
         return const Padding(
           padding: EdgeInsets.all(16),
-          child: Center(child: Text('⚠️ Failed to load market stats')),
+          child: Center(child: Text('️ Failed to load market stats')),
         );
       }
 
