@@ -126,6 +126,7 @@ class SearchView extends GetView<SearchControllers> {
                   const SizedBox(height: 12),
                   ...controller.trendingCoins.map(
                     (coin) => CoinHighlightCard(
+                      coinId: coin.id,
                       symbol: coin.symbol.toUpperCase(),
                       name: coin.name,
                       imageUrl: coin.imageUrl,
