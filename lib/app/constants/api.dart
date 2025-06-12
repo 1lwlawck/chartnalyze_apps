@@ -205,7 +205,7 @@ class AuthConstants {
   /// Base URL for the backend API
   /// Uses [AUTH_BASE_URL] from the environment if available
   static final String baseUrl =
-      dotenv.env['AUTH_BASE_URL'] ?? 'http://192.168.69.214:80/api';
+      dotenv.env['AUTH_BASE_URL'] ?? 'http://192.168.1.124:80/api';
 
   static const String loginEndpoint = '/users/login';
   static const String registerEndpoint = '/users/register';
@@ -227,7 +227,7 @@ class WatchlistConstants {
 class UserActivityConstants {
   /// Base URL untuk API backend
   static final String baseUrl =
-      dotenv.env['AUTH_BASE_URL'] ?? 'http://192.168.69.214:80/api';
+      dotenv.env['AUTH_BASE_URL'] ?? 'http://192.168.1.124:80/api';
 
   /// Endpoint dasar activity
   static const String activitiesEndpoint = '/users';

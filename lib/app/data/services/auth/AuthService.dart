@@ -148,12 +148,6 @@ class AuthService extends GetxService {
     }
   }
 
-  /// LOGOUT
-  Future<void> logout() async {
-    await _storage.remove('token');
-    print(" Logged out. Token removed.");
-  }
-
   /// FORGOT PASSWORD
   Future<bool> sendPasswordResetOTP(String email) async {
     try {
@@ -265,5 +259,34 @@ class AuthService extends GetxService {
       print("getUserActivities error: ${e.response?.data ?? e.message}");
       return [];
     }
+  }
+
+  Future<void> logout() async {
+    final token = _storage.read('token');
+
+    if (token != null) {
+      try {
+        final response = await dioClient.delete(
+          AuthConstants.logout,
+          options: dio.Options(headers: {'Authorization': 'Bearer $token'}),
+        );
+
+        if (response.statusCode == 200) {
+          print("Logout API called successfully.");
+        } else {
+          print("Logout API returned status: ${response.statusCode}");
+        }
+      } catch (e) {
+        print("Logout API error: ${e.toString()}");
+        // tetap lanjut hapus token lokal
+      }
+    }
+
+    // Hapus token lokal
+    await _storage.remove('token');
+    print("Token removed from storage.");
+
+    // Reset semua controller, termasuk permanent
+    Get.reset();
   }
 }

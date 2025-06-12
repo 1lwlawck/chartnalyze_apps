@@ -327,11 +327,26 @@ class ProfileController extends GetxController {
 
   void logout() async {
     final authService = Get.find<AuthService>();
-    await authService.logout();
 
+    try {
+      await authService.logout();
+    } catch (e) {
+      print("Logout error: $e");
+    }
+
+    // Bersihkan semua controller permanen & non-permanen
     Get.deleteAll();
 
+    // Navigasi ke login
     Get.offAllNamed(Routes.LOGIN);
-    Get.snackbar("Logged out", "You have been successfully logged out");
+
+    // Snackbar konfirmasi
+    Get.snackbar(
+      "Logged out",
+      "You have been successfully logged out",
+      backgroundColor: Colors.teal,
+      colorText: Colors.white,
+      snackPosition: SnackPosition.BOTTOM,
+    );
   }
 }

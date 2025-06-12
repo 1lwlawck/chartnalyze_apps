@@ -14,6 +14,8 @@ class SplashRedirectView extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(const Duration(seconds: 2), () {
         final token = GetStorage().read('token');
+        print("[Redirect] Token: $token");
+
         if (token != null && token.isNotEmpty) {
           Get.offAllNamed(Routes.MAIN_WRAPPER);
         } else {

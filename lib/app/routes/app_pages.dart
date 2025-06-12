@@ -3,9 +3,7 @@ import 'package:chartnalyze_apps/app/modules/markets/views/pages/markets_detail_
 import 'package:chartnalyze_apps/app/modules/onboarding/bindings/onboarding_binding.dart';
 import 'package:chartnalyze_apps/app/modules/onboarding/views/onboarding_view.dart';
 import 'package:chartnalyze_apps/app/modules/onboarding/views/splash_redirect_view.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 
 import '../modules/Auth/email_verification/bindings/email_verification_binding.dart';
 import '../modules/Auth/email_verification/views/email_verification_view.dart';
@@ -39,17 +37,6 @@ import '../modules/search/views/search_view.dart';
 
 part 'app_routes.dart';
 
-class AuthMiddleware extends GetMiddleware {
-  @override
-  RouteSettings? redirect(String? route) {
-    final token = GetStorage().read('token');
-    if (token == null || token.isEmpty) {
-      return const RouteSettings(name: Routes.LOGIN);
-    }
-    return null;
-  }
-}
-
 class AppPages {
   AppPages._();
 
@@ -64,7 +51,7 @@ class AppPages {
     GetPage(
       name: Routes.SPLASH_REDIRECT,
       page: () => SplashRedirectView(),
-      binding: MainWrapperBinding(),
+      // binding: OnboardingBinding(),
     ),
 
     // GetPage(
@@ -158,7 +145,6 @@ class AppPages {
       name: _Paths.MAIN_WRAPPER,
       page: () => MainWrapperView(),
       binding: MainWrapperBinding(),
-      middlewares: [AuthMiddleware()],
     ),
   ];
 }
