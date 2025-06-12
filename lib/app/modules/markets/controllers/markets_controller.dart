@@ -63,6 +63,7 @@ class MarketsController extends GetxController {
   final RxBool isLoadingWatchlist = false.obs;
   final RxBool isCurrentCoinWatched = false.obs;
   final RxBool isTogglingWatchlist = false.obs;
+  String? currentCoinId;
 
   final exchanges = <ExchangeModel>[].obs;
   final isLoadingExchanges = false.obs;

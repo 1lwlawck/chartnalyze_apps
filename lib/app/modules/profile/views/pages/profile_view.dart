@@ -1,9 +1,11 @@
+import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/modules/profile/controllers/profile_controller.dart';
 import 'package:chartnalyze_apps/app/modules/profile/views/widgets/profile_empty_view.dart';
 import 'package:chartnalyze_apps/app/modules/profile/views/widgets/profile_fab.dart';
 import 'package:chartnalyze_apps/app/modules/profile/views/widgets/profile_info.dart';
 import 'package:chartnalyze_apps/app/modules/profile/views/widgets/profile_tabs.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
 import 'package:google_fonts/google_fonts.dart';
@@ -78,7 +80,9 @@ class ProfileView extends GetView<ProfileController> {
         backgroundColor: Colors.white,
         body: Obx(() {
           if (controller.isLoading.value) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: SpinKitWave(color: AppColors.primaryGreen, size: 20.0),
+            );
           }
 
           return const Column(

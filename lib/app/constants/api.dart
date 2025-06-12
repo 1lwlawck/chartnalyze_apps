@@ -223,3 +223,37 @@ class WatchlistConstants {
   static const String index = '/users/self/watched-assets';
   static String destroy(String key) => '/users/self/watched-assets/$key';
 }
+
+class UserActivityConstants {
+  /// Base URL untuk API backend
+  static final String baseUrl =
+      dotenv.env['AUTH_BASE_URL'] ?? 'http://192.168.69.214:80/api';
+
+  /// Endpoint dasar activity
+  static const String activitiesEndpoint = '/users';
+
+  /// Full URL untuk fetch activities user
+  static Uri activitiesUrl({
+    required String userId,
+    int perPage = 10,
+    int page = 1,
+    String sort = '-created_at',
+    String? type, // optional filter by type: login, logout, verify_email
+  }) {
+    final queryParams = {
+      'per_page': perPage.toString(),
+      'page': page.toString(),
+      'sort': sort,
+    };
+
+    if (type != null) {
+      queryParams['filter[type]'] = type;
+    }
+
+    final queryString = Uri(queryParameters: queryParams).query;
+
+    return Uri.parse(
+      '$baseUrl$activitiesEndpoint/$userId/activities?$queryString',
+    );
+  }
+}

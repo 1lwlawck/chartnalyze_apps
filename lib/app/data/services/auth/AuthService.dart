@@ -1,4 +1,6 @@
 import 'package:chartnalyze_apps/app/data/models/auth/LoginResponse.dart';
+import 'package:chartnalyze_apps/app/data/models/users/UsersActivity.dart';
+import 'package:chartnalyze_apps/app/helpers/dio_interceptor.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -11,6 +13,7 @@ class AuthService extends GetxService {
   @override
   void onInit() {
     super.onInit();
+
     dioClient = dio.Dio(
       dio.BaseOptions(
         baseUrl: AuthConstants.baseUrl,
@@ -22,6 +25,8 @@ class AuthService extends GetxService {
         },
       ),
     );
+
+    dioClient.interceptors.add(DeviceInfoInterceptor());
   }
 
   final _storage = GetStorage();
@@ -220,6 +225,45 @@ class AuthService extends GetxService {
         print(" resetPassword error: $e");
       }
       return false;
+    }
+  }
+
+  /// GET USER ACTIVITIES
+  Future<List<UserActivity>> getUserActivities({
+    required String userId,
+    int page = 1,
+    int perPage = 10,
+    String? typeFilter,
+  }) async {
+    final token = _storage.read('token');
+    if (token == null) {
+      print("No token found. User not authenticated.");
+      return [];
+    }
+
+    try {
+      final url = UserActivityConstants.activitiesUrl(
+        userId: userId,
+        page: page,
+        perPage: perPage,
+        type: typeFilter,
+      );
+
+      final response = await dioClient.get(
+        url.toString(),
+        options: dio.Options(headers: {'Authorization': 'Bearer $token'}),
+      );
+
+      if (response.statusCode == 200) {
+        final activities = response.data['data']['activities'] as List<dynamic>;
+        return activities.map((json) => UserActivity.fromJson(json)).toList();
+      }
+
+      print("Failed to fetch activities: ${response.data}");
+      return [];
+    } on dio.DioException catch (e) {
+      print("getUserActivities error: ${e.response?.data ?? e.message}");
+      return [];
     }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:chartnalyze_apps/app/modules/profile/views/pages/update_email_view.dart';
 import 'package:chartnalyze_apps/app/modules/profile/views/pages/update_password_view.dart';
+import 'package:chartnalyze_apps/app/modules/profile/views/pages/user_activity_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -35,6 +36,12 @@ class SecurityTab extends StatelessWidget {
               icon: Icons.lock_outline_rounded,
               label: 'Change Password',
               onTap: () => Get.to(() => UpdatePasswordView()),
+            ),
+            const Divider(height: 1),
+            _buildSecurityItem(
+              icon: Icons.history_edu_rounded,
+              label: 'User Activity',
+              onTap: () => Get.to(() => UserActivityView()),
             ),
           ],
         ),

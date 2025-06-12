@@ -3,9 +3,13 @@ import 'dart:io';
 
 import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/data/models/users/FollowModel.dart';
+import 'package:chartnalyze_apps/app/data/models/users/UsersActivity.dart';
+
 import 'package:chartnalyze_apps/app/data/services/auth/AuthService.dart';
 import 'package:chartnalyze_apps/app/data/services/users/FollowService.dart';
 import 'package:chartnalyze_apps/app/data/services/users/UserService.dart';
+import 'package:chartnalyze_apps/app/routes/app_pages.dart';
+
 import 'package:get/get.dart';
 import 'package:chartnalyze_apps/app/data/models/users/UserModel.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +26,7 @@ class ProfileController extends GetxController {
 
   final _userService = UserService();
   final _followService = FollowService();
+  final authService = Get.find<AuthService>();
 
   final followers = <Follow>[].obs;
   final followeds = <Follow>[].obs;
@@ -31,6 +36,15 @@ class ProfileController extends GetxController {
 
   final resendSecondsRemaining = 0.obs;
   Timer? _otpResendTimer;
+
+  // ------------------- Tambahan untuk Activity ---------------------
+  final userActivities = <UserActivity>[].obs;
+  final isActivityLoading = true.obs;
+  final isMoreLoading = false.obs;
+  final hasMore = true.obs;
+  int currentPage = 1;
+  final int perPage = 10;
+  String? typeFilter;
 
   bool get canResendOtp => resendSecondsRemaining.value == 0;
 
@@ -68,12 +82,71 @@ class ProfileController extends GetxController {
       usernameController.text = userData.username;
       birthDateController.text = userData.birthDate ?? '';
       emailController.text = userData.email;
+
+      await fetchUserActivities(userId: userData.id);
     } else {
       print("️ Failed to load user");
     }
 
     isLoading.value = false;
   }
+
+  // ------------------- FETCH USER ACTIVITIES ---------------------
+
+  Future<void> fetchUserActivities({required String userId}) async {
+    isActivityLoading.value = true;
+    currentPage = 1;
+
+    try {
+      final result = await authService.getUserActivities(
+        userId: userId,
+        page: currentPage,
+        perPage: perPage,
+        typeFilter: typeFilter,
+      );
+
+      userActivities.assignAll(result);
+      hasMore.value = result.length == perPage;
+    } catch (e) {
+      print("Error while fetching activities: $e");
+      userActivities.clear();
+      hasMore.value = false;
+    }
+
+    isActivityLoading.value = false;
+  }
+
+  Future<void> loadMoreActivities({required String userId}) async {
+    if (!hasMore.value || isMoreLoading.value) return;
+
+    isMoreLoading.value = true;
+    currentPage++;
+
+    try {
+      final result = await authService.getUserActivities(
+        userId: userId,
+        page: currentPage,
+        perPage: perPage,
+        typeFilter: typeFilter,
+      );
+
+      userActivities.addAll(result);
+      hasMore.value = result.length == perPage;
+    } catch (e) {
+      print("Error while loading more activities: $e");
+    }
+
+    isMoreLoading.value = false;
+  }
+
+  void setTypeFilter(String? type) {
+    typeFilter = type;
+    if (user.value.id.isNotEmpty) {
+      fetchUserActivities(userId: user.value.id);
+    }
+  }
+
+  // ------------------- EXISTING PROFILE FUNCTIONALITY ---------------------
 
   Future<void> fetchFollows(String userId) async {
     isFollowDataLoading.value = true;
@@ -82,10 +155,10 @@ class ProfileController extends GetxController {
       followeds.value = await _followService.getFolloweds(userId);
       followers.value = await _followService.getFollowers(userId);
       print(
-        " Fetched \${followeds.length} followeds and \${followers.length} followers.",
+        " Fetched ${followeds.length} followeds and ${followers.length} followers.",
       );
     } catch (e) {
-      print(" Error while fetching follows: \$e");
+      print(" Error while fetching follows: $e");
     } finally {
       isFollowDataLoading.value = false;
     }
@@ -99,19 +172,17 @@ class ProfileController extends GetxController {
       'birthDate': birthDateController.text.trim(),
     };
 
-    // Cek field kosong
     if (payload.values.any((v) => v.isEmpty)) {
       Get.snackbar("Warning", "All fields must be filled");
       return false;
     }
 
-    // Log sebelum kirim
     print(" Sending update payload: $payload");
 
     try {
       final success = await _userService.updateSelfProfile(payload);
       if (success) {
-        await fetchUserProfile(); // refresh
+        await fetchUserProfile();
         return true;
       }
       return false;
@@ -126,7 +197,6 @@ class ProfileController extends GetxController {
     required String newPassword,
     required String confirmPassword,
   }) async {
-    // Validasi form kosong
     if (currentPassword.isEmpty ||
         newPassword.isEmpty ||
         confirmPassword.isEmpty) {
@@ -170,7 +240,7 @@ class ProfileController extends GetxController {
       final sent = await _userService.sendOtpToEmail(email);
       if (sent) {
         Get.snackbar("Success", "OTP has been sent to $email");
-        startOtpCountdown(); // Start countdown for resend
+        startOtpCountdown();
       } else {
         Get.snackbar("Failed", "Failed to send OTP");
       }
@@ -197,8 +267,8 @@ class ProfileController extends GetxController {
       );
       if (success) {
         Get.snackbar("Success", "Email updated successfully");
-        resetOtpCountdown(); // Reset countdown after success
-        await fetchUserProfile(); // refresh UI
+        resetOtpCountdown();
+        await fetchUserProfile();
       } else {
         Get.snackbar("Failed", "Failed to update email");
       }
@@ -222,11 +292,9 @@ class ProfileController extends GetxController {
     }
 
     final File avatarFile = File(pickedImage.path);
-
     isUploadingAvatar.value = true;
 
     final success = await _userService.updateSelfAvatar(file: avatarFile);
-
     isUploadingAvatar.value = false;
 
     if (success) {
@@ -236,8 +304,7 @@ class ProfileController extends GetxController {
         backgroundColor: AppColors.primaryGreen,
         colorText: Colors.white,
       );
-
-      await fetchUserProfile(); // Refresh data user
+      await fetchUserProfile();
     } else {
       Get.snackbar(
         "Failed",
@@ -254,7 +321,7 @@ class ProfileController extends GetxController {
     usernameController.dispose();
     birthDateController.dispose();
     emailController.dispose();
-    _otpResendTimer?.cancel(); // Tambahkan ini
+    _otpResendTimer?.cancel();
     super.onClose();
   }
 
@@ -262,7 +329,9 @@ class ProfileController extends GetxController {
     final authService = Get.find<AuthService>();
     await authService.logout();
 
-    Get.offAllNamed('/login'); // Arahkan ke halaman login
+    Get.deleteAll();
+
+    Get.offAllNamed(Routes.LOGIN);
     Get.snackbar("Logged out", "You have been successfully logged out");
   }
 }
