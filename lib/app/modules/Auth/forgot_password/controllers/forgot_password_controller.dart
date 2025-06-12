@@ -96,8 +96,8 @@ class ForgotPasswordController extends GetxController {
     if (success) {
       Get.snackbar('Success', 'Password updated');
 
-      //  Hindari crash saat dispose controller masih aktif
-      FocusScope.of(Get.context!).unfocus();
+      // Hindari crash saat dispose controller masih aktif
+      FocusManager.instance.primaryFocus?.unfocus();
       await Future.delayed(const Duration(milliseconds: 100));
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
