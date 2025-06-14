@@ -8,7 +8,7 @@ import 'package:chartnalyze_apps/app/modules/search/controllers/search_controlle
 import 'package:chartnalyze_apps/app/modules/search/widgets/search_result_tile.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class SearchView extends GetView<SearchControllers> {
+class SearchView extends GetView<SearchAssetsController> {
   const SearchView({super.key});
 
   @override

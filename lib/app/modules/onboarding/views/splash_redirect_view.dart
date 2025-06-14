@@ -2,25 +2,19 @@ import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/constants/fonts.dart';
 import 'package:chartnalyze_apps/app/constants/images.dart';
 import 'package:chartnalyze_apps/app/routes/app_pages.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 class SplashRedirectView extends StatelessWidget {
   const SplashRedirectView({super.key});
 
   void _initRedirect() {
+    // Panggil setelah build selesai
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(const Duration(seconds: 2), () {
-        final token = GetStorage().read('token');
-        print("[Redirect] Token: $token");
-
-        if (token != null && token.isNotEmpty) {
-          Get.offAllNamed(Routes.MAIN_WRAPPER);
-        } else {
-          Get.offAllNamed(Routes.LOGIN);
-        }
+        Get.offAllNamed(Routes.MAIN_WRAPPER); // Tanpa lazyPut!
       });
     });
   }

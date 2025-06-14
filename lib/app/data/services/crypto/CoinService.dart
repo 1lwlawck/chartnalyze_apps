@@ -1,40 +1,38 @@
 import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:chartnalyze_apps/app/constants/api.dart';
+import 'package:chartnalyze_apps/app/data/models/crypto/CoinDetailModel.dart';
+import 'package:chartnalyze_apps/app/data/models/crypto/CoinListModel.dart';
 import 'package:chartnalyze_apps/app/data/models/crypto/ExchangeModel.dart';
 import 'package:chartnalyze_apps/app/data/models/crypto/GlobalMarketModel.dart';
+import 'package:chartnalyze_apps/app/data/models/crypto/OHLCDataModel.dart';
 import 'package:chartnalyze_apps/app/data/models/crypto/SearchCoinModel.dart';
 import 'package:chartnalyze_apps/app/data/models/crypto/TickerModel.dart';
 import 'package:chartnalyze_apps/app/data/models/crypto/TrendingCoin.dart';
-import 'package:http/http.dart' as http;
-import 'package:chartnalyze_apps/app/constants/api.dart';
-import 'package:chartnalyze_apps/app/data/models/crypto/CoinListModel.dart';
-import 'package:chartnalyze_apps/app/data/models/crypto/CoinDetailModel.dart';
-import 'package:chartnalyze_apps/app/data/models/crypto/OHLCDataModel.dart';
-
-// for testing purposes only
-Future<http.Response> safeGet(Uri url, {int retries = 3}) async {
-  int attempt = 0;
-  while (attempt < retries) {
-    try {
-      final response = await http.get(
-        url,
-        headers: {
-          'accept': 'application/json',
-          'User-Agent': 'ChartnalyzeApp/1.0 (Flutter)',
-          'x-cg-demo-api-key': CoinGeckoConstants.apiKey ?? '',
-        },
-      );
-      return response;
-    } catch (e) {
-      attempt++;
-      print('Retrying... attempt $attempt');
-      await Future.delayed(const Duration(seconds: 2));
-    }
-  }
-  throw Exception('Failed to fetch after $retries attempts');
-}
 
 class CoinService {
-  // Fetch list of coins
+  Future<http.Response> _safeGet(Uri url, {int retries = 3}) async {
+    int attempt = 0;
+    while (attempt < retries) {
+      try {
+        final response = await http.get(
+          url,
+          headers: {
+            'accept': 'application/json',
+            'User-Agent': 'ChartnalyzeApp/1.0 (Flutter)',
+            'x-cg-demo-api-key': CoinGeckoConstants.apiKey ?? '',
+          },
+        );
+        return response;
+      } catch (e) {
+        attempt++;
+        print('Retrying... attempt $attempt');
+        await Future.delayed(const Duration(seconds: 2));
+      }
+    }
+    throw Exception('Failed to fetch after $retries attempts');
+  }
+
   Future<List<CoinListModel>> fetchCoinListData({
     String vsCurrency = 'usd',
     int page = 1,
@@ -45,20 +43,20 @@ class CoinService {
       page: page,
       perPage: perPage,
     );
+    final response = await _safeGet(url);
 
-    final response = await safeGet(url);
     if (response.statusCode == 200) {
       final List<dynamic> jsonList = json.decode(response.body);
       return jsonList.map((e) => CoinListModel.fromJson(e)).toList();
     } else {
-      throw Exception('Server responded with ${response.statusCode}');
+      throw Exception('Error ${response.statusCode}: ${response.reasonPhrase}');
     }
   }
 
-  // fetch coin detail
   Future<CoinDetailModel> fetchCoinDetail(String id) async {
     final url = CoinGeckoConstants.detailUrl(id);
-    final response = await safeGet(url);
+    final response = await _safeGet(url);
+
     if (response.statusCode == 200) {
       final jsonMap = json.decode(response.body);
       return CoinDetailModel.fromJson(jsonMap);
@@ -67,7 +65,6 @@ class CoinService {
     }
   }
 
-  // fetch ohlc
   Future<List<List<dynamic>>> fetchOhlcRaw({
     required String coinId,
     required int days,
@@ -79,15 +76,15 @@ class CoinService {
       days: days,
     );
 
-    final response = await safeGet(url);
+    final response = await _safeGet(url);
+
     if (response.statusCode == 200) {
-      return List<List<dynamic>>.from(jsonDecode(response.body));
+      return List<List<dynamic>>.from(json.decode(response.body));
     } else {
       throw Exception('Failed to load OHLC raw data');
     }
   }
 
-  // fetch volume
   Future<List<List<dynamic>>> fetchVolumeRaw({
     required String coinId,
     required int days,
@@ -99,16 +96,16 @@ class CoinService {
       days: days,
     );
 
-    final response = await safeGet(url);
+    final response = await _safeGet(url);
+
     if (response.statusCode == 200) {
-      final body = jsonDecode(response.body);
+      final body = json.decode(response.body);
       return List<List<dynamic>>.from(body['total_volumes']);
     } else {
       throw Exception('Failed to load volume data');
     }
   }
 
-  // fetch ohlc and volume
   Future<List<OHLCDataModel>> fetchOhlcData({
     required String coinId,
     String vsCurrency = 'usd',
@@ -129,7 +126,7 @@ class CoinService {
       final timestamp = entry[0] as int;
       final volume =
           volumeRaw.firstWhere(
-            (v) => (v[0] - timestamp).abs() < 30 * 60 * 1000, // ±30 menit
+            (v) => (v[0] - timestamp).abs() < 30 * 60 * 1000,
             orElse: () => [timestamp, 0.0],
           )[1];
 
@@ -144,10 +141,9 @@ class CoinService {
     }).toList();
   }
 
-  // fetch usd to idr
   Future<double> fetchUsdToIdrRate() async {
     final url = CoinGeckoConstants.usdToIdrRateUrl();
-    final response = await http.get(url);
+    final response = await _safeGet(url);
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -162,22 +158,19 @@ class CoinService {
     double? previousVolume,
   }) async {
     final url = CoinGeckoConstants.globalUrl();
-    final response = await safeGet(url);
+    final response = await _safeGet(url);
 
     if (response.statusCode == 200) {
       final jsonMap = json.decode(response.body);
-      return GlobalMarketModel.fromJson(
-        jsonMap,
-      ); // nanti previous disisipkan dari controller
+      return GlobalMarketModel.fromJson(jsonMap);
     } else {
       throw Exception('Failed to fetch global market data');
     }
   }
 
-  /// CoinGecko Search API
   Future<List<SearchCoinModel>> searchCoins(String query) async {
     final url = CoinGeckoConstants.searchCoinUrl(query);
-    final response = await safeGet(url);
+    final response = await _safeGet(url);
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -189,10 +182,8 @@ class CoinService {
   }
 
   Future<List<TickerModel>> fetchTickers(String coinId) async {
-    final url = Uri.parse(
-      "${CoinGeckoConstants.baseUrl}/coins/$coinId/tickers?include_exchange_logo=true&depth=false&order=trust_score_desc&per_page=10&page=1&sparkline=false",
-    );
-    final response = await http.get(url);
+    final url = CoinGeckoConstants.tickersUrl(coinId);
+    final response = await _safeGet(url);
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -207,29 +198,23 @@ class CoinService {
     int page = 1,
     int perPage = 100,
   }) async {
-    final url = Uri.parse(
-      '${CoinGeckoConstants.baseUrl}/exchanges?per_page=$perPage&page=$page&x-cg-demo-api-key=${CoinGeckoConstants.apiKey}',
-    );
+    final url = CoinGeckoConstants.exchangesUrl(page: page, perPage: perPage);
+    final response = await _safeGet(url);
 
-    final response = await safeGet(url);
     if (response.statusCode == 200) {
-      final List data = jsonDecode(response.body);
+      final List data = json.decode(response.body);
       return data.map((e) => ExchangeModel.fromJson(e)).toList();
     } else {
       throw Exception('Failed to load exchanges');
     }
   }
 
-  // Fungsi baru: Fetch detail 1 exchange by id
   Future<ExchangeModel> fetchExchangeDetail(String id) async {
-    final url = Uri.parse(
-      'https://api.coingecko.com/api/v3/exchanges/$id'
-      '?x-cg-demo-api-key=${CoinGeckoConstants.apiKey}',
-    );
+    final url = CoinGeckoConstants.exchangeDetailUrl(id);
+    final response = await _safeGet(url);
 
-    final response = await safeGet(url);
     if (response.statusCode == 200) {
-      final Map<String, dynamic> data = jsonDecode(response.body);
+      final Map<String, dynamic> data = json.decode(response.body);
       return ExchangeModel.fromJson(data);
     } else {
       throw Exception('Failed to fetch exchange detail');
@@ -237,25 +222,15 @@ class CoinService {
   }
 
   Future<List<TrendingCoin>> fetchTrendingCoins() async {
-    final url = Uri.parse('https://api.coingecko.com/api/v3/search/trending');
+    final url = CoinGeckoConstants.trendingUrl();
+    final response = await _safeGet(url);
 
-    try {
-      final response = await http.get(
-        url,
-        headers: {'accept': 'application/json'},
-      );
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final coins = data['coins'] as List<dynamic>;
-
-        return coins.map((e) => TrendingCoin.fromJson(e['item'])).toList();
-      } else {
-        throw Exception('Failed to load trending coins');
-      }
-    } catch (e) {
-      print('Error in fetchTrendingCoins: $e');
-      return [];
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final coins = data['coins'] as List<dynamic>;
+      return coins.map((e) => TrendingCoin.fromJson(e['item'])).toList();
+    } else {
+      throw Exception('Failed to load trending coins');
     }
   }
 }

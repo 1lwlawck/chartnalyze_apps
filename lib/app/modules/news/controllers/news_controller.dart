@@ -87,7 +87,8 @@ class NewsController extends GetxController {
       newsList.addAll(fetchedNews);
       currentPage.value++;
     } catch (e) {
-      print(' Error fetching news: $e');
+      print('[NewsController] Error fetching news: $e');
+      _showSnackbar('Error', 'Failed to load news', isError: true);
     } finally {
       isLoading.value = false;
       isFetchingMore.value = false;
@@ -95,9 +96,23 @@ class NewsController extends GetxController {
   }
 
   Future<void> openInBrowser(String url) async {
-    final uri = Uri.parse(url);
-    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      throw ' Could not launch $url';
+    try {
+      final uri = Uri.parse(url);
+      if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+        throw 'Could not launch $url';
+      }
+    } catch (e) {
+      _showSnackbar('Error', 'Failed to open link', isError: true);
     }
+  }
+
+  void _showSnackbar(String title, String message, {bool isError = false}) {
+    Get.snackbar(
+      title,
+      message,
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: isError ? const Color(0xFFE57373) : null,
+      colorText: isError ? const Color(0xFFFFFFFF) : null,
+    );
   }
 }

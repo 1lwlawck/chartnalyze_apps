@@ -51,7 +51,7 @@ class AppPages {
     GetPage(
       name: Routes.SPLASH_REDIRECT,
       page: () => SplashRedirectView(),
-      // binding: OnboardingBinding(),
+      binding: MainWrapperBinding(),
     ),
 
     // GetPage(

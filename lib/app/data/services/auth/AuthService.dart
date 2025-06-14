@@ -1,6 +1,7 @@
 import 'package:chartnalyze_apps/app/data/models/auth/LoginResponse.dart';
 import 'package:chartnalyze_apps/app/data/models/users/UsersActivity.dart';
 import 'package:chartnalyze_apps/app/helpers/dio_interceptor.dart';
+import 'package:chartnalyze_apps/app/modules/main_wrapper/controllers/main_wrapper_controller.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -9,6 +10,7 @@ import 'package:get_storage/get_storage.dart';
 
 class AuthService extends GetxService {
   late final dio.Dio dioClient;
+  final _storage = GetStorage();
 
   @override
   void onInit() {
@@ -16,7 +18,7 @@ class AuthService extends GetxService {
 
     dioClient = dio.Dio(
       dio.BaseOptions(
-        baseUrl: AuthConstants.baseUrl,
+        baseUrl: apiBaseUrl,
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
         headers: {
@@ -26,10 +28,21 @@ class AuthService extends GetxService {
       ),
     );
 
+    // Tambahkan Interceptor untuk Auth
+    dioClient.interceptors.add(
+      dio.InterceptorsWrapper(
+        onRequest: (options, handler) {
+          final token = _storage.read('token');
+          if (token != null && token.isNotEmpty) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+          return handler.next(options);
+        },
+      ),
+    );
+
     dioClient.interceptors.add(DeviceInfoInterceptor());
   }
-
-  final _storage = GetStorage();
 
   /// LOGIN
   Future<bool> login({required String email, required String password}) async {
@@ -43,22 +56,27 @@ class AuthService extends GetxService {
       if (response.statusCode == 200) {
         final loginResponse = LoginResponse.fromJson(response.data);
         final token = loginResponse.accessToken;
-
         await _storage.write('token', token);
-        print(" Login successful. Token saved.");
+
+        if (Get.isRegistered<MainWrapperController>()) {
+          Get.delete<MainWrapperController>();
+        }
+        final controller = Get.put(MainWrapperController());
+        controller.changeTab(0);
+
+        print("Login successful. Token saved.");
         return true;
       }
 
-      print("️ Login failed: ${response.statusCode}");
+      print("Login failed: ${response.statusCode}");
       return false;
     } on dio.DioException catch (e) {
-      print(" Login error: ${e.response?.data ?? e.message}");
+      print("Login error: ${e.response?.data ?? e.message}");
       return false;
     }
   }
 
   /// REGISTER
-
   Future<bool> register({
     required String username,
     required String email,
@@ -77,14 +95,14 @@ class AuthService extends GetxService {
       );
 
       if (response.statusCode == 201) {
-        print(" Registration successful.");
+        print("Registration successful.");
         return true;
       }
 
-      print("️ Registration failed: ${response.statusCode}");
+      print("Registration failed: ${response.statusCode}");
       return false;
     } on dio.DioException catch (e) {
-      print(" Register error: ${e.response?.data ?? e.message}");
+      print("Register error: ${e.response?.data ?? e.message}");
       return false;
     }
   }
@@ -99,29 +117,27 @@ class AuthService extends GetxService {
       );
 
       if (response.statusCode == 200) {
-        print(" OTP sent to $email");
+        print("OTP sent to $email");
         return true;
       }
 
-      print(" Failed to send OTP: ${response.data}");
+      print("Failed to send OTP: ${response.data}");
       return false;
     } on dio.DioException catch (e) {
-      print(" sendOTP error: ${e.response?.data ?? e.message}");
+      print("sendOTP error: ${e.response?.data ?? e.message}");
       return false;
     }
   }
 
   /// RESEND OTP
   Future<bool> resendOTP(String email) async {
-    return await sendOTP(email); // reuse sendOTP for DRY
+    return await sendOTP(email);
   }
 
   /// VERIFY OTP
   Future<bool> verifyOTP(String email, String code) async {
-    final token = _storage.read('token');
-
-    if (token == null) {
-      print(" No token found. User not authenticated.");
+    if (_storage.read('token') == null) {
+      print("No token found. User not authenticated.");
       return false;
     }
 
@@ -129,21 +145,18 @@ class AuthService extends GetxService {
       final response = await dioClient.post(
         '/users/self/email/verify',
         data: dio.FormData.fromMap({'code': code}),
-        options: dio.Options(
-          contentType: 'multipart/form-data',
-          headers: {'Authorization': 'Bearer $token'},
-        ),
+        options: dio.Options(contentType: 'multipart/form-data'),
       );
 
       if (response.statusCode == 200) {
-        print(" Email verification successful.");
+        print("Email verification successful.");
         return true;
       }
 
-      print(" Verification failed: ${response.data}");
+      print("Verification failed: ${response.data}");
       return false;
     } on dio.DioException catch (e) {
-      print(" verifyOTP error: ${e.response?.data ?? e.message}");
+      print("verifyOTP error: ${e.response?.data ?? e.message}");
       return false;
     }
   }
@@ -158,41 +171,10 @@ class AuthService extends GetxService {
       );
       return response.statusCode == 200;
     } catch (e) {
-      print(" sendPasswordResetOTP error: $e");
+      print("sendPasswordResetOTP error: $e");
       return false;
     }
   }
-
-  // Future<bool> verifyPasswordResetOTP(String email, String code) async {
-  //   final token = _storage.read('token');
-
-  //   if (token == null) {
-  //     print(" No token found. User not authenticated.");
-  //     return false;
-  //   }
-
-  //   try {
-  //     final response = await dioClient.post(
-  //       '/users/self/email/verify',
-  //       data: dio.FormData.fromMap({'email': email, 'code': code}),
-  //       options: dio.Options(
-  //         contentType: 'multipart/form-data',
-  //         headers: {'Authorization': 'Bearer $token'},
-  //       ),
-  //     );
-
-  //     if (response.statusCode == 200) {
-  //       print(" Password reset OTP verified.");
-  //       return true;
-  //     }
-
-  //     print(" Verification failed: ${response.data}");
-  //     return false;
-  //   } on dio.DioException catch (e) {
-  //     print(" verifyPasswordResetOTP error: ${e.response?.data ?? e.message}");
-  //     return false;
-  //   }
-  // }
 
   Future<bool> resetPassword({
     required String email,
@@ -214,9 +196,9 @@ class AuthService extends GetxService {
       return response.statusCode == 200;
     } catch (e) {
       if (e is dio.DioException && e.response != null) {
-        print(' Server says: ${e.response?.data}');
+        print('Server says: ${e.response?.data}');
       } else {
-        print(" resetPassword error: $e");
+        print("resetPassword error: $e");
       }
       return false;
     }
@@ -229,8 +211,7 @@ class AuthService extends GetxService {
     int perPage = 10,
     String? typeFilter,
   }) async {
-    final token = _storage.read('token');
-    if (token == null) {
+    if (_storage.read('token') == null) {
       print("No token found. User not authenticated.");
       return [];
     }
@@ -243,10 +224,7 @@ class AuthService extends GetxService {
         type: typeFilter,
       );
 
-      final response = await dioClient.get(
-        url.toString(),
-        options: dio.Options(headers: {'Authorization': 'Bearer $token'}),
-      );
+      final response = await dioClient.get(url.toString());
 
       if (response.statusCode == 200) {
         final activities = response.data['data']['activities'] as List<dynamic>;
@@ -261,32 +239,17 @@ class AuthService extends GetxService {
     }
   }
 
+  /// LOGOUT
   Future<void> logout() async {
-    final token = _storage.read('token');
-
-    if (token != null) {
+    if (_storage.read('token') != null) {
       try {
-        final response = await dioClient.delete(
-          AuthConstants.logout,
-          options: dio.Options(headers: {'Authorization': 'Bearer $token'}),
-        );
-
-        if (response.statusCode == 200) {
-          print("Logout API called successfully.");
-        } else {
-          print("Logout API returned status: ${response.statusCode}");
-        }
+        final response = await dioClient.delete(AuthConstants.logout);
+        print("Logout API status: ${response.statusCode}");
       } catch (e) {
-        print("Logout API error: ${e.toString()}");
-        // tetap lanjut hapus token lokal
+        print("Logout API error: $e");
       }
     }
 
-    // Hapus token lokal
     await _storage.remove('token');
-    print("Token removed from storage.");
-
-    // Reset semua controller, termasuk permanent
-    Get.reset();
   }
 }

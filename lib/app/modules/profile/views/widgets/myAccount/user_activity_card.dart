@@ -44,7 +44,7 @@ class UserActivityCard extends StatelessWidget {
                 Text(
                   activity.description,
                   style: GoogleFonts.manrope(
-                    fontSize: 14,
+                    fontSize: 13,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
