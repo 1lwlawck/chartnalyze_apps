@@ -142,4 +142,16 @@ class UserActivityConstants {
       '$apiBaseUrl$activitiesEndpoint/$userId/activities?$queryString',
     );
   }
+
+  static Uri postStatisticsUrl({required String userId}) {
+    return Uri.parse('$apiBaseUrl$activitiesEndpoint/$userId/posts/statistics');
+  }
+}
+
+class CandlestickConstants {
+  static const String predictEndpoint = '/candlesticks/predict';
+
+  static Uri predictUrl() {
+    return Uri.parse('$apiBaseUrl$predictEndpoint');
+  }
 }

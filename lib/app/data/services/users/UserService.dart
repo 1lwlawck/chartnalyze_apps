@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:chartnalyze_apps/app/constants/api.dart';
 import 'package:chartnalyze_apps/app/data/models/users/UserModel.dart';
+import 'package:chartnalyze_apps/app/data/models/users/UserPostStatistic.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:dio/dio.dart';
@@ -162,5 +163,21 @@ class UserService {
       print("[updateSelfAvatar] Error: $e");
       return false;
     }
+  }
+
+  Future<UserPostStatistic?> getUserPostStatistics(String userId) async {
+    try {
+      final response = await _dio.get(
+        '/users/$userId/posts/statistics',
+        options: Options(headers: _authHeaders()),
+      );
+
+      if (response.statusCode == 200 && response.data['data'] != null) {
+        return UserPostStatistic.fromJson(response.data['data']);
+      }
+    } catch (e) {
+      print("[getUserPostStatistics] Error: $e");
+    }
+    return null;
   }
 }

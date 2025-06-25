@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:chartnalyze_apps/app/data/models/users/UserPostStatistic.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-
 import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/data/models/users/UserModel.dart';
 import 'package:chartnalyze_apps/app/data/models/users/UsersActivity.dart';
@@ -29,6 +29,8 @@ class ProfileController extends GetxController {
   final followers = <Follow>[].obs;
   final followeds = <Follow>[].obs;
   final isFollowDataLoading = false.obs;
+  final postStatistic = Rxn<UserPostStatistic>();
+  final isStatisticLoading = false.obs;
 
   final isUploadingAvatar = false.obs;
 
@@ -64,6 +66,7 @@ class ProfileController extends GetxController {
         emailController.text = userData.email;
 
         await fetchUserActivities(userId: userData.id);
+        await fetchUserPostStatistics(userId: userData.id);
       } else {
         _showSnackbar("Error", "Failed to load user", isError: true);
       }
@@ -295,6 +298,23 @@ class ProfileController extends GetxController {
       print("Error loading more activities: $e");
     } finally {
       isMoreLoading.value = false;
+    }
+  }
+
+  Future<void> fetchUserPostStatistics({required String userId}) async {
+    isStatisticLoading.value = true;
+    try {
+      final result = await _userService.getUserPostStatistics(userId);
+      if (result != null) {
+        postStatistic.value = result;
+      } else {
+        _showSnackbar("Failed", "No statistics found", isError: true);
+      }
+    } catch (e) {
+      print("Error fetching post statistics: $e");
+      _showSnackbar("Error", "Something went wrong", isError: true);
+    } finally {
+      isStatisticLoading.value = false;
     }
   }
 

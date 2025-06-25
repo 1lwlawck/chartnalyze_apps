@@ -81,7 +81,7 @@ class ProfileView extends GetView<ProfileController> {
         body: Obx(() {
           if (controller.isLoading.value) {
             return const Center(
-              child: SpinKitWave(color: AppColors.primaryGreen, size: 20.0),
+              child: SpinKitWave(color: AppColors.primaryGreen, size: 25.0),
             );
           }
 
