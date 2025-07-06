@@ -42,15 +42,12 @@ class ProfileInfo extends StatelessWidget {
                           radius: 35,
                           backgroundImage: NetworkImage(
                             (user.avatarUrl ?? '')
-                                    .replaceFirst(
-                                      'localhost',
-                                      '192.168.207.154',
-                                    )
+                                    .replaceFirst('localhost', '192.168.65.143')
                                     .isEmpty
                                 ? 'https://api.dicebear.com/7.x/adventurer/png?seed=${Uri.encodeComponent(user.name ?? "Anonymous")}&size=120'
                                 : user.avatarUrl!.replaceFirst(
                                   'localhost',
-                                  '192.168.207.154',
+                                  '192.168.65.143',
                                 ),
                           ),
                           backgroundColor: Colors.transparent,
