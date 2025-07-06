@@ -1,10 +1,9 @@
+import 'package:chartnalyze_apps/app/modules/search/controllers/search_controller.dart';
 import 'package:get/get.dart';
-
-import '../controllers/search_controller.dart';
 
 class SearchBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(SearchControllers(), permanent: true);
+    Get.put(SearchAssetsController(), permanent: true);
   }
 }

@@ -5,16 +5,14 @@ import 'package:get/get.dart';
 import 'package:chartnalyze_apps/app/data/services/crypto/CoinService.dart';
 import 'package:flutter/material.dart';
 
-class SearchControllers extends GetxController {
+class SearchAssetsController extends GetxController {
   final CoinService _coinService = CoinService();
 
-  var isLoading = false.obs;
-  var searchResults = <SearchCoinModel>[].obs;
-  var recentAssets = <SearchCoinModel>[].obs;
-  var recentSearches = <String>[].obs;
-  var trendingCoins = <TrendingCoin>[].obs;
-  var trendingNFTs = <Map<String, dynamic>>[].obs;
-  var trendingCategories = <Map<String, dynamic>>[].obs;
+  final isLoading = false.obs;
+  final searchResults = <SearchCoinModel>[].obs;
+  final recentAssets = <SearchCoinModel>[].obs;
+  final recentSearches = <String>[].obs;
+  final trendingCoins = <TrendingCoin>[].obs;
 
   final searchController = TextEditingController();
   Timer? _debounce;
@@ -39,37 +37,14 @@ class SearchControllers extends GetxController {
     });
   }
 
-  // Future<void> fetchTrendingSearch() async {
-  //   try {
-  //     final response = await http.get(
-  //       Uri.parse('https://api.coingecko.com/api/v3/search/trending'),
-  //       headers: {'accept': 'application/json'},
-  //     );
-
-  //     if (response.statusCode == 200) {
-  //       final data = json.decode(response.body);
-
-  //       trendingCoins.value = List<Map<String, dynamic>>.from(
-  //         (data['coins'] as List).map((e) => e['item']),
-  //       );
-
-  //       trendingNFTs.value = List<Map<String, dynamic>>.from(data['nfts']);
-  //       trendingCategories.value = List<Map<String, dynamic>>.from(
-  //         data['categories'],
-  //       );
-  //     }
-  //   } catch (e) {
-  //     print('Error fetching trending search: $e');
-  //   }
-  // }
-
   Future<void> loadTrendingCoins() async {
     try {
       isLoading(true);
       final coins = await _coinService.fetchTrendingCoins();
       trendingCoins.assignAll(coins);
     } catch (e) {
-      print(" Trending coins error: $e");
+      print("[SearchController] Trending coins error: $e");
+      _showSnackbar('Error', 'Failed to fetch trending coins', isError: true);
       trendingCoins.clear();
     } finally {
       isLoading(false);
@@ -82,7 +57,8 @@ class SearchControllers extends GetxController {
       final results = await _coinService.searchCoins(query);
       searchResults.assignAll(results);
     } catch (e) {
-      print(" Search error: $e");
+      print("[SearchController] Search error: $e");
+      _showSnackbar('Error', 'Failed to search coins', isError: true);
       searchResults.clear();
     } finally {
       isLoading(false);
@@ -102,6 +78,16 @@ class SearchControllers extends GetxController {
     if (clean.isNotEmpty && !recentSearches.contains(clean)) {
       recentSearches.insert(0, clean);
     }
+  }
+
+  void _showSnackbar(String title, String message, {bool isError = false}) {
+    Get.snackbar(
+      title,
+      message,
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: isError ? const Color(0xFFE57373) : null,
+      colorText: isError ? const Color(0xFFFFFFFF) : null,
+    );
   }
 
   @override

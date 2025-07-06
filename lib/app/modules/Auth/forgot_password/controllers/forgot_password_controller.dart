@@ -1,4 +1,3 @@
-// === forgot_password_controller.dart ===
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -24,22 +23,35 @@ class ForgotPasswordController extends GetxController {
   final counter = 60.obs;
   final email = ''.obs;
   final _authService = Get.find<AuthService>();
+
   Timer? _timer;
+
+  @override
+  void onInit() {
+    final arg = Get.arguments;
+    if (arg is String) {
+      email.value = arg;
+    } else if (arg is Map<String, String>) {
+      email.value = arg['email'] ?? '';
+      otpCode.value = arg['code'] ?? '';
+    }
+    super.onInit();
+  }
 
   void requestOTP() async {
     final emailInput = emailController.text.trim();
     if (emailInput.isEmpty) {
-      Get.snackbar('Error', 'Email cannot be empty');
+      _showSnackbar('Error', 'Email cannot be empty', isError: true);
       return;
     }
 
     final success = await _authService.sendPasswordResetOTP(emailInput);
     if (success) {
       email.value = emailInput;
-      startTimer();
+      _startTimer();
       Get.toNamed(Routes.OTP_RESET_PASSWORD, arguments: emailInput);
     } else {
-      Get.snackbar('Error', 'Failed to send OTP');
+      _showSnackbar('Error', 'Failed to send OTP', isError: true);
     }
   }
 
@@ -48,16 +60,16 @@ class ForgotPasswordController extends GetxController {
 
     final result = await _authService.sendPasswordResetOTP(email.value);
     if (result) {
-      startTimer();
-      Get.snackbar('Success', 'OTP has been resent to your email');
+      _startTimer();
+      _showSnackbar('Success', 'OTP has been resent to your email');
     } else {
-      Get.snackbar('Error', 'Failed to resend OTP');
+      _showSnackbar('Error', 'Failed to resend OTP', isError: true);
     }
   }
 
   void verifyOTPAndProceed() {
     if (otpCode.value.length != 6) {
-      Get.snackbar('Error', 'Enter 6-digit OTP');
+      _showSnackbar('Error', 'Enter 6-digit OTP', isError: true);
       return;
     }
 
@@ -72,17 +84,17 @@ class ForgotPasswordController extends GetxController {
     final confirmPassword = confirmPasswordController.text.trim();
 
     if (password.isEmpty || confirmPassword.isEmpty) {
-      Get.snackbar('Error', 'Password cannot be empty');
+      _showSnackbar('Error', 'Password cannot be empty', isError: true);
       return;
     }
 
     if (password.length < 6) {
-      Get.snackbar('Error', 'Password too short');
+      _showSnackbar('Error', 'Password too short', isError: true);
       return;
     }
 
     if (password != confirmPassword) {
-      Get.snackbar('Error', 'Passwords do not match');
+      _showSnackbar('Error', 'Passwords do not match', isError: true);
       return;
     }
 
@@ -94,9 +106,8 @@ class ForgotPasswordController extends GetxController {
     );
 
     if (success) {
-      Get.snackbar('Success', 'Password updated');
+      _showSnackbar('Success', 'Password updated');
 
-      //  Hindari crash saat dispose controller masih aktif
       FocusScope.of(Get.context!).unfocus();
       await Future.delayed(const Duration(milliseconds: 100));
 
@@ -107,7 +118,7 @@ class ForgotPasswordController extends GetxController {
         );
       });
     } else {
-      Get.snackbar('Error', 'Failed to update password');
+      _showSnackbar('Error', 'Failed to update password', isError: true);
     }
   }
 
@@ -133,7 +144,7 @@ class ForgotPasswordController extends GetxController {
     otpCode.value = otpControllers.map((c) => c.text).join();
   }
 
-  void startTimer() {
+  void _startTimer() {
     counter.value = 60;
     isResendEnabled.value = false;
     _timer?.cancel();
@@ -147,16 +158,14 @@ class ForgotPasswordController extends GetxController {
     });
   }
 
-  @override
-  void onInit() {
-    final arg = Get.arguments;
-    if (arg is String) {
-      email.value = arg;
-    } else if (arg is Map<String, String>) {
-      email.value = arg['email'] ?? '';
-      otpCode.value = arg['code'] ?? '';
-    }
-    super.onInit();
+  void _showSnackbar(String title, String message, {bool isError = false}) {
+    Get.snackbar(
+      title,
+      message,
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: isError ? const Color(0xFFE57373) : null,
+      colorText: isError ? const Color(0xFFFFFFFF) : null,
+    );
   }
 
   @override

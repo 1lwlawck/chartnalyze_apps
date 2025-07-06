@@ -1,9 +1,11 @@
 import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/modules/markets/controllers/markets_controller.dart';
+import 'package:chartnalyze_apps/app/modules/markets/views/pages/camera_live_predict_view.dart';
 import 'package:chartnalyze_apps/app/modules/markets/views/widgets/crypto/list/coin_list.dart';
 import 'package:chartnalyze_apps/app/modules/markets/views/widgets/common/table_header.dart';
 import 'package:chartnalyze_apps/app/modules/markets/views/widgets/common/tabs.dart';
 import 'package:chartnalyze_apps/app/modules/markets/views/widgets/exchanges/exchanges_list.dart';
+import 'package:chartnalyze_apps/app/modules/markets/views/widgets/overview/market_overview.dart';
 import 'package:chartnalyze_apps/app/modules/markets/views/widgets/stocks/stocks_list.dart';
 import 'package:chartnalyze_apps/app/modules/markets/views/widgets/statistics/stats.dart';
 import 'package:chartnalyze_apps/app/modules/markets/views/widgets/watched_assets/watched_list.dart';
@@ -41,7 +43,7 @@ class MarketsView extends GetView<MarketsController> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: Column(
-                    mainAxisSize: MainAxisSize.min, //  ini penting
+                    mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
@@ -75,12 +77,11 @@ class MarketsView extends GetView<MarketsController> {
 
       body: Column(
         children: [
-          // Body konten berdasarkan tab
           Expanded(
             child: GetBuilder<MarketsController>(
               builder: (controller) {
                 switch (controller.selectedTabIndex) {
-                  case 0: // Coins
+                  case 0:
                     return Column(
                       children: const [
                         SizedBox(height: 5),
@@ -88,9 +89,9 @@ class MarketsView extends GetView<MarketsController> {
                         Expanded(child: MarketCoinList()),
                       ],
                     );
-                  case 1: // Stocks
+                  case 1:
                     return const MarketStocksList();
-                  case 2: // Watchlists
+                  case 2:
                     return Column(
                       children: const [
                         SizedBox(height: 10),
@@ -98,9 +99,9 @@ class MarketsView extends GetView<MarketsController> {
                         Expanded(child: MarketWatchlistList()),
                       ],
                     );
-                  case 3: // Overview
-                    return const Center(child: Text('Overview'));
-                  case 4: // Exchanges
+                  case 3:
+                    return const MarketOverviewWebView();
+                  case 4:
                     return const ExchangesListView();
                   default:
                     return const SizedBox.shrink();
@@ -109,6 +110,25 @@ class MarketsView extends GetView<MarketsController> {
             ),
           ),
         ],
+      ),
+
+      floatingActionButton: GetBuilder<MarketsController>(
+        builder: (controller) {
+          if (controller.selectedTabIndex == 0) {
+            return FloatingActionButton(
+              onPressed: () {
+                Get.to(
+                  () => LivePredictCameraView(),
+                ); // Navigasi ke in-app kamera
+              },
+              backgroundColor: AppColors.primaryGreen,
+              tooltip: 'Open Camera',
+              elevation: 5,
+              child: const Icon(Icons.camera_alt, color: Colors.white),
+            );
+          }
+          return const SizedBox.shrink();
+        },
       ),
     );
   }

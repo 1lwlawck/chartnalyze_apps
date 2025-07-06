@@ -30,7 +30,7 @@ class MarketTickerSection extends StatelessWidget {
             ),
           ),
           Expanded(
-            flex: 2,
+            flex: 3,
             child: Text(
               'Price',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),

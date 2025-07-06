@@ -11,6 +11,6 @@ class MainWrapperBinding extends Bindings {
 
     Get.put(MarketsController(), permanent: true);
     Get.put(NewsController(), permanent: true);
-    Get.put(SearchControllers(), permanent: true);
+    Get.put(SearchAssetsController(), permanent: true);
   }
 }

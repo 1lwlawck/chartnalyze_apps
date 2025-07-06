@@ -7,22 +7,26 @@ import 'package:dio/dio.dart';
 class AlphaVantageService {
   final Dio _dio = DioClient.dio;
 
+  // Fetch global quote (summary info)
   Future<AlphaVantageQuoteModel> fetchGlobalQuote(String symbol) async {
     final url = AlphaVantageConstants.globalQuoteUrl(symbol: symbol);
     final res = await _dio.getUri(url);
     return AlphaVantageQuoteModel.fromJson(res.data);
   }
 
+  // Fetch OHLC (daily)
   Future<List<AlphaVantageOHLC>> fetchOhlcDaily(String symbol) async {
     final url = AlphaVantageConstants.dailyOhlcUrl(symbol: symbol);
     final res = await _dio.getUri(url);
     final data = res.data as Map<String, dynamic>;
     final timeSeries = data['Time Series (Daily)'] as Map<String, dynamic>;
+
     return timeSeries.entries
         .map((e) => AlphaVantageOHLC.fromJson(e.key, e.value))
         .toList();
   }
 
+  // Fetch 7-day closes for sparkline chart
   Future<List<double>> fetchSparklineFromAlpha(String symbol) async {
     final url = Uri.parse(
       'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=$symbol&outputsize=compact&apikey=${AlphaVantageConstants.apiKey}',

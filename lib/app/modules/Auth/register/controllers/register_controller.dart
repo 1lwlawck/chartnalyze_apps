@@ -16,13 +16,15 @@ class RegisterController extends GetxController {
   final isConfirmPasswordVisible = false.obs;
   final isLoading = false.obs;
 
-  void togglePasswordVisibility() =>
-      isPasswordVisible.value = !isPasswordVisible.value;
+  void togglePasswordVisibility() {
+    isPasswordVisible.value = !isPasswordVisible.value;
+  }
 
-  void toggleConfirmPasswordVisibility() =>
-      isConfirmPasswordVisible.value = !isConfirmPasswordVisible.value;
+  void toggleConfirmPasswordVisibility() {
+    isConfirmPasswordVisible.value = !isConfirmPasswordVisible.value;
+  }
 
-  void register() async {
+  Future<void> register() async {
     final username = usernameController.text.trim();
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
@@ -37,12 +39,11 @@ class RegisterController extends GetxController {
     );
 
     if (validationMessage != null) {
-      _showErrorSnackbar(validationMessage);
+      _showSnackbar('Error', validationMessage, isError: true);
       return;
     }
 
     isLoading.value = true;
-    print(" Registering: $username / $email");
 
     try {
       final success = await authService.register(
@@ -52,7 +53,7 @@ class RegisterController extends GetxController {
       );
 
       if (!success) {
-        _showErrorSnackbar('Registration failed.');
+        _showSnackbar('Error', 'Registration failed.', isError: true);
         return;
       }
 
@@ -60,21 +61,26 @@ class RegisterController extends GetxController {
         email: email,
         password: password,
       );
+
       if (!loggedIn) {
-        _showErrorSnackbar('Automatic login failed.');
+        _showSnackbar('Error', 'Automatic login failed.', isError: true);
         return;
       }
 
       final otpSent = await authService.sendOTP(email);
       if (!otpSent) {
-        _showErrorSnackbar('Failed to send OTP.');
+        _showSnackbar('Error', 'Failed to send OTP.', isError: true);
         return;
       }
 
       Get.toNamed(Routes.EMAIL_VERIFICATION, arguments: {'email': email});
     } catch (e) {
-      print(" Registration error: $e");
-      _showErrorSnackbar('Something went wrong. Please try again.');
+      print("Registration error: $e");
+      _showSnackbar(
+        'Error',
+        'Something went wrong. Please try again.',
+        isError: true,
+      );
     } finally {
       isLoading.value = false;
     }
@@ -92,13 +98,13 @@ class RegisterController extends GetxController {
         Validator.validateConfirmPassword(password, confirmPassword);
   }
 
-  void _showErrorSnackbar(String message) {
+  void _showSnackbar(String title, String message, {bool isError = false}) {
     Get.snackbar(
-      'Error',
+      title,
       message,
       snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.red,
-      colorText: Colors.white,
+      backgroundColor: isError ? Colors.red : null,
+      colorText: isError ? Colors.white : null,
     );
   }
 

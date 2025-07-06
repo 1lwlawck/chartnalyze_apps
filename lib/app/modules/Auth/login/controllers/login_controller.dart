@@ -15,7 +15,7 @@ class LoginController extends GetxController {
   @override
   void onInit() {
     final arg = Get.arguments;
-    if (arg != null && arg['email'] != null) {
+    if (arg is Map && arg['email'] != null) {
       emailController.text = arg['email'];
     }
     super.onInit();
@@ -25,39 +25,28 @@ class LoginController extends GetxController {
     isPasswordVisible.value = !isPasswordVisible.value;
   }
 
-  void login() async {
-    final emailError = Validator.validateEmail(emailController.text.trim());
-    final passwordError = Validator.validatePassword(
-      passwordController.text.trim(),
-    );
+  Future<void> login() async {
+    final emailInput = emailController.text.trim();
+    final passwordInput = passwordController.text.trim();
+
+    final emailError = Validator.validateEmail(emailInput);
+    final passwordError = Validator.validatePassword(passwordInput);
 
     if (emailError != null) {
-      Get.snackbar(
-        "Error",
-        emailError,
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      _showSnackbar("Error", emailError, isError: true);
       return;
     }
 
     if (passwordError != null) {
-      Get.snackbar(
-        "Error",
-        passwordError,
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      _showSnackbar("Error", passwordError, isError: true);
       return;
     }
 
     isLoading.value = true;
 
-    bool success = await authService.login(
-      email: emailController.text.trim(),
-      password: passwordController.text.trim(),
+    final success = await authService.login(
+      email: emailInput,
+      password: passwordInput,
     );
 
     isLoading.value = false;
@@ -65,14 +54,18 @@ class LoginController extends GetxController {
     if (success) {
       Get.offAllNamed(Routes.MAIN_WRAPPER);
     } else {
-      Get.snackbar(
-        "Error",
-        "Invalid email or password",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      _showSnackbar("Error", "Invalid email or password", isError: true);
     }
+  }
+
+  void _showSnackbar(String title, String message, {bool isError = false}) {
+    Get.snackbar(
+      title,
+      message,
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: isError ? Colors.red : null,
+      colorText: isError ? Colors.white : null,
+    );
   }
 
   @override

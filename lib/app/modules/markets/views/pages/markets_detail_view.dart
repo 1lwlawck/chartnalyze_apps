@@ -21,15 +21,23 @@ class MarketDetailView extends GetView<MarketsController> {
   @override
   Widget build(BuildContext context) {
     final args = Get.arguments;
-    if (args == null ||
-        args is! Map<String, dynamic> ||
-        !args.containsKey('coinId')) {
+    String? coinId;
+
+    if (args != null &&
+        args is Map<String, dynamic> &&
+        args.containsKey('coinId')) {
+      coinId = args['coinId'];
+      controller.currentCoinId = coinId;
+    } else {
+      coinId = controller.currentCoinId;
+    }
+
+    if (coinId == null) {
       return const Scaffold(body: Center(child: Text('Coin ID not provided.')));
     }
-    final String coinId = args['coinId'];
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchCoinDetail(coinId).then((_) {
+      controller.fetchCoinDetail(coinId!).then((_) {
         final coin = controller.coinDetail.value;
         if (coin != null) {
           controller.fetchNewsForCoin(coin.symbol.toUpperCase());
@@ -222,7 +230,7 @@ class MarketDetailView extends GetView<MarketsController> {
               ],
 
           body: RefreshIndicator(
-            onRefresh: () async => await controller.fetchCoinDetail(coinId),
+            onRefresh: () async => await controller.fetchCoinDetail(coinId!),
             child: TabBarView(
               children: [
                 Obx(() {

@@ -1,70 +1,68 @@
+import 'dart:async';
 import 'dart:ui';
+
 import 'package:chartnalyze_apps/app/data/services/auth/AuthService.dart';
 import 'package:chartnalyze_apps/app/routes/app_pages.dart';
 import 'package:get/get.dart';
-import 'dart:async';
 
 class EmailVerificationController extends GetxController {
   EmailVerificationController({required this.email});
 
   final String email;
 
-  var otpCode = ''.obs;
-  var isResendEnabled = false.obs;
-  var counter = 60.obs;
+  final otpCode = ''.obs;
+  final isResendEnabled = false.obs;
+  final counter = 60.obs;
 
-  late Timer _timer;
+  Timer? _timer;
 
   @override
   void onInit() {
     super.onInit();
-    startTimer();
+    _startTimer();
   }
 
-  void startTimer() {
+  void _startTimer() {
     counter.value = 60;
+    _timer?.cancel(); // pastikan tidak double timer
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (counter.value > 0) {
         counter.value--;
       } else {
         isResendEnabled.value = true;
-        _timer.cancel();
+        _timer?.cancel();
       }
     });
   }
 
-  void resendOTP() async {
+  Future<void> resendOTP() async {
     isResendEnabled.value = false;
-    startTimer();
+    _startTimer();
 
     final success = await Get.find<AuthService>().resendOTP(email);
     if (success) {
-      Get.snackbar(
-        'Success',
-        'OTP code has been resent successfully.',
-        snackPosition: SnackPosition.BOTTOM,
+      _showSnackbar(
+        title: 'Success',
+        message: 'OTP code has been resent successfully.',
+        isError: false,
       );
     } else {
-      Get.snackbar(
-        'Failed',
-        'Failed to resend OTP code.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: const Color(0xFFE57373),
-        colorText: const Color(0xFFFFFFFF),
+      _showSnackbar(
+        title: 'Failed',
+        message: 'Failed to resend OTP code.',
+        isError: true,
       );
     }
   }
 
-  void submitOTP() async {
-    final code = otpCode.value;
+  Future<void> submitOTP() async {
+    final code = otpCode.value.trim();
 
     if (code.length != 6) {
-      Get.snackbar(
-        'Error',
-        'OTP code must be 6 digits.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: const Color(0xFFE57373),
-        colorText: const Color(0xFFFFFFFF),
+      _showSnackbar(
+        title: 'Error',
+        message: 'OTP code must be 6 digits.',
+        isError: true,
       );
       return;
     }
@@ -74,19 +72,32 @@ class EmailVerificationController extends GetxController {
     if (success) {
       Get.offNamed(Routes.SUCCESS_VERIFICATION, arguments: {'email': email});
     } else {
-      Get.snackbar(
-        'Verification Failed',
-        'OTP verification failed. Please make sure the code is correct.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: const Color(0xFFE57373),
-        colorText: const Color(0xFFFFFFFF),
+      _showSnackbar(
+        title: 'Verification Failed',
+        message:
+            'OTP verification failed. Please make sure the code is correct.',
+        isError: true,
       );
     }
   }
 
+  void _showSnackbar({
+    required String title,
+    required String message,
+    bool isError = false,
+  }) {
+    Get.snackbar(
+      title,
+      message,
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: isError ? const Color(0xFFE57373) : null,
+      colorText: isError ? const Color(0xFFFFFFFF) : null,
+    );
+  }
+
   @override
   void onClose() {
-    _timer.cancel();
+    _timer?.cancel();
     super.onClose();
   }
 }

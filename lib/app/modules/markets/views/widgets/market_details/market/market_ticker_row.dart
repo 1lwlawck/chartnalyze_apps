@@ -58,7 +58,7 @@ class MarketTickerRow extends StatelessWidget {
               ),
             ),
             Expanded(
-              flex: 2,
+              flex: 4,
               child: Text(
                 format.format(ticker.price),
                 textAlign: TextAlign.center,
@@ -70,7 +70,7 @@ class MarketTickerRow extends StatelessWidget {
               ),
             ),
             Expanded(
-              flex: 2,
+              flex: 4,
               child: Text(
                 format.format(ticker.volume),
                 textAlign: TextAlign.center,

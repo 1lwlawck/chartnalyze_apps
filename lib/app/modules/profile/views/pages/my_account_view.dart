@@ -42,9 +42,10 @@ class MyAccountView extends StatelessWidget {
                   if (success) {
                     Get.snackbar("Success", "Profile updated");
                   } else {
-                    Get.snackbar("Error", "Update failed");
+                    Get.snackbar("Error", "Please fill all fields");
                   }
                 },
+
                 onLogoutPressed: () => controller.logout(),
                 onRefresh: () => controller.fetchUserProfile(),
               ),

@@ -71,7 +71,7 @@ class AccountAppBar extends StatelessWidget implements PreferredSizeWidget {
                   const SizedBox(height: 8),
                   Theme(
                     data: Theme.of(context).copyWith(
-                      tabBarTheme: TabBarTheme(
+                      tabBarTheme: TabBarThemeData(
                         labelColor: Colors.white,
                         unselectedLabelColor: Colors.white70,
                         indicatorColor: Colors.white,

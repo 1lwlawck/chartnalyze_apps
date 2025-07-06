@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:ui' as ui;
-
 import 'package:chartnalyze_apps/app/data/models/crypto/CoinDetailModel.dart';
 import 'package:chartnalyze_apps/app/data/models/crypto/CoinListModel.dart';
 import 'package:chartnalyze_apps/app/data/models/crypto/ExchangeModel.dart';
@@ -57,12 +56,12 @@ class MarketsController extends GetxController {
 
   final RxList<NewsItem> newsList = <NewsItem>[].obs;
   final RxBool isLoadingNews = false.obs;
-  final RxBool hasFetchedNews = false.obs;
 
   final RxList<CoinListModel> watchlist = <CoinListModel>[].obs;
   final RxBool isLoadingWatchlist = false.obs;
-  final RxBool isCurrentCoinWatched = false.obs;
   final RxBool isTogglingWatchlist = false.obs;
+  final RxBool isCurrentCoinWatched = false.obs;
+  String? currentCoinId;
 
   final exchanges = <ExchangeModel>[].obs;
   final isLoadingExchanges = false.obs;
@@ -91,6 +90,7 @@ class MarketsController extends GetxController {
     fetchGlobalMarketModel();
     fetchCoinListData(isInitial: true);
     fetchWatchlist();
+
     fetchExchanges();
     fetchStocksData();
 
@@ -111,74 +111,68 @@ class MarketsController extends GetxController {
     isLoadingStocks.value = true;
 
     final symbols = [
-      'AAPL', // Apple
-      'GOOGL', // Alphabet (Google)
-      'AMZN', // Amazon
-      'MSFT', // Microsoft
-      'TSLA', // Tesla
-      'META', // Meta Platforms (Facebook)
-      'NFLX', // Netflix
-      'NVDA', // NVIDIA
-      'BRK.B', // Berkshire Hathaway
-      'V', // Visa
-      'JPM', // JPMorgan Chase
-      'WMT', // Walmart
-      'DIS', // The Walt Disney Company
-      'PYPL', // PayPal
-      'INTC', // Intel Corporation
-      'ADBE', // Adobe Systems
-      'CSCO', // Cisco Systems
-      'CMCSA', // Comcast Corporation
-      'MSTR', // Mastercard
-      'VZ', // Verizon Communications
-      'ORCL', // Oracle Corporation
-      'PFE', // Pfizer Inc.
-      'KO', // The Coca-Cola Company
-      'PEP', // PepsiCo, Inc.
-      'NKE', // Nike, Inc.
-      'XOM', // Exxon Mobil Corporation
-      'CVX', // Chevron Corporation
-      'MRK', // Merck & Co., Inc.
-      'ABT', // Abbott Laboratories
-      'T', // AT&T Inc.
-      'UNH', // UnitedHealth Group
-      'HD', // The Home Depot
-      'PG', // Procter & Gamble Co.
-      'LLY', // Eli Lilly and Company
-      'BA', // The Boeing Company
-      'WFC', // Wells Fargo & Company
-      'BAC', // The Bank of America Corporation
+      'AAPL',
+      'GOOGL',
+      'AMZN',
+      'MSFT',
+      'TSLA',
+      'META',
+      'NFLX',
+      'NVDA',
+      'BRK.B',
+      'V',
+      'JPM',
+      'WMT',
+      'DIS',
+      'PYPL',
+      'INTC',
+      'ADBE',
+      'CSCO',
+      'CMCSA',
+      'MSTR',
+      'VZ',
+      'ORCL',
+      'PFE',
+      'KO',
+      'PEP',
+      'NKE',
+      'XOM',
+      'CVX',
+      'MRK',
+      'ABT',
+      'T',
+      'UNH',
+      'HD',
+      'PG',
+      'LLY',
+      'BA',
+      'WFC',
+      'BAC',
     ];
-    final List<FinnhubQuoteModel> results = [];
+
     try {
-      for (var symbol in symbols) {
-        print(' Getting data for $symbol');
+      final fetchedStocks = await Future.wait(
+        symbols.map((symbol) async {
+          try {
+            final quote = await _stockService.fetchQuote(symbol);
+            final profile = await _stockService.fetchProfile(symbol);
+            final sparkline = await _stockService.fetchAlphaVantageSparkline(
+              symbol,
+            );
+            return quote.copyWith(
+              symbol: symbol,
+              name: profile.name,
+              logo: profile.logo,
+              sparkline: sparkline,
+            );
+          } catch (e) {
+            print('Failed fetch $symbol: $e');
+            return null;
+          }
+        }),
+      );
 
-        try {
-          // Fetch quote and profile
-          final quote = await _stockService.fetchQuote(symbol);
-          final profile = await _stockService.fetchProfile(symbol);
-
-          // Fetch sparkline from Alpha Vantage
-          final sparkline = await _stockService.fetchAlphaVantageSparkline(
-            symbol,
-          );
-
-          // Combine all data
-          final enriched = quote.copyWith(
-            symbol: symbol,
-            name: profile.name,
-            logo: profile.logo,
-            sparkline: sparkline,
-          );
-
-          results.add(enriched);
-        } catch (e) {
-          print(' Failed to fetch data for $symbol: $e');
-        }
-      }
-      stocksList.assignAll(results);
-      print(' Loaded ${stocksList.length} stocks');
+      stocksList.assignAll(fetchedStocks.whereType<FinnhubQuoteModel>());
     } finally {
       isLoadingStocks.value = false;
     }
@@ -193,7 +187,7 @@ class MarketsController extends GetxController {
       );
       exchanges.assignAll(data);
     } catch (e) {
-      print(' Failed to fetch exchanges: $e');
+      _showSnackbar('Error', 'Failed to fetch exchanges', isError: true);
     } finally {
       isLoadingExchanges.value = false;
     }
@@ -206,18 +200,12 @@ class MarketsController extends GetxController {
       final image = await boundary.toImage(pixelRatio: 3.0);
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       final pngBytes = byteData!.buffer.asUint8List();
-
       final tempDir = await getTemporaryDirectory();
       final file = await File('${tempDir.path}/shared_chart.png').create();
       await file.writeAsBytes(pngBytes);
-
-      await Share.shareXFiles(
-        [XFile(file.path)],
-        text:
-            'Chart of ${coinDetail.value?.name} Current Price \$${coinDetail.value?.price} Track your ${coinDetail.value?.symbol} Here: ${coinDetail.value?.explorer})',
-      );
+      await Share.shareXFiles([XFile(file.path)], text: 'Shared Chart');
     } catch (e) {
-      print(' Error during screenshot sharing: $e');
+      _showSnackbar('Error', 'Failed to share screenshot', isError: true);
     }
   }
 
@@ -235,7 +223,6 @@ class MarketsController extends GetxController {
       sparkline: [],
     );
 
-    // Optimistically update state
     final wasWatched = isWatched(coin.id);
     isCurrentCoinWatched.value = !wasWatched;
 
@@ -245,7 +232,7 @@ class MarketsController extends GetxController {
         watchlist.removeWhere((item) => item.id == coin.id);
         detailedWatchlist.removeWhere((item) => item.id == coin.id);
       } else {
-        isCurrentCoinWatched.value = true; // Revert if failed
+        isCurrentCoinWatched.value = true;
       }
     } else {
       final success = await _watchlistService.addToWatchlist(coinModel);
@@ -253,7 +240,7 @@ class MarketsController extends GetxController {
         watchlist.add(coinModel);
         detailedWatchlist.add(coinModel);
       } else {
-        isCurrentCoinWatched.value = false; // Revert if failed
+        isCurrentCoinWatched.value = false;
       }
     }
   }
@@ -265,13 +252,11 @@ class MarketsController extends GetxController {
     try {
       final rawWatchlist = await _watchlistService.getWatchlist();
       final ids = rawWatchlist.map((e) => e.key).join(',');
-
       if (ids.isEmpty) {
         watchlist.clear();
         detailedWatchlist.clear();
         return;
       }
-
       final detailed = await _watchlistService.fetchCoinListDataByIds(ids: ids);
       for (var item in detailed) {
         final match = rawWatchlist.firstWhereOrNull((e) => e.key == item.id);
@@ -279,11 +264,10 @@ class MarketsController extends GetxController {
           item.icon = match.imageUrl;
         }
       }
-
       watchlist.assignAll(detailed);
       detailedWatchlist.assignAll(detailed);
     } catch (e) {
-      print(" Error fetching detailed watchlist: $e");
+      _showSnackbar('Error', 'Failed to fetch watchlist', isError: true);
     } finally {
       isLoadingWatchlist.value = false;
     }
@@ -294,7 +278,7 @@ class MarketsController extends GetxController {
       final rate = await _coinService.fetchUsdToIdrRate();
       usdToIdrRate.value = rate;
     } catch (e) {
-      print(' Failed to fetch USD to IDR rate: $e');
+      _showSnackbar('Error', 'Failed to fetch currency rate', isError: true);
     }
   }
 
@@ -323,7 +307,7 @@ class MarketsController extends GetxController {
         page++;
       }
     } catch (e) {
-      print(' Error fetching coins: $e');
+      _showSnackbar('Error', 'Failed to fetch coin data', isError: true);
     } finally {
       isFetchingMore.value = false;
       isLoading.value = false;
@@ -336,11 +320,10 @@ class MarketsController extends GetxController {
       ohlcData.clear();
       final result = await _coinService.fetchCoinDetail(id);
       coinDetail.value = result;
-
       isCurrentCoinWatched.value = isWatched(result.id);
       await loadOhlcData(result.id);
     } catch (e) {
-      print(' Failed to fetch coin detail: $e');
+      _showSnackbar('Error', 'Failed to fetch coin detail', isError: true);
     } finally {
       isLoadingDetail.value = false;
     }
@@ -352,7 +335,7 @@ class MarketsController extends GetxController {
       final data = await _coinService.fetchTickers(coinId);
       tickers.assignAll(data);
     } catch (e) {
-      Get.snackbar('Error', 'Gagal mengambil data market: $e');
+      _showSnackbar('Error', 'Failed to fetch market data', isError: true);
     } finally {
       isLoadingTickers.value = false;
     }
@@ -369,7 +352,7 @@ class MarketsController extends GetxController {
       );
       ohlcData.value = result;
     } catch (e) {
-      print(' Failed to fetch OHLC data: $e');
+      _showSnackbar('Error', 'Failed to fetch OHLC data', isError: true);
       ohlcData.clear();
     } finally {
       isLoadingOhlc.value = false;
@@ -379,17 +362,14 @@ class MarketsController extends GetxController {
   Future<void> fetchGlobalMarketModel() async {
     try {
       isGlobalMarketLoading.value = true;
-
       final previousData = marketData.value;
-
       final result = await _coinService.fetchGlobalMarketModel(
         previousMarketCap: previousData?.totalMarketCap,
         previousVolume: previousData?.totalVolume,
       );
-
       marketData.value = result;
     } catch (e) {
-      print(' Failed to fetch global market data: $e');
+      _showSnackbar('Error', 'Failed to fetch market data', isError: true);
     } finally {
       isGlobalMarketLoading.value = false;
     }
@@ -397,29 +377,27 @@ class MarketsController extends GetxController {
 
   Future<void> fetchNewsForCoin(String symbol) async {
     isLoadingNews.value = true;
-
-    // [DEBUG] Tampilkan simbol coin
-    print(' Fetching news for coin symbol: $symbol');
-
     try {
       final news = await _newsService.fetchNews(
         categories: [symbol.toUpperCase()],
         limit: 10,
       );
-
-      // [DEBUG] Cek apakah responsenya kosong atau ada isinya
-      print(' News fetched for $symbol → Total: ${news.length}');
-      for (var n in news) {
-        print(' ${n.title} | ${n.publishedAt}');
-      }
-
       newsList.assignAll(news);
     } catch (e) {
-      // [DEBUG] Jika gagal, tampilkan error-nya
-      print(' Error fetching news for $symbol: $e');
+      _showSnackbar('Error', 'Failed to fetch news', isError: true);
       newsList.clear();
     } finally {
       isLoadingNews.value = false;
     }
+  }
+
+  void _showSnackbar(String title, String message, {bool isError = false}) {
+    Get.snackbar(
+      title,
+      message,
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: isError ? const Color(0xFFE57373) : null,
+      colorText: isError ? const Color(0xFFFFFFFF) : null,
+    );
   }
 }

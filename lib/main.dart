@@ -8,32 +8,62 @@ import 'package:get_storage/get_storage.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await _initServices();
+
+  runApp(const ChartnalyzeApp());
+}
+
+Future<void> _initServices() async {
   await GetStorage.init();
   await dotenv.load(fileName: ".env");
-  final storage = GetStorage();
 
-  final token = storage.read('token');
-  final onboardingDone = storage.read('onboarding_done') ?? false;
-
-  final initialRoute =
-      token != null && token.isNotEmpty
-          ? Routes.SPLASH_REDIRECT
-          : (onboardingDone ? Routes.LOGIN : Routes.ONBOARDING);
-
+  // Global Dependency Injection
   Get.put<AuthService>(AuthService(), permanent: true);
+}
 
-  runApp(
-    GetMaterialApp(
+class ChartnalyzeApp extends StatelessWidget {
+  const ChartnalyzeApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final storage = GetStorage();
+    final token = storage.read('token');
+    final onboardingDone = storage.read('onboarding_done') ?? false;
+
+    final initialRoute =
+        token != null && token.isNotEmpty
+            ? Routes.SPLASH_REDIRECT
+            : (onboardingDone ? Routes.LOGIN : Routes.ONBOARDING);
+
+    return GetMaterialApp(
       title: "Chartnalyze Apps",
       debugShowCheckedModeBanner: false,
       initialRoute: initialRoute,
       getPages: AppPages.routes,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSwatch().copyWith(
-          primary: AppColors.primaryGreen,
-          secondary: Colors.white,
+      theme: _buildAppTheme(),
+    );
+  }
+
+  ThemeData _buildAppTheme() {
+    return ThemeData(
+      colorScheme: ColorScheme.fromSwatch().copyWith(
+        primary: AppColors.primaryGreen,
+        secondary: Colors.white,
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: AppColors.primaryGreen, width: 1.5),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: AppColors.primaryGreen, width: 2.0),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: AppColors.primaryGreen, width: 1.5),
         ),
       ),
-    ),
-  );
+    );
+  }
 }

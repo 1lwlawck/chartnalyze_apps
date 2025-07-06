@@ -78,7 +78,9 @@ class EmailVerificationView extends GetView<EmailVerificationController> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(12)),
                             borderSide: BorderSide(
-                                color: AppColors.primaryGreen, width: 1.5),
+                              color: AppColors.primaryGreen,
+                              width: 1.5,
+                            ),
                           ),
                         ),
                         onChanged: (value) {
@@ -87,10 +89,10 @@ class EmailVerificationView extends GetView<EmailVerificationController> {
                           }
                           _updateOtpCode(textControllers, controller);
                         },
-                        onSubmitted: (_) =>
-                            _updateOtpCode(textControllers, controller),
-                        onEditingComplete: () =>
-                            _updateOtpCode(textControllers, controller),
+                        onSubmitted:
+                            (_) => _updateOtpCode(textControllers, controller),
+                        onEditingComplete:
+                            () => _updateOtpCode(textControllers, controller),
                       ),
                     );
                   }),
@@ -98,29 +100,32 @@ class EmailVerificationView extends GetView<EmailVerificationController> {
               ),
               const SizedBox(height: 30),
               GestureDetector(
-                onTap: controller.isResendEnabled.value
-                    ? controller.resendOTP
-                    : null,
-                child: Obx(() => Text(
-                      AppStrings.resendOtp,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: controller.isResendEnabled.value
-                            ? AppColors.primaryGreen
-                            : AppColors.grey,
-                        fontFamily: AppFonts.nextTrial,
-                      ),
-                    )),
+                onTap:
+                    controller.isResendEnabled.value
+                        ? controller.resendOTP
+                        : null,
+                child: Obx(
+                  () => Text(
+                    AppStrings.resendOtp,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color:
+                          controller.isResendEnabled.value
+                              ? AppColors.primaryGreen
+                              : AppColors.grey,
+                      fontFamily: AppFonts.nextTrial,
+                    ),
+                  ),
+                ),
               ),
               const SizedBox(height: 10),
-              Obx(() => Text(
-                    '${controller.counter.value}s',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: AppColors.grey,
-                    ),
-                  )),
+              Obx(
+                () => Text(
+                  '${controller.counter.value}s',
+                  style: const TextStyle(fontSize: 14, color: AppColors.grey),
+                ),
+              ),
               const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: controller.submitOTP,
@@ -133,7 +138,7 @@ class EmailVerificationView extends GetView<EmailVerificationController> {
                   minimumSize: const Size(double.infinity, 48),
                 ),
                 child: const Text(
-                  'Done',
+                  'Verify',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -149,8 +154,10 @@ class EmailVerificationView extends GetView<EmailVerificationController> {
     );
   }
 
-  void _updateOtpCode(List<TextEditingController> controllers,
-      EmailVerificationController ctrl) {
+  void _updateOtpCode(
+    List<TextEditingController> controllers,
+    EmailVerificationController ctrl,
+  ) {
     ctrl.otpCode.value = controllers.map((c) => c.text).join();
   }
 }

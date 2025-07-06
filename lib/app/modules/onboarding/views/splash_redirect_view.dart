@@ -5,7 +5,6 @@ import 'package:chartnalyze_apps/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 class SplashRedirectView extends StatelessWidget {
   const SplashRedirectView({super.key});
