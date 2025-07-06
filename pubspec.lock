@@ -1405,8 +1405,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "15.0.0"
-<<<<<<< HEAD
-=======
   watcher:
     dependency: transitive
     description:
@@ -1415,7 +1413,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.2"
->>>>>>> me/user-activity-features
   web:
     dependency: transitive
     description:
