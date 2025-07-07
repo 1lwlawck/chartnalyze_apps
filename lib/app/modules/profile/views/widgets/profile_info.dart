@@ -1,3 +1,4 @@
+import 'package:chartnalyze_apps/app/helpers/img_url.dart';
 import 'package:chartnalyze_apps/app/modules/profile/controllers/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -41,14 +42,9 @@ class ProfileInfo extends StatelessWidget {
                         return CircleAvatar(
                           radius: 35,
                           backgroundImage: NetworkImage(
-                            (user.avatarUrl ?? '')
-                                    .replaceFirst('localhost', '192.168.65.143')
-                                    .isEmpty
+                            (user.avatarUrl == null || user.avatarUrl!.isEmpty)
                                 ? 'https://api.dicebear.com/7.x/adventurer/png?seed=${Uri.encodeComponent(user.name ?? "Anonymous")}&size=120'
-                                : user.avatarUrl!.replaceFirst(
-                                  'localhost',
-                                  '192.168.65.143',
-                                ),
+                                : replaceLocalhost(user.avatarUrl!),
                           ),
                           backgroundColor: Colors.transparent,
                         );

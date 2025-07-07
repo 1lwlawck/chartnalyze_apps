@@ -1,5 +1,6 @@
 import 'package:chartnalyze_apps/app/data/models/users/PostModel.dart';
 import 'package:chartnalyze_apps/app/data/models/users/UserModel.dart';
+import 'package:chartnalyze_apps/app/helpers/img_url.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:chartnalyze_apps/app/constants/fonts.dart';
@@ -51,11 +52,9 @@ class CommunityPostCard extends StatelessWidget {
     final time = post.createdAt.substring(0, 10);
 
     final avatarUrl =
-        (user?.avatarUrl ?? '')
-                .replaceFirst('localhost', '192.168.69.214')
-                .isEmpty
+        (user?.avatarUrl == null || user!.avatarUrl!.isEmpty)
             ? 'https://api.dicebear.com/7.x/adventurer/png?seed=${Uri.encodeComponent(user?.name ?? "Anonymous")}&size=120'
-            : user!.avatarUrl!.replaceFirst('localhost', '192.168.69.214');
+            : replaceLocalhost(user!.avatarUrl!);
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,

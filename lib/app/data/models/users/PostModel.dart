@@ -32,8 +32,8 @@ class PostModel {
       body: json['body'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
-      commentCount: json['comment_count'],
-      likeCount: json['like_count'],
+      commentCount: json['comment_count'] ?? 0,
+      likeCount: json['like_count'] ?? 0,
       imageUrls: List<String>.from(json['image_urls'] ?? []),
     );
   }

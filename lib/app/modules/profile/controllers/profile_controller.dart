@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:chartnalyze_apps/app/data/models/users/PostModel.dart';
 import 'package:chartnalyze_apps/app/data/models/users/UserPostStatistic.dart';
+import 'package:chartnalyze_apps/app/data/services/users/PostService.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/data/models/users/UserModel.dart';
@@ -22,8 +25,14 @@ class ProfileController extends GetxController {
   final birthDateController = TextEditingController();
   final emailController = TextEditingController();
 
+  final titleController = TextEditingController();
+  final bodyController = TextEditingController();
+  final isSubmittingPost = false.obs;
+  final editingPostId = RxnString();
+
   final _userService = UserService();
   final _followService = FollowService();
+  final _postService = PostService();
   final authService = Get.find<AuthService>();
 
   final followers = <Follow>[].obs;
@@ -45,7 +54,13 @@ class ProfileController extends GetxController {
   final int perPage = 10;
   String? typeFilter;
 
+  final userPosts = <PostModel>[].obs;
+  final isPostLoading = false.obs;
+
   bool get canResendOtp => resendSecondsRemaining.value == 0;
+
+  final formKey = GlobalKey<FormState>();
+  final selectedImages = <File>[].obs;
 
   @override
   void onInit() {
@@ -53,7 +68,175 @@ class ProfileController extends GetxController {
     fetchUserProfile();
   }
 
-  // Profile
+  Future<void> fetchUserPosts() async {
+    if (user.value.id.isEmpty) return;
+    isPostLoading.value = true;
+    try {
+      final result = await _postService.getUserPosts(userId: user.value.id);
+      userPosts.assignAll(result);
+    } catch (e) {
+      print("Error fetching user posts: $e");
+    } finally {
+      isPostLoading.value = false;
+    }
+  }
+
+  Future<void> pickImages() async {
+    final picker = ImagePicker();
+    final pickedFiles = await picker.pickMultiImage(imageQuality: 80);
+
+    if (pickedFiles.isNotEmpty) {
+      selectedImages.addAll(pickedFiles.map((x) => File(x.path)));
+    }
+  }
+
+  void removeImage(File file) {
+    selectedImages.remove(file);
+  }
+
+  Future<void> createPost() async {
+    final title = titleController.text.trim();
+    final body = bodyController.text.trim();
+
+    if (body.isEmpty) {
+      Get.snackbar("Validation", "Post body cannot be empty");
+      return;
+    }
+
+    isSubmittingPost.value = true;
+    try {
+      final result = await _postService.createPost(
+        title: title.isNotEmpty ? title : null,
+        body: body,
+        images: selectedImages,
+      );
+
+      if (result != null) {
+        titleController.clear();
+        bodyController.clear();
+        selectedImages.clear();
+        editingPostId.value = null;
+        await fetchUserPosts();
+        Get.back();
+        Get.snackbar("Success", "Post created successfully");
+      }
+    } catch (e) {
+      Get.snackbar("Error", "Failed to create post");
+    } finally {
+      isSubmittingPost.value = false;
+    }
+  }
+
+  Future<void> deletePost(String postId) async {
+    final confirm = await Get.dialog<bool>(
+      AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        backgroundColor: Colors.white,
+        title: Text(
+          'Delete Post',
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w700,
+            fontSize: 18,
+            color: Colors.black87,
+          ),
+        ),
+        content: Text(
+          'Are you sure you want to delete this post?',
+          style: GoogleFonts.aBeeZee(fontSize: 14, color: Colors.black54),
+        ),
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        actions: [
+          TextButton(
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.grey[700],
+              textStyle: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+            ),
+            onPressed: () => Get.back(result: false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.redAccent,
+              textStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+            ),
+            onPressed: () => Get.back(result: true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm != true) return;
+
+    try {
+      final success = await _postService.deletePost(postId: postId);
+      if (success) {
+        Get.snackbar(
+          'Deleted',
+          'Post deleted successfully',
+          backgroundColor: Colors.green[600],
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+          margin: const EdgeInsets.all(12),
+          borderRadius: 12,
+        );
+        await fetchUserPosts();
+      } else {
+        Get.snackbar(
+          'Failed',
+          'Failed to delete post',
+          backgroundColor: Colors.red[400],
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+          margin: const EdgeInsets.all(12),
+          borderRadius: 12,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Something went wrong',
+        backgroundColor: Colors.red[400],
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.all(12),
+        borderRadius: 12,
+      );
+      print('[ProfileController] ❌ Error deleting post: $e');
+    }
+  }
+
+  Future<void> updatePost({
+    required String postId,
+    required String body,
+    String? title,
+    List<File> images = const [],
+  }) async {
+    isSubmittingPost.value = true;
+
+    try {
+      final result = await _postService.updatePost(
+        postId: postId,
+        title: title,
+        body: body,
+        images: images,
+      );
+
+      if (result != null) {
+        Get.back(); // Close form
+        editingPostId.value = null; // reset mode
+        await fetchUserPosts(); // Refresh list
+        Get.snackbar("Success", "Post updated successfully");
+      } else {
+        Get.snackbar("Error", "Failed to update post");
+      }
+    } catch (e) {
+      Get.snackbar("Error", "Something went wrong");
+    } finally {
+      isSubmittingPost.value = false;
+    }
+  }
+
   Future<void> fetchUserProfile() async {
     isLoading.value = true;
     try {
@@ -67,6 +250,7 @@ class ProfileController extends GetxController {
 
         await fetchUserActivities(userId: userData.id);
         await fetchUserPostStatistics(userId: userData.id);
+        await fetchUserPosts();
       } else {
         _showSnackbar("Error", "Failed to load user", isError: true);
       }
@@ -315,6 +499,25 @@ class ProfileController extends GetxController {
       _showSnackbar("Error", "Something went wrong", isError: true);
     } finally {
       isStatisticLoading.value = false;
+    }
+  }
+
+  void submitPost() {
+    if (!formKey.currentState!.validate()) return;
+
+    final title = titleController.text.trim();
+    final body = bodyController.text.trim();
+    final images = selectedImages;
+
+    if (editingPostId.value != null) {
+      updatePost(
+        postId: editingPostId.value!,
+        title: title,
+        body: body,
+        images: images,
+      ).then((_) => editingPostId.value = null); // reset mode
+    } else {
+      createPost();
     }
   }
 

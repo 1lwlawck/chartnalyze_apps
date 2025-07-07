@@ -148,6 +148,48 @@ class UserActivityConstants {
   }
 }
 
+class UserPostConstants {
+  static const String baseEndpoint = '/users';
+
+  static Uri index({
+    required String userId,
+    int perPage = 10,
+    int page = 1,
+    String sort = '-created_at',
+    String? bodyFilter,
+  }) {
+    final queryParams = {
+      'per_page': perPage.toString(),
+      'page': page.toString(),
+      'sort': sort,
+      'join': 'user',
+    };
+
+    if (bodyFilter != null && bodyFilter.isNotEmpty) {
+      queryParams['filter[body]'] = bodyFilter;
+    }
+
+    final queryString = Uri(queryParameters: queryParams).query;
+    return Uri.parse('$apiBaseUrl$baseEndpoint/$userId/posts?$queryString');
+  }
+}
+
+class PostConstants {
+  static const String createPost = '/posts';
+
+  static Uri show({required String postId}) {
+    return Uri.parse('$apiBaseUrl/posts/$postId');
+  }
+
+  static Uri update({required String postId}) {
+    return Uri.parse('$apiBaseUrl/posts/$postId');
+  }
+
+  static Uri delete({required String postId}) {
+    return Uri.parse('$apiBaseUrl/posts/$postId');
+  }
+}
+
 class CandlestickConstants {
   static const String predictEndpoint = '/candlesticks/predict';
 

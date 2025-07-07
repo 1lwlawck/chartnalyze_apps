@@ -1,3 +1,4 @@
+import 'package:chartnalyze_apps/app/modules/profile/views/pages/create_post_view.dart';
 import 'package:chartnalyze_apps/app/modules/profile/views/pages/my_account_view.dart';
 import 'package:flutter/material.dart';
 import 'package:chartnalyze_apps/app/constants/colors.dart';
@@ -22,7 +23,7 @@ class _ProfileExpandableFABState extends State<ProfileExpandableFAB> {
           MiniActionButton(
             icon: Icons.description_outlined,
             onPressed: () {
-              // TODO: Navigate to add post
+              Get.to(() => const CreatePostView());
               setState(() => _expanded = false);
             },
           ),

@@ -1,6 +1,7 @@
 import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/modules/profile/controllers/profile_controller.dart';
-import 'package:chartnalyze_apps/app/modules/profile/views/widgets/profile_empty_view.dart';
+import 'package:chartnalyze_apps/app/modules/profile/views/widgets/card/profile_post_card.dart';
+import 'package:chartnalyze_apps/app/modules/profile/views/pages/profile_empty_view.dart';
 import 'package:chartnalyze_apps/app/modules/profile/views/widgets/profile_fab.dart';
 import 'package:chartnalyze_apps/app/modules/profile/views/widgets/profile_info.dart';
 import 'package:chartnalyze_apps/app/modules/profile/views/widgets/profile_tabs.dart';
@@ -85,11 +86,45 @@ class ProfileView extends GetView<ProfileController> {
             );
           }
 
-          return const Column(
+          return Column(
             children: [
-              ProfileInfo(),
-              ProfileTabs(),
-              Expanded(child: ProfileEmptyView()),
+              const ProfileInfo(),
+              const ProfileTabs(),
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    // Posts tab
+                    Obx(() {
+                      final posts = controller.userPosts;
+                      if (posts.isEmpty) {
+                        return const ProfileEmptyView();
+                      }
+
+                      return ListView.separated(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        itemCount: posts.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 12),
+                        itemBuilder: (context, index) {
+                          final post = posts[index];
+                          return ProfilePostCard(
+                            post: post,
+                            user: controller.user.value,
+                          );
+                        },
+                      );
+                    }),
+
+                    // Comments tab
+                    const Center(child: Text("No comments yet")),
+
+                    // Reactions tab
+                    const Center(child: Text("No reactions yet")),
+                  ],
+                ),
+              ),
             ],
           );
         }),
