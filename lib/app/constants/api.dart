@@ -68,6 +68,56 @@ class CoinGeckoConstants {
       Uri.parse('$baseUrl/exchanges/$id?x-cg-demo-api-key=$apiKey');
 }
 
+class CoinDeskConstants {
+  static const String baseUrl = 'data-api.coindesk.com';
+  static const String newsListPath = '/news/v1/article/list';
+  static const String searchPath = '/news/v1/search';
+
+  static final String? apiKey = dotenv.env['COINDESK_API_KEY'];
+
+  static Uri newsListUrl({
+    int limit = 10,
+    List<String>? categories,
+    String? currencies,
+    String lang = 'EN',
+  }) {
+    final queryParams = {'lang': lang, 'limit': limit.toString()};
+
+    if (categories != null && categories.isNotEmpty) {
+      queryParams['categories'] = categories.join(',');
+    }
+
+    if (currencies != null && currencies.isNotEmpty) {
+      queryParams['currencies'] = currencies;
+    }
+
+    if (apiKey != null && apiKey!.isNotEmpty) {
+      queryParams['api_key'] = apiKey!;
+    }
+
+    return Uri.https(baseUrl, newsListPath, queryParams);
+  }
+
+  /// ✅ Endpoint untuk pencarian berita berdasarkan kata kunci
+  static Uri searchNewsUrl({
+    required String query,
+    String lang = 'EN',
+    String sourceKey = 'coindesk',
+  }) {
+    final queryParams = {
+      'search_string': query,
+      'lang': lang,
+      'source_key': sourceKey,
+    };
+
+    if (apiKey != null && apiKey!.isNotEmpty) {
+      queryParams['api_key'] = apiKey!;
+    }
+
+    return Uri.https(baseUrl, searchPath, queryParams);
+  }
+}
+
 class AlphaVantageConstants {
   static const String baseUrl = 'https://www.alphavantage.co/query';
   static final String? apiKey = dotenv.env['ALPHA_VANTAGE_API_KEY'];
@@ -187,6 +237,20 @@ class PostConstants {
 
   static Uri delete({required String postId}) {
     return Uri.parse('$apiBaseUrl/posts/$postId');
+  }
+}
+
+class PriceHistoryConstants {
+  static const String baseEndpoint = '/price_histories';
+
+  /// Ambil semua simbol aset yang tersedia
+  static Uri symbolsUrl() {
+    return Uri.parse('$apiBaseUrl$baseEndpoint/symbols');
+  }
+
+  /// Ambil histori harga dari simbol tertentu (contoh: BTC, ETH)
+  static Uri historyBySymbolUrl(String symbol) {
+    return Uri.parse('$apiBaseUrl$baseEndpoint/$symbol');
   }
 }
 

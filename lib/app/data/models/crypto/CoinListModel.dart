@@ -1,3 +1,5 @@
+import 'package:chartnalyze_apps/app/data/models/crypto/CoinDetailModel.dart';
+
 class CoinListModel {
   // Informasi dasar dan ranking koin
   final String id;
@@ -59,6 +61,21 @@ class CoinListModel {
                 ),
               )
               : [],
+    );
+  }
+
+  factory CoinListModel.fromDetail(CoinDetailModel detail) {
+    return CoinListModel(
+      id: detail.id,
+      rank: detail.rank,
+      symbol: detail.symbol,
+      name: detail.name,
+      price: detail.price,
+      marketCap: detail.marketCap,
+      change24h: detail.change24h,
+      change7d: detail.change7d,
+      icon: detail.imageUrl,
+      sparkline: [],
     );
   }
 

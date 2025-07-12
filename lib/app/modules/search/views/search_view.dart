@@ -69,11 +69,16 @@ class SearchView extends GetView<SearchAssetsController> {
 
                       const SizedBox(height: 12),
                       TextField(
+                        style: GoogleFonts.newsreader(
+                          fontSize: 16,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                        ),
                         controller: controller.searchController,
                         decoration: InputDecoration(
                           hintText: 'Search assets ex: Bitcoin, Ethereum',
-                          hintStyle: GoogleFonts.poppins(
-                            fontSize: 13,
+                          hintStyle: GoogleFonts.aBeeZee(
+                            fontSize: 15,
                             fontWeight: FontWeight.w800,
                             color: Colors.grey,
                           ),

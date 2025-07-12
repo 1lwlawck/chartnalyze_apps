@@ -27,9 +27,7 @@ class NewsView extends GetView<NewsController> {
         child: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage(
-                'assets/images/bg-appbar.png',
-              ), // ← pastikan path sesuai
+              image: AssetImage('assets/images/bg-appbar.png'),
               fit: BoxFit.cover,
             ),
             borderRadius: BorderRadius.only(
@@ -67,6 +65,20 @@ class NewsView extends GetView<NewsController> {
                     ),
                     const SizedBox(height: 12),
                     TextField(
+                      controller: controller.searchController,
+                      onChanged: (value) {
+                        if (value.length >= 3) {
+                          controller.searchNews(value);
+                        } else {
+                          controller.filterNewsLocally(value);
+                        }
+                      },
+                      style: GoogleFonts.newsreader(
+                        // 👈 inilah untuk style input user
+                        fontSize: 16,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                      ),
                       decoration: InputDecoration(
                         hintText: 'Search any news here',
                         hintStyle: GoogleFonts.newsreader(
@@ -78,6 +90,23 @@ class NewsView extends GetView<NewsController> {
                           Icons.search,
                           color: Colors.grey,
                         ),
+                        suffixIcon: Obx(() {
+                          return controller.searchKeyword.value.isNotEmpty
+                              ? IconButton(
+                                icon: const Icon(
+                                  Icons.clear,
+                                  color: Colors.grey,
+                                ),
+                                onPressed: () {
+                                  controller.searchController.clear();
+                                  controller.searchKeyword.value = '';
+                                  controller.fetchNewsByCategory(
+                                    controller.selectedCategory.value,
+                                  );
+                                },
+                              )
+                              : const SizedBox.shrink();
+                        }),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
@@ -87,6 +116,7 @@ class NewsView extends GetView<NewsController> {
                         contentPadding: const EdgeInsets.symmetric(vertical: 0),
                       ),
                     ),
+
                     const SizedBox(height: 12),
                     Obx(() {
                       return SingleChildScrollView(

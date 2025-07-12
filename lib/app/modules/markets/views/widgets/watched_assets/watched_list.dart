@@ -12,8 +12,8 @@ class MarketWatchlistList extends GetView<MarketsController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      final detailedWatchlist = controller.detailedWatchlist;
-      final isLoading = controller.isLoadingWatchlist.value;
+      final detailedWatchlist = controller.watchlist.detailedWatchlist;
+      final isLoading = controller.watchlist.isLoading.value;
 
       if (isLoading) {
         return const Center(child: CircularProgressIndicator());
@@ -35,7 +35,7 @@ class MarketWatchlistList extends GetView<MarketsController> {
 
       return RefreshIndicator(
         onRefresh: () async {
-          await controller.fetchWatchlist();
+          await controller.watchlist.fetchWatchlist();
         },
         child: ListView.builder(
           itemCount: detailedWatchlist.length,

@@ -78,58 +78,54 @@ class MarketsView extends GetView<MarketsController> {
       body: Column(
         children: [
           Expanded(
-            child: GetBuilder<MarketsController>(
-              builder: (controller) {
-                switch (controller.selectedTabIndex) {
-                  case 0:
-                    return Column(
-                      children: const [
-                        SizedBox(height: 5),
-                        MarketTableHeader(),
-                        Expanded(child: MarketCoinList()),
-                      ],
-                    );
-                  case 1:
-                    return const MarketStocksList();
-                  case 2:
-                    return Column(
-                      children: const [
-                        SizedBox(height: 10),
-                        MarketTableHeader(),
-                        Expanded(child: MarketWatchlistList()),
-                      ],
-                    );
-                  case 3:
-                    return const MarketOverviewWebView();
-                  case 4:
-                    return const ExchangesListView();
-                  default:
-                    return const SizedBox.shrink();
-                }
-              },
-            ),
+            child: Obx(() {
+              final tabIndex = controller.selectedTabIndex.value;
+              switch (tabIndex) {
+                case 0:
+                  return Column(
+                    children: const [
+                      SizedBox(height: 5),
+                      MarketTableHeader(),
+                      Expanded(child: MarketCoinList()),
+                    ],
+                  );
+                case 1:
+                  return const MarketStocksList();
+                case 2:
+                  return Column(
+                    children: const [
+                      SizedBox(height: 10),
+                      MarketTableHeader(),
+                      Expanded(child: MarketWatchlistList()),
+                    ],
+                  );
+                case 3:
+                  return const MarketOverviewChartView();
+                case 4:
+                  return const ExchangesListView();
+                default:
+                  return const SizedBox.shrink();
+              }
+            }),
           ),
         ],
       ),
 
-      floatingActionButton: GetBuilder<MarketsController>(
-        builder: (controller) {
-          if (controller.selectedTabIndex == 0) {
-            return FloatingActionButton(
-              onPressed: () {
-                Get.to(
-                  () => LivePredictCameraView(),
-                ); // Navigasi ke in-app kamera
-              },
-              backgroundColor: AppColors.primaryGreen,
-              tooltip: 'Open Camera',
-              elevation: 5,
-              child: const Icon(Icons.camera_alt, color: Colors.white),
-            );
-          }
-          return const SizedBox.shrink();
-        },
-      ),
+      floatingActionButton: Obx(() {
+        if (controller.selectedTabIndex.value == 0) {
+          return FloatingActionButton(
+            onPressed: () {
+              Get.to(() => LivePredictCameraView());
+            },
+            backgroundColor: AppColors.primaryGreen,
+            tooltip: 'Open Camera',
+            elevation: 5,
+            child: const Icon(Icons.camera_alt, color: Colors.white),
+          );
+        }
+        return const SizedBox.shrink();
+      }),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

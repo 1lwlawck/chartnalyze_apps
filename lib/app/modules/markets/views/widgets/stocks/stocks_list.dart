@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/modules/markets/controllers/markets_controller.dart';
@@ -11,15 +12,20 @@ class MarketStocksList extends GetView<MarketsController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      if (controller.isLoadingStocks.value) {
-        return const Center(child: CircularProgressIndicator());
+      final isLoading = controller.stocks.isLoadingStocks.value;
+      final stockList = controller.stocks.stocksList;
+
+      if (isLoading) {
+        return const Center(
+          child: SpinKitWave(color: AppColors.primaryGreen, size: 32),
+        );
       }
 
       return RefreshIndicator(
-        onRefresh: controller.fetchStocksData,
+        onRefresh: controller.stocks.fetchStocksData,
         child: ListView.separated(
           padding: const EdgeInsets.all(16),
-          itemCount: controller.stocksList.length + 1, // +1 for header
+          itemCount: stockList.length + 1, // +1 for header
           separatorBuilder:
               (_, index) =>
                   index == 0
@@ -99,12 +105,12 @@ class MarketStocksList extends GetView<MarketsController> {
               );
             }
 
-            final stock = controller.stocksList[index - 1];
+            final stock = stockList[index - 1];
             return StockListTile(
               stock: stock,
               index: index - 1,
               onTap: () {
-                // TODO: navigasi ke detail saham
+                // TODO: Navigasi ke halaman detail saham
               },
             );
           },

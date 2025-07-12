@@ -10,10 +10,12 @@ class ExchangesListView extends GetView<MarketsController> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<MarketsController>().exchanges;
+
     return Obx(() {
       final List<ExchangeModel> exchanges = controller.exchanges;
 
-      if (controller.isLoadingExchanges.value) {
+      if (controller.isLoading.value) {
         return const Center(child: CircularProgressIndicator());
       }
 

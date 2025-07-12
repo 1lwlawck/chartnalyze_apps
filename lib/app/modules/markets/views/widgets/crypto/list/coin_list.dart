@@ -25,11 +25,12 @@ class _MarketCoinListState extends State<MarketCoinList> {
   void initState() {
     super.initState();
     scrollController.addListener(() {
+      final crypto = controller.crypto;
       if (scrollController.position.pixels >=
               scrollController.position.maxScrollExtent - 200 &&
-          !controller.isFetchingMore.value &&
-          controller.hasMoreData.value) {
-        controller.fetchCoinListData();
+          !crypto.isFetchingMore.value &&
+          crypto.hasMoreData.value) {
+        crypto.fetchCoinListData();
       }
     });
   }
@@ -42,8 +43,10 @@ class _MarketCoinListState extends State<MarketCoinList> {
 
   @override
   Widget build(BuildContext context) {
+    final crypto = controller.crypto;
+
     return Obx(() {
-      if (controller.isLoading.value) {
+      if (crypto.isLoading.value) {
         return ListView.builder(
           itemCount: 8,
           padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 10),
@@ -51,7 +54,7 @@ class _MarketCoinListState extends State<MarketCoinList> {
         );
       }
 
-      if (controller.coins.isEmpty && !_hasShownNoDataSheet) {
+      if (crypto.coins.isEmpty && !_hasShownNoDataSheet) {
         _hasShownNoDataSheet = true;
 
         Future.delayed(Duration.zero, () {
@@ -99,7 +102,7 @@ class _MarketCoinListState extends State<MarketCoinList> {
                           child: FilledButton.icon(
                             onPressed: () {
                               Navigator.pop(context);
-                              controller.fetchCoinListData(isInitial: true);
+                              crypto.fetchCoinListData(isInitial: true);
                               _hasShownNoDataSheet = false;
                             },
                             icon: const Icon(Icons.refresh),
@@ -131,14 +134,14 @@ class _MarketCoinListState extends State<MarketCoinList> {
         color: AppColors.primaryGreen,
         backgroundColor: Colors.white,
         displacement: 5,
-        onRefresh: () => controller.fetchCoinListData(isInitial: true),
+        onRefresh: () => crypto.fetchCoinListData(isInitial: true),
         child: ListView.builder(
           controller: scrollController,
-          itemCount: controller.coins.length + 1,
+          itemCount: crypto.coins.length + 1,
           padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 10),
           itemBuilder: (_, i) {
-            if (i < controller.coins.length) {
-              final coin = controller.coins[i];
+            if (i < crypto.coins.length) {
+              final coin = crypto.coins[i];
               return CoinListTile(
                 coin: coin,
                 index: i,
@@ -151,8 +154,7 @@ class _MarketCoinListState extends State<MarketCoinList> {
               );
             } else {
               return Obx(() {
-                if (controller.isFetchingMore.value &&
-                    !controller.isLoading.value) {
+                if (crypto.isFetchingMore.value && !crypto.isLoading.value) {
                   return const Padding(
                     padding: EdgeInsets.all(16),
                     child: Center(

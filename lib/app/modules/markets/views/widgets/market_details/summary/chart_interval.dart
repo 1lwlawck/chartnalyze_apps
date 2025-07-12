@@ -9,6 +9,7 @@ class MarketChartInterval extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<MarketsController>();
+    final crypto = controller.crypto;
 
     final List<String> intervals = ['1 day', '1 week', '1 month'];
     final Map<String, String> labels = {
@@ -18,7 +19,7 @@ class MarketChartInterval extends StatelessWidget {
     };
 
     return Obx(() {
-      final selected = controller.selectedInterval.value;
+      final selected = crypto.selectedInterval.value;
 
       return Align(
         alignment: Alignment.topLeft,
@@ -36,8 +37,7 @@ class MarketChartInterval extends StatelessWidget {
             ],
           ),
           child: Row(
-            mainAxisSize:
-                MainAxisSize.min, // <<-- INI membuat container tidak melebar
+            mainAxisSize: MainAxisSize.min,
             children:
                 intervals.map((interval) {
                   final isSelected = selected == interval;
@@ -45,10 +45,10 @@ class MarketChartInterval extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: GestureDetector(
                       onTap: () {
-                        controller.selectedInterval.value = interval;
-                        final id = controller.coinDetail.value?.id ?? '';
+                        crypto.selectedInterval.value = interval;
+                        final id = crypto.coinDetail.value?.id ?? '';
                         if (id.isNotEmpty) {
-                          controller.loadOhlcData(id);
+                          crypto.loadOhlcData(id);
                         }
                       },
                       child: Container(

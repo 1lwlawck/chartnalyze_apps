@@ -28,7 +28,7 @@ class _LivePredictCameraViewState extends State<LivePredictCameraView> {
       appBar: AppBar(title: const Text('Live Camera Prediction')),
       body: YOLOView(
         controller: _controller,
-        modelPath: 'assets/best_float16.tflite',
+        modelPath: 'best_float16.tflite',
         task: YOLOTask.detect,
         showNativeUI: true,
         onResult: (results) {

@@ -1,36 +1,30 @@
 import 'dart:convert';
+import 'package:chartnalyze_apps/app/constants/api.dart';
 import 'package:http/http.dart' as http;
-import 'package:metadata_fetch/metadata_fetch.dart';
 import 'package:chartnalyze_apps/app/data/models/news/NewsItemModel.dart';
 
 class CoinDeskService {
-  final String _baseUrl = 'data-api.coindesk.com';
-  final String _path = '/news/v1/article/list';
-
   Future<List<NewsItem>> fetchNews({
     int limit = 10,
     List<String>? categories,
     String? currencies,
   }) async {
-    final queryParams = {'lang': 'EN', 'limit': '$limit'};
-
-    if (categories != null && categories.isNotEmpty) {
-      queryParams['categories'] = categories.join(',');
-    }
-
-    if (currencies != null && currencies.isNotEmpty) {
-      queryParams['currencies'] = currencies;
-    }
-
-    final uri = Uri.https(_baseUrl, _path, queryParams);
+    final uri = CoinDeskConstants.newsListUrl(
+      limit: limit,
+      categories: categories,
+      currencies: currencies,
+    );
 
     final response = await _safeGet(uri);
+
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       final List<dynamic> results = data['Data'] ?? [];
       return results.map((e) => NewsItem.fromJson(e)).toList();
     } else {
-      throw Exception('Failed to load news (status ${response.statusCode})');
+      throw Exception(
+        'Failed to load news (status ${response.statusCode}): ${response.body}',
+      );
     }
   }
 
@@ -54,19 +48,17 @@ class CoinDeskService {
     }
     throw Exception('Failed to fetch after $retries attempts');
   }
-}
 
-class NewsMetaService {
-  /// Mengambil thumbnail dari URL berita
-  Future<String?> getThumbnail(String url) async {
-    if (!url.startsWith('http')) return null;
+  Future<List<NewsItem>> searchNews(String query) async {
+    final uri = CoinDeskConstants.searchNewsUrl(query: query);
+    final response = await _safeGet(uri);
 
-    try {
-      final data = await MetadataFetch.extract(url);
-      return data?.image;
-    } catch (e) {
-      print('Failed to fetch metadata for $url: $e');
-      return null;
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final List<dynamic> results = data['Data'] ?? [];
+      return results.map((e) => NewsItem.fromJson(e)).toList();
+    } else {
+      throw Exception('Failed to search news (status ${response.statusCode})');
     }
   }
 }

@@ -14,7 +14,6 @@ class AlphaVantageService {
     return AlphaVantageQuoteModel.fromJson(res.data);
   }
 
-  // Fetch OHLC (daily)
   Future<List<AlphaVantageOHLC>> fetchOhlcDaily(String symbol) async {
     final url = AlphaVantageConstants.dailyOhlcUrl(symbol: symbol);
     final res = await _dio.getUri(url);

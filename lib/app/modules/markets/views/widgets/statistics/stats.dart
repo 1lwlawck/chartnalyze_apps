@@ -8,7 +8,6 @@ import 'package:get/get.dart';
 class MarketStats extends GetView<MarketsController> {
   const MarketStats({super.key});
 
-  /// Menghitung persentase perubahan
   String _getChangePercentage(double? previous, double current) {
     if (previous == null || previous == 0) return '';
     final change = ((current - previous) / previous) * 100;
@@ -16,13 +15,11 @@ class MarketStats extends GetView<MarketsController> {
     return '$sign${change.toStringAsFixed(2)}%';
   }
 
-  /// Menentukan warna teks perubahan
   Color _getChangeColor(double? previous, double current) {
     if (previous == null || previous == 0) return Colors.grey;
     return current >= previous ? Colors.green : Colors.red;
   }
 
-  /// Widget statistik
   Widget _statBox(
     String title,
     String value,
@@ -31,7 +28,7 @@ class MarketStats extends GetView<MarketsController> {
     IconData? icon,
   }) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center, // Center semua isi
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         if (icon != null) ...[
           Icon(icon, size: 20, color: AppColors.primaryGreen),
@@ -71,7 +68,6 @@ class MarketStats extends GetView<MarketsController> {
     );
   }
 
-  /// Garis vertikal pemisah antar stat
   Widget _verticalDivider() {
     return Container(
       height: 50,
@@ -84,8 +80,9 @@ class MarketStats extends GetView<MarketsController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      final isLoading = controller.isGlobalMarketLoading.value;
-      final data = controller.marketData.value;
+      // ✅ akses dari subcontroller: overview
+      final isLoading = controller.overview.isLoading.value;
+      final data = controller.overview.marketData.value;
 
       if (isLoading) {
         return const Padding(
@@ -103,7 +100,6 @@ class MarketStats extends GetView<MarketsController> {
         );
       }
 
-      // Format angka
       final marketCapStr =
           '\$${(data.totalMarketCap / 1e12).toStringAsFixed(2)}T';
       final volumeStr = '\$${(data.totalVolume / 1e12).toStringAsFixed(2)}T';
