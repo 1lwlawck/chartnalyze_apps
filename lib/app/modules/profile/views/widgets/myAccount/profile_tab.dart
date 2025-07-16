@@ -116,6 +116,7 @@ class _ProfileTabState extends State<ProfileTab> {
             const SizedBox(height: 16),
             Center(
               child: TextButton.icon(
+                key: const Key('logoutButton'),
                 onPressed: () => widget.onLogoutPressed(),
                 icon: const Icon(Icons.logout, color: Colors.red),
                 label: const Text(

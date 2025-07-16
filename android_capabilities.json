@@ -1,0 +1,8 @@
+{
+  "deviceName": "Samsung SM-A236E",
+  "platformName": "Android",
+  "platformVersion": "14",
+  "app": "D:\\FLUTTER\\chartnalyze-apps\\build\\app\\outputs\\flutter-apk\\app-debug.apk",
+  "automationName": "UiAutomator2",
+  "noReset": true
+}

@@ -1,7 +1,7 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 final String apiBaseUrl =
-    dotenv.env['AUTH_BASE_URL'] ?? 'http://192.168.1.124:80/api';
+    dotenv.env['AUTH_BASE_URL'] ?? 'https://backend.chartnalyze.web.id/api';
 
 class CoinGeckoConstants {
   static const String baseUrl = 'https://api.coingecko.com/api/v3';

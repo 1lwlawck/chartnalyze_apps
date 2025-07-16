@@ -22,6 +22,7 @@ class _ProfileExpandableFABState extends State<ProfileExpandableFAB> {
         if (_expanded) ...[
           MiniActionButton(
             icon: Icons.description_outlined,
+            key: const Key('create_post_button'),
             onPressed: () {
               Get.to(() => const CreatePostView());
               setState(() => _expanded = false);
@@ -30,6 +31,7 @@ class _ProfileExpandableFABState extends State<ProfileExpandableFAB> {
           const SizedBox(height: 12),
           MiniActionButton(
             icon: Icons.edit_outlined,
+            key: const Key('my_account_button'),
             onPressed: () {
               Get.to(() => MyAccountView());
               setState(() => _expanded = false);

@@ -1,6 +1,8 @@
+import 'package:chartnalyze_apps/app/constants/colors.dart';
 import 'package:chartnalyze_apps/app/helpers/img_url.dart';
 import 'package:chartnalyze_apps/app/modules/profile/controllers/profile_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -15,7 +17,9 @@ class ProfileInfo extends StatelessWidget {
       final user = controller.user.value;
 
       if (controller.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
+        return const Center(
+          child: SpinKitWave(color: AppColors.primaryGreen, size: 20.0),
+        );
       }
 
       return Padding(

@@ -73,13 +73,16 @@ class CustomBottomNavBar extends StatelessWidget {
     int index,
   ) {
     return BottomNavigationBarItem(
-      icon: SvgPicture.asset(
-        asset,
-        width: 24,
-        height: 24,
-        colorFilter: ColorFilter.mode(
-          currentIndex == index ? AppColors.primaryGreen : Colors.grey,
-          BlendMode.srcIn,
+      icon: KeyedSubtree(
+        key: Key('nav_item_$label'.toLowerCase()),
+        child: SvgPicture.asset(
+          asset,
+          width: 24,
+          height: 24,
+          colorFilter: ColorFilter.mode(
+            currentIndex == index ? AppColors.primaryGreen : Colors.grey,
+            BlendMode.srcIn,
+          ),
         ),
       ),
       label: label,

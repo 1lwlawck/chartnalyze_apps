@@ -60,6 +60,7 @@ class OnboardingView extends GetView<OnboardingController> {
         Padding(
           padding: const EdgeInsets.all(16),
           child: TextButton(
+            key: const Key('nextButton'),
             onPressed: controller.nextPage,
             child: const Text(
               'Next Page',
@@ -109,6 +110,7 @@ class OnboardingView extends GetView<OnboardingController> {
         Padding(
           padding: const EdgeInsets.all(16),
           child: TextButton(
+            key: const Key('nextPageButton'),
             onPressed: controller.nextPage,
             child: const Text(
               'Next Page',
@@ -129,7 +131,7 @@ class OnboardingView extends GetView<OnboardingController> {
     return Column(
       children: [
         const SizedBox(height: 60),
-        controller.buildDots(0),
+        controller.buildDots(2),
         const SizedBox(height: 100),
         Image.asset(SplashImages.thirdSplash, width: 400, height: 400),
         const SizedBox(height: 40),
@@ -161,6 +163,7 @@ class OnboardingView extends GetView<OnboardingController> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(
+                key: const Key('registerButton'),
                 onPressed: controller.navigateToRegister,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryGreen,
@@ -183,6 +186,7 @@ class OnboardingView extends GetView<OnboardingController> {
               ),
               const SizedBox(width: 20),
               ElevatedButton(
+                key: const Key('loginButton'),
                 onPressed: controller.navigateToLogin,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryGreen,

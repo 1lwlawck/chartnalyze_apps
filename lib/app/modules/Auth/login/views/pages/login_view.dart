@@ -26,6 +26,7 @@ class LoginView extends GetView<LoginController> {
             color: AppColors.primaryGreen,
             size: 40,
           ),
+          key: const Key('backButtonOnLoginView'),
           onPressed: () => Get.back(),
         ),
       ),
@@ -56,6 +57,7 @@ class LoginView extends GetView<LoginController> {
               ),
               const SizedBox(height: 20),
               CustomTextField(
+                key: const Key('emailTextFieldOnLoginView'),
                 controller: controller.emailController,
                 suffixIcon: const Icon(
                   Icons.email_outlined,
@@ -68,6 +70,7 @@ class LoginView extends GetView<LoginController> {
               const SizedBox(height: 20),
               Obx(
                 () => CustomTextField(
+                  key: const Key('passwordTextFieldOnLoginView'),
                   controller: controller.passwordController,
                   label: AppStrings.password,
                   obscureText: !controller.isPasswordVisible.value,
@@ -80,6 +83,7 @@ class LoginView extends GetView<LoginController> {
                       height: 20,
                       color: AppColors.primaryGreen,
                     ),
+                    key: const Key('togglePasswordVisibilityButtonOnLoginView'),
                     onPressed: controller.togglePasswordVisibility,
                   ),
                 ),
@@ -88,6 +92,7 @@ class LoginView extends GetView<LoginController> {
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
+                  key: const Key('forgotPasswordButtonOnLoginView'),
                   onPressed: () => Get.toNamed(Routes.FORGOT_PASSWORD),
                   child: const Text(
                     AppStrings.forgotPassword,
@@ -105,6 +110,7 @@ class LoginView extends GetView<LoginController> {
                 () => CustomButton(
                   text: AppStrings.signIn,
                   isLoading: controller.isLoading.value,
+                  key: const Key('loginButtonOnLoginView'),
                   onPressed: controller.login,
                 ),
               ),
@@ -122,6 +128,7 @@ class LoginView extends GetView<LoginController> {
                     ),
                   ),
                   TextButton(
+                    key: const Key('registerButtonOnLoginView'),
                     onPressed: () => Get.toNamed(Routes.REGISTER),
                     child: const Text(
                       AppStrings.registerHere,

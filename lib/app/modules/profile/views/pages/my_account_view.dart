@@ -23,11 +23,15 @@ class MyAccountView extends StatelessWidget {
         body: Obx(() {
           if (controller.isLoading.value) {
             return const Center(
+              key: Key('loading_indicator'),
               child: SpinKitWave(color: AppColors.primaryGreen, size: 20.0),
             );
           }
           if (controller.user.value.id.isEmpty) {
-            return const Center(child: Text("User not found"));
+            return const Center(
+              key: Key('user_not_found'),
+              child: Text("User not found"),
+            );
           }
           return TabBarView(
             children: [
@@ -46,11 +50,12 @@ class MyAccountView extends StatelessWidget {
                   }
                 },
 
+                key: const Key('profile_tab'),
                 onLogoutPressed: () => controller.logout(),
                 onRefresh: () => controller.fetchUserProfile(),
               ),
 
-              const SecurityTab(),
+              const SecurityTab(key: Key('security_tab')),
             ],
           );
         }),
